@@ -64,8 +64,8 @@ export default function Home() {
       {/* Navigation - show only when opened */}
       {isOpened && !isLoading && <Navigation />}
 
-      {/* Music Player - show only when opened */}
-      {isOpened && !isLoading && <MusicPlayer />}
+      {/* Music Player - always available on screen */}
+      {!isLoading && <MusicPlayer autoPlayTrigger={isOpened} />}
 
       {/* Opening Section */}
       {!isLoading && (
