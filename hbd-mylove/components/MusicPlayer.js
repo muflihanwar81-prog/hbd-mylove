@@ -2,8 +2,48 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Music, Disc3 } from "lucide-react";
 import { musicData } from "@/lib/data-konten";
+
+// Simple lightweight SVG icons directly in component (eliminates any Turbopack ESM icon cache issues)
+function MusicIcon({ size = 22, className = "" }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <path d="M9 18V5l12-2v13" />
+      <circle cx="6" cy="18" r="3" />
+      <circle cx="18" cy="16" r="3" />
+    </svg>
+  );
+}
+
+function DiscIcon({ size = 24, className = "" }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <circle cx="12" cy="12" r="10" />
+      <path d="M6 12c0-3.3 2.7-6 6-6" />
+      <circle cx="12" cy="12" r="2" />
+    </svg>
+  );
+}
 
 export default function MusicPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -85,10 +125,10 @@ export default function MusicPlayer() {
             animate={{ rotate: 360 }}
             transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
           >
-            <Disc3 size={24} className="text-rose-600" />
+            <DiscIcon size={24} className="text-rose-600" />
           </motion.div>
         ) : (
-          <Music size={22} className="text-pink-600" />
+          <MusicIcon size={22} className="text-pink-600" />
         )}
 
         {/* Floating Tooltip */}
