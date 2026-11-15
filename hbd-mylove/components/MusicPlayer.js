@@ -31,14 +31,12 @@ export default function MusicPlayer({ autoPlayTrigger = false }) {
   // Play audio immediately when autoPlayTrigger turns true
   useEffect(() => {
     if (autoPlayTrigger && audioRef.current) {
-      const playPromise = audioRef.current.play();
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => setIsPlaying(true))
-          .catch((err) => {
-            console.log("Auto-play was prevented by browser policy until direct click:", err);
-          });
-      }
+      const audio = audioRef.current;
+      audio.play()
+        .then(() => setIsPlaying(true))
+        .catch((err) => {
+          console.log("Autoplay wait for direct user interaction:", err);
+        });
     }
   }, [autoPlayTrigger]);
 
@@ -60,19 +58,16 @@ export default function MusicPlayer({ autoPlayTrigger = false }) {
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3">
-      {/* Native HTML5 Audio Tag */}
+      {/* Native HTML5 Audio Tag with direct src attribute */}
       <audio
         ref={audioRef}
         id="bg-music-player"
+        src="/music/teman-hidup.mp3"
         loop
         preload="auto"
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
-      >
-        <source src="/music/teman-hidup.mp3" type="audio/mpeg" />
-        <source src="/music/tulus-teman-hidup.mp3" type="audio/mpeg" />
-        <source src="/music/birthday-song.mp3" type="audio/mpeg" />
-      </audio>
+      />
 
       <motion.button
         onClick={togglePlay}
