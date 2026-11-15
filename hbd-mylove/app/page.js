@@ -27,6 +27,17 @@ export default function Home() {
 
   const handleOpen = () => {
     setIsOpened(true);
+
+    // Directly trigger audio playback from user click
+    try {
+      const audioEl = document.getElementById("bg-music-player");
+      if (audioEl) {
+        audioEl.play().catch((e) => console.log("Audio play caught:", e));
+      }
+    } catch (e) {
+      console.log("Audio trigger error:", e);
+    }
+
     // Smooth scroll to birthday section
     setTimeout(() => {
       document.getElementById("birthday")?.scrollIntoView({ behavior: "smooth" });

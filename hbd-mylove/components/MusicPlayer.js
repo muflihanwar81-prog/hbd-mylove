@@ -28,28 +28,30 @@ export default function MusicPlayer({ autoPlayTrigger = false }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
 
-  // Auto-play when user clicks "Open Your Surprise"
+  // Play audio immediately when autoPlayTrigger turns true
   useEffect(() => {
-    if (autoPlayTrigger && audioRef.current && !isPlaying) {
-      audioRef.current.play()
-        .then(() => setIsPlaying(true))
-        .catch((err) => {
-          console.log("Autoplay wait for direct user interaction:", err);
-        });
+    if (autoPlayTrigger && audioRef.current) {
+      const playPromise = audioRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => setIsPlaying(true))
+          .catch((err) => {
+            console.log("Auto-play was prevented by browser policy until direct click:", err);
+          });
+      }
     }
   }, [autoPlayTrigger]);
 
   const togglePlay = () => {
-    if (!audioRef.current) return;
+    const audio = audioRef.current;
+    if (!audio) return;
 
     if (isPlaying) {
-      audioRef.current.pause();
+      audio.pause();
       setIsPlaying(false);
     } else {
-      audioRef.current.play()
-        .then(() => {
-          setIsPlaying(true);
-        })
+      audio.play()
+        .then(() => setIsPlaying(true))
         .catch((err) => {
           console.warn("Audio play notice:", err);
         });
@@ -58,15 +60,19 @@ export default function MusicPlayer({ autoPlayTrigger = false }) {
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3">
-      {/* Native HTML5 Audio */}
+      {/* Native HTML5 Audio Tag */}
       <audio
         ref={audioRef}
+        id="bg-music-player"
         loop
         preload="auto"
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
-        src="/music/teman-hidup.mp3"
-      />
+      >
+        <source src="/music/teman-hidup.mp3" type="audio/mpeg" />
+        <source src="/music/tulus-teman-hidup.mp3" type="audio/mpeg" />
+        <source src="/music/birthday-song.mp3" type="audio/mpeg" />
+      </audio>
 
       <motion.button
         onClick={togglePlay}
