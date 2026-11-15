@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Music, VolumeX, Disc3 } from "lucide-react";
+import { Music, Disc3 } from "lucide-react";
 import { musicData } from "@/lib/data-konten";
 
 export default function MusicPlayer() {
