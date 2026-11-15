@@ -189,8 +189,9 @@ export const finalData = {
 };
 
 export const musicData = {
-  src: "/music/birthday-song.mp3",
-  title: "Our Song",
+  src: "/music/tulus-monokrom.mp3",
+  title: "Monokrom",
+  artist: "Tulus",
 };
 
 export const navItems = [
