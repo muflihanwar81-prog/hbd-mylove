@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { musicData } from "@/lib/data-konten";
 
 function MusicIcon({ size = 22, className = "" }) {
@@ -44,124 +44,58 @@ function DiscIcon({ size = 24, className = "" }) {
   );
 }
 
-// Possible song sources in order of fallback
-const AUDIO_SOURCES = [
-  musicData.src,
-  "/music/tulus-monokrom.mp3",
-  "/music/TULUS_-_Teman_Hidup__Official_Music_Video_.mp3",
-  "/music/birthday-song.mp3",
-];
-
 export default function MusicPlayer({ autoPlayTrigger = false }) {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [hasError, setHasError] = useState(false);
   const audioRef = useRef(null);
-  const sourceIndexRef = useRef(0);
 
-  const initAudio = (srcIndex = 0) => {
-    if (srcIndex >= AUDIO_SOURCES.length) {
-      setHasError(true);
-      setIsPlaying(false);
-      return;
-    }
-
-    const audio = new Audio(AUDIO_SOURCES[srcIndex]);
-    audio.loop = true;
-    audio.volume = 0.6;
-    audio.preload = "auto";
-
-    audio.addEventListener("error", () => {
-      console.warn(`Failed loading audio source: ${AUDIO_SOURCES[srcIndex]}, trying next...`);
-      sourceIndexRef.current = srcIndex + 1;
-      initAudio(sourceIndexRef.current);
-    });
-
-    audio.addEventListener("playing", () => {
-      setIsPlaying(true);
-      setHasError(false);
-    });
-
-    audio.addEventListener("pause", () => {
-      setIsPlaying(false);
-    });
-
-    audioRef.current = audio;
-  };
-
+  // When surprise box is opened, start playing
   useEffect(() => {
-    initAudio(0);
-
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
-    };
-  }, []);
-
-  // When user opens the surprise box, trigger play automatically
-  useEffect(() => {
-    if (autoPlayTrigger && audioRef.current && !isPlaying) {
-      audioRef.current
-        .play()
+    if (autoPlayTrigger && audioRef.current) {
+      audioRef.current.play()
         .then(() => setIsPlaying(true))
-        .catch((e) => console.log("Autoplay blocked by browser policy:", e));
+        .catch((e) => console.log("Audio autoplay notice:", e));
     }
   }, [autoPlayTrigger]);
 
   const togglePlay = () => {
-    if (!audioRef.current) {
-      initAudio(0);
-    }
-
     if (!audioRef.current) return;
 
     if (isPlaying) {
       audioRef.current.pause();
       setIsPlaying(false);
     } else {
-      setHasError(false);
       audioRef.current
         .play()
         .then(() => {
           setIsPlaying(true);
         })
         .catch((err) => {
-          console.warn("Audio play error:", err);
-          // Try next source if this one failed
-          sourceIndexRef.current += 1;
-          initAudio(sourceIndexRef.current);
-          if (audioRef.current) {
-            audioRef.current.play().then(() => setIsPlaying(true)).catch(() => setHasError(true));
-          } else {
-            setHasError(true);
-          }
+          console.warn("Play error:", err);
         });
     }
   };
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3">
-      {/* Toast Notification when file not found */}
-      <AnimatePresence>
-        {hasError && (
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white/90 backdrop-blur-md border border-rose-300 text-xs font-semibold text-rose-700 shadow-xl"
-          >
-            <span>Format file musik tidak dapat dimuat 🎵</span>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Standard HTML5 Audio Tag */}
+      <audio
+        ref={audioRef}
+        loop
+        preload="auto"
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
+      >
+        <source src="/music/teman-hidup.mp3" type="audio/mpeg" />
+        <source src="/music/TULUS_-_Teman_Hidup__Official_Music_Video_.mp3" type="audio/mpeg" />
+        <source src="/music/tulus-monokrom.mp3" type="audio/mpeg" />
+      </audio>
 
       {/* Floating Player Button */}
       <motion.button
         onClick={togglePlay}
         className="w-14 h-14 rounded-full flex items-center justify-center
-                   bg-white/70 backdrop-blur-xl border border-white/80 shadow-2xl shadow-pink-300/60
-                   hover:bg-white/90 transition-colors duration-300 group relative"
+                   bg-white/80 backdrop-blur-xl border border-white/90 shadow-2xl shadow-pink-300/60
+                   hover:bg-white transition-all duration-300 group relative cursor-pointer"
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
@@ -185,7 +119,7 @@ export default function MusicPlayer({ autoPlayTrigger = false }) {
                          bg-gray-900/85 text-white whitespace-nowrap opacity-0
                          group-hover:opacity-100 transition-opacity duration-200
                          pointer-events-none backdrop-blur-sm shadow-md">
-          {isPlaying ? `Jeda Musik ♫` : `Putar Musik ♫`}
+          {isPlaying ? `Jeda: ${musicData.title} - ${musicData.artist}` : `Putar: ${musicData.title} - ${musicData.artist} ♫`}
         </span>
 
         {/* Pulse Ring effect while playing */}

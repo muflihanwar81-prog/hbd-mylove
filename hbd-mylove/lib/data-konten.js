@@ -189,8 +189,8 @@ export const finalData = {
 };
 
 export const musicData = {
-  src: "/music/tulus-monokrom.mp3",
-  title: "Monokrom",
+  src: "/music/teman-hidup.mp3",
+  title: "Teman Hidup",
   artist: "Tulus",
 };
 
