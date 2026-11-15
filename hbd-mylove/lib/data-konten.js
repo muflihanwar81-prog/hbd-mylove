@@ -189,7 +189,7 @@ export const finalData = {
 };
 
 export const musicData = {
-  src: "/music/teman-hidup.mp3",
+  src: "/music/teman-hidup.wav",
   title: "Teman Hidup",
   artist: "Tulus",
 };

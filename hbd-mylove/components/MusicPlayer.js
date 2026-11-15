@@ -62,7 +62,7 @@ export default function MusicPlayer({ autoPlayTrigger = false }) {
       <audio
         ref={audioRef}
         id="bg-music-player"
-        src="/music/teman-hidup.mp3"
+        src="/music/teman-hidup.wav"
         loop
         preload="auto"
         onPlay={() => setIsPlaying(true)}
