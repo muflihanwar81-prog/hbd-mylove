@@ -35,12 +35,13 @@ export const countdownGateData = {
 };
 
 export const openingData = {
-  badge: "A SPECIAL DAY FOR SOMEONE SPECIAL",
+  badge: "A MESSAGE CARRIED IN ON THE TIDE, FOR YOU",
   greeting: "Happy Birthday,",
   nameGreeting: "My Favorite Person",
-  subGreeting: "Today is all about you. A little place filled with memories, love, and everything I wish I could say to you.",
-  buttonPrimary: "Begin Our Journey",
-  buttonSecondary: "Read My Letter",
+  subGreeting: "Somewhere past the breakers, ada a letter yang udah lama waiting for this day. Scroll down, the tide is coming in, dan ternyata dia bawa something special just for you.",
+  buttonPrimary: "Begin the Descent ↓",
+  buttonSecondary: "Jump Straight to the Letter",
+  scrollText: "SCROLL TO DIVE IN",
   polaroidPhoto: "/images/couple-main.svg",
   polaroidCaption: "Forever My Favorite 💙",
 };
@@ -115,13 +116,13 @@ export const finalData = {
 export const musicData = {
   src: "/music/teman-hidup.wav",
   title: "Teman Hidup",
-  artist: "Tulus",
+  artist: "TULUS",
 };
 
 export const navItems = [
-  { id: "home", label: "Home", icon: "Home" },
-  { id: "memories", label: "Our Memories", icon: "Camera" },
-  { id: "gallery", label: "Gallery", icon: "Image" },
-  { id: "letter", label: "The Letter", icon: "Mail" },
-  { id: "wishes", label: "Wishes", icon: "Star" },
+  { id: "home", label: "Surface" },
+  { id: "memories", label: "Our Memories" },
+  { id: "gallery", label: "Gallery" },
+  { id: "letter", label: "The Letter" },
+  { id: "wishes", label: "Wishes" },
 ];

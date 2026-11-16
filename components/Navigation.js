@@ -2,10 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Home, Camera, Image, Mail, Star, Menu, X } from "lucide-react";
-import { navItems } from "@/lib/data-konten";
-
-const iconMap = { Home, Camera, Image, Mail, Star };
+import { Sparkles, Menu, X } from "lucide-react";
+import { navItems, coupleData } from "@/lib/data-konten";
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,7 +16,10 @@ export default function Navigation() {
         const el = document.getElementById(sections[i]);
         if (el) {
           const rect = el.getBoundingClientRect();
-          if (rect.top <= 150) { setActiveSection(sections[i]); break; }
+          if (rect.top <= 200) {
+            setActiveSection(sections[i]);
+            break;
+          }
         }
       }
     };
@@ -31,58 +32,126 @@ export default function Navigation() {
     setIsOpen(false);
   };
 
+  const brandName = coupleData.partnerName
+    ? `${coupleData.partnerName.split(" ")[0]}'s Birthday`
+    : "Novria's Birthday";
+
   return (
     <>
-      {/* Desktop */}
-      <motion.nav className="fixed top-0 left-0 right-0 z-40 hidden md:block"
-        initial={{ y: -80, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3, duration: 0.6 }}>
-        <div className="mx-auto max-w-5xl mt-4 px-4">
-          <div className="flex items-center justify-center gap-1 px-4 py-2 rounded-full"
-            style={{ background: "rgba(16,43,92,0.8)", backdropFilter: "blur(20px)", border: "1px solid rgba(169,199,234,0.2)" }}>
+      {/* Desktop / Tablet Navigation Bar */}
+      <motion.header
+        className="fixed top-0 left-0 right-0 z-40 px-4 sm:px-8 py-4 sm:py-5"
+        initial={{ y: -80, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.2, duration: 0.6 }}
+      >
+        <div
+          className="mx-auto max-w-6xl flex items-center justify-between px-6 py-3 rounded-full"
+          style={{
+            background: "rgba(10, 25, 55, 0.65)",
+            backdropFilter: "blur(20px)",
+            WebkitBackdropFilter: "blur(20px)",
+            border: "1px solid rgba(255, 255, 255, 0.12)",
+            boxShadow: "0 10px 30px rgba(0, 0, 0, 0.25)",
+          }}
+        >
+          {/* Brand Logo / Title on Left */}
+          <div
+            onClick={() => scrollToSection("home")}
+            className="flex items-center gap-2 cursor-pointer group"
+          >
+            <Sparkles size={16} className="text-[#A9C7EA] group-hover:rotate-12 transition-transform" />
+            <span
+              className="text-white font-semibold text-sm sm:text-base tracking-wide"
+              style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+            >
+              {brandName}
+            </span>
+          </div>
+
+          {/* Navigation Links in Center/Right (Desktop) */}
+          <nav className="hidden md:flex items-center gap-1 sm:gap-2">
             {navItems.map((item) => {
-              const Icon = iconMap[item.icon];
+              const isActive = activeSection === item.id;
               return (
-                <button key={item.id} onClick={() => scrollToSection(item.id)}
-                  className={`flex items-center gap-1.5 px-3 py-2 rounded-full text-sm transition-all duration-300
-                    ${activeSection === item.id
-                      ? "bg-[#A9C7EA]/30 text-white font-medium"
-                      : "text-[#A9C7EA]/70 hover:bg-[#A9C7EA]/10 hover:text-[#A9C7EA]"}`}>
-                  {Icon && <Icon size={16} />}
-                  <span>{item.label}</span>
+                <button
+                  key={item.id}
+                  onClick={() => scrollToSection(item.id)}
+                  className={`relative px-4 py-1.5 text-xs sm:text-sm font-medium transition-all duration-300 cursor-pointer ${
+                    isActive ? "text-white font-semibold" : "text-[#A9C7EA]/75 hover:text-white"
+                  }`}
+                >
+                  <span>{item.label === "Home" ? "Surface" : item.label}</span>
+                  {isActive && (
+                    <motion.div
+                      layoutId="activeNavIndicator"
+                      className="absolute bottom-0 left-3 right-3 h-[2px] bg-gradient-to-r from-[#A9C7EA] to-[#F8F8FF] rounded-full shadow-sm"
+                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                    />
+                  )}
                 </button>
               );
             })}
-          </div>
+          </nav>
+
+          {/* Mobile Menu Toggle Button */}
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="md:hidden p-1.5 text-[#A9C7EA] hover:text-white transition-colors cursor-pointer"
+            aria-label="Toggle Menu"
+          >
+            {isOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
         </div>
-      </motion.nav>
+      </motion.header>
 
-      {/* Mobile hamburger */}
-      <motion.button className="fixed top-4 right-4 z-50 md:hidden w-12 h-12 rounded-full flex items-center justify-center"
-        style={{ background: "rgba(16,43,92,0.8)", backdropFilter: "blur(20px)", border: "1px solid rgba(169,199,234,0.2)" }}
-        onClick={() => setIsOpen(!isOpen)} initial={{ scale: 0 }} animate={{ scale: 1 }}
-        transition={{ delay: 0.3, type: "spring" }} whileTap={{ scale: 0.9 }}>
-        {isOpen ? <X size={22} className="text-[#A9C7EA]" /> : <Menu size={22} className="text-[#A9C7EA]" />}
-      </motion.button>
-
-      {/* Mobile menu */}
+      {/* Mobile Drawer Menu */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div className="fixed inset-0 z-40 md:hidden flex items-center justify-center"
-            style={{ background: "linear-gradient(180deg, rgba(16,43,92,0.97) 0%, rgba(23,59,115,0.97) 100%)", backdropFilter: "blur(20px)" }}
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
-            <motion.div className="flex flex-col items-center gap-3"
-              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }} transition={{ delay: 0.1 }}>
+          <motion.div
+            className="fixed inset-0 z-30 md:hidden flex items-center justify-center p-6"
+            style={{
+              background: "rgba(10, 25, 55, 0.95)",
+              backdropFilter: "blur(24px)",
+            }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <motion.div
+              className="flex flex-col items-center gap-4 w-full max-w-xs"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              transition={{ delay: 0.1 }}
+            >
+              <div className="flex items-center gap-2 mb-4">
+                <Sparkles size={20} className="text-[#A9C7EA]" />
+                <span
+                  className="text-xl text-white font-bold"
+                  style={{ fontFamily: "'Playfair Display', serif" }}
+                >
+                  {brandName}
+                </span>
+              </div>
+
               {navItems.map((item, idx) => {
-                const Icon = iconMap[item.icon];
+                const isActive = activeSection === item.id;
                 return (
-                  <motion.button key={item.id} onClick={() => scrollToSection(item.id)}
-                    className={`flex items-center gap-3 px-8 py-3 rounded-2xl text-lg transition-all duration-300 w-56 justify-start
-                      ${activeSection === item.id
-                        ? "bg-[#A9C7EA]/25 text-white font-semibold"
-                        : "text-[#A9C7EA]/80 hover:bg-[#A9C7EA]/10"}`}
-                    initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 + idx * 0.05 }}>
-                    {Icon && <Icon size={22} />}
-                    <span>{item.label}</span>
+                  <motion.button
+                    key={item.id}
+                    onClick={() => scrollToSection(item.id)}
+                    className={`w-full py-3 px-6 rounded-2xl text-center text-base font-semibold transition-all ${
+                      isActive
+                        ? "bg-[#A9C7EA]/25 text-white border border-[#A9C7EA]/40"
+                        : "text-[#A9C7EA]/80 hover:bg-white/5"
+                    }`}
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 + idx * 0.05 }}
+                  >
+                    {item.label === "Home" ? "Surface" : item.label}
                   </motion.button>
                 );
               })}
