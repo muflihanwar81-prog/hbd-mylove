@@ -54,7 +54,7 @@ export default function Home() {
   const isMainSiteActive = isUnlocked && (isBirthdayReached || previewUnlocked);
 
   return (
-    <main className="relative min-h-screen bg-[#102B5C] text-[#F8F8FF]">
+    <main className="relative min-h-screen bg-[#260814] text-[#FFF5F7]">
       {/* Background audio player - always mounted in DOM for autoplay reliability */}
       <MusicPlayer autoPlayTrigger={musicTrigger} visible={isUnlocked} />
 

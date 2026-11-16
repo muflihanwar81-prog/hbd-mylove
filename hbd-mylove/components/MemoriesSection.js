@@ -179,8 +179,8 @@ export default function MemoriesSection({ onPhotoClick }) {
   return (
     <section id="memories" className="relative min-h-screen px-4 py-20 overflow-hidden select-none">
       {/* Background ambient lighting */}
-      <div className="absolute top-1/4 -left-36 w-96 h-96 rounded-full bg-[#173B73]/30 blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/4 -right-36 w-96 h-96 rounded-full bg-[#102B5C]/60 blur-3xl pointer-events-none" />
+      <div className="absolute top-1/4 -left-36 w-96 h-96 rounded-full bg-[#581124]/30 blur-3xl pointer-events-none" />
+      <div className="absolute bottom-1/4 -right-36 w-96 h-96 rounded-full bg-[#3B0B1E]/60 blur-3xl pointer-events-none" />
 
       <div className="max-w-6xl mx-auto">
         {/* Section Header */}
@@ -191,14 +191,14 @@ export default function MemoriesSection({ onPhotoClick }) {
             viewport={{ once: true }}
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold mb-3"
             style={{
-              background: "rgba(169, 199, 234, 0.12)",
-              border: "1px solid rgba(169, 199, 234, 0.3)",
-              color: "#A9C7EA",
+              background: "rgba(226, 125, 155, 0.15)",
+              border: "1px solid rgba(226, 125, 155, 0.3)",
+              color: "#F7C2CF",
             }}
           >
             <Camera size={15} />
             <span>Photobooth Memory Strips</span>
-            <Sparkles size={14} className="text-[#A9C7EA]" />
+            <Sparkles size={14} className="text-[#E27D9B]" />
           </motion.div>
 
           <motion.h2
@@ -207,7 +207,7 @@ export default function MemoriesSection({ onPhotoClick }) {
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
             className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight"
-            style={{ fontFamily: "'Playfair Display', Georgia, serif", color: "#F8F8FF" }}
+            style={{ fontFamily: "'Playfair Display', Georgia, serif", color: "#FFF5F7" }}
           >
             {memoriesData.title || "Our Memories"}
           </motion.h2>
@@ -217,7 +217,7 @@ export default function MemoriesSection({ onPhotoClick }) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="text-[#A9C7EA]/80 max-w-lg mx-auto mt-2 text-xs sm:text-sm md:text-base font-light"
+            className="text-[#F7C2CF]/80 max-w-lg mx-auto mt-2 text-xs sm:text-sm md:text-base font-light"
           >
             Setiap lembar strip foto membawa kenangan manis yang terus berjalan indah
           </motion.p>
@@ -241,8 +241,8 @@ export default function MemoriesSection({ onPhotoClick }) {
         className="relative w-full h-[580px] sm:h-[660px] md:h-[700px] overflow-hidden cursor-grab active:cursor-grabbing"
       >
         {/* Left & Right Edge Vignette Gradient Masks */}
-        <div className="absolute top-0 bottom-0 left-0 w-16 sm:w-36 md:w-56 bg-gradient-to-r from-[#102B5C] via-[#102B5C]/85 to-transparent z-40 pointer-events-none" />
-        <div className="absolute top-0 bottom-0 right-0 w-16 sm:w-36 md:w-56 bg-gradient-to-l from-[#102B5C] via-[#102B5C]/85 to-transparent z-40 pointer-events-none" />
+        <div className="absolute top-0 bottom-0 left-0 w-16 sm:w-36 md:w-56 bg-gradient-to-r from-[#260814] via-[#260814]/85 to-transparent z-40 pointer-events-none" />
+        <div className="absolute top-0 bottom-0 right-0 w-16 sm:w-36 md:w-56 bg-gradient-to-l from-[#260814] via-[#260814]/85 to-transparent z-40 pointer-events-none" />
 
         {/* Carousel Track with Absolute Photo Strips */}
         <div className="absolute inset-0 w-full h-full">
@@ -269,13 +269,13 @@ export default function MemoriesSection({ onPhotoClick }) {
               />
 
               {/* Strip Header */}
-              <div className="text-center pt-0.5 pb-1.5 border-b border-[#102B5C]/15 mb-2">
-                <div className="flex items-center justify-between px-1 text-[8px] sm:text-[9px] font-mono tracking-wider text-[#102B5C]/70 font-bold uppercase">
+              <div className="text-center pt-0.5 pb-1.5 border-b border-[#260814]/15 mb-2">
+                <div className="flex items-center justify-between px-1 text-[8px] sm:text-[9px] font-mono tracking-wider text-[#260814]/70 font-bold uppercase">
                   <span>✦ BOOTH</span>
                   <span>{strip.edition} ✦</span>
                 </div>
                 <h4
-                  className="text-[10px] sm:text-[11px] font-bold text-[#102B5C] tracking-wide mt-0.5 truncate"
+                  className="text-[10px] sm:text-[11px] font-bold text-[#260814] tracking-wide mt-0.5 truncate"
                   style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
                 >
                   {strip.title}
@@ -291,7 +291,7 @@ export default function MemoriesSection({ onPhotoClick }) {
                       e.stopPropagation();
                       if (onPhotoClick) onPhotoClick(photo);
                     }}
-                    className="relative aspect-[16/11] w-full rounded-none overflow-hidden bg-[#0d2249] shadow-inner cursor-pointer group/photo border border-black/10"
+                    className="relative aspect-[16/11] w-full rounded-none overflow-hidden bg-[#1D040E] shadow-inner cursor-pointer group/photo border border-black/10"
                   >
                     {photo.src ? (
                       <img
@@ -307,10 +307,10 @@ export default function MemoriesSection({ onPhotoClick }) {
 
                     {/* Fallback Icon */}
                     <div
-                      className="w-full h-full flex flex-col items-center justify-center text-[#A9C7EA] p-1.5 text-center"
+                      className="w-full h-full flex flex-col items-center justify-center text-[#F7C2CF] p-1.5 text-center"
                       style={{ display: photo.src ? "none" : "flex" }}
                     >
-                      <Star className="w-4 h-4 text-[#A9C7EA] fill-[#A9C7EA]/30 mb-0.5 shrink-0" />
+                      <Star className="w-4 h-4 text-[#E27D9B] fill-[#E27D9B]/30 mb-0.5 shrink-0" />
                       <span className="text-[8px] sm:text-[9px] font-medium text-white/90 line-clamp-1 leading-tight">{photo.caption}</span>
                     </div>
 
@@ -320,8 +320,8 @@ export default function MemoriesSection({ onPhotoClick }) {
                     </div>
 
                     {/* Hover Overlay */}
-                    <div className="absolute inset-0 bg-[#102B5C]/50 opacity-0 group-hover/photo:opacity-100 transition-opacity duration-200 flex items-center justify-center">
-                      <span className="px-2 py-0.5 rounded-none bg-white text-[#102B5C] font-bold text-[9px] shadow flex items-center gap-1">
+                    <div className="absolute inset-0 bg-[#260814]/50 opacity-0 group-hover/photo:opacity-100 transition-opacity duration-200 flex items-center justify-center">
+                      <span className="px-2 py-0.5 rounded-none bg-white text-[#260814] font-bold text-[9px] shadow flex items-center gap-1">
                         <Eye size={10} />
                         Buka
                       </span>
@@ -331,13 +331,13 @@ export default function MemoriesSection({ onPhotoClick }) {
               </div>
 
               {/* Strip Footer: Barcode & Couple Branding */}
-              <div className="pt-2 mt-1.5 border-t border-[#102B5C]/15 text-[#102B5C] flex flex-col items-center justify-center">
+              <div className="pt-2 mt-1.5 border-t border-[#260814]/15 text-[#260814] flex flex-col items-center justify-center">
                 {/* Simulated Barcode */}
                 <div className="flex items-center justify-center gap-[1.5px] h-3.5 mb-1 opacity-70">
                   {[3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8, 9, 7, 9, 3, 2, 3, 8, 4, 6].map((w, bIdx) => (
                     <div
                       key={bIdx}
-                      className="bg-[#102B5C]"
+                      className="bg-[#260814]"
                       style={{
                         width: `${(w % 2.5) + 0.8}px`,
                         height: "100%",
@@ -346,12 +346,12 @@ export default function MemoriesSection({ onPhotoClick }) {
                   ))}
                 </div>
 
-                <div className="flex items-center justify-center gap-1 text-[8px] sm:text-[9px] font-bold tracking-wider uppercase text-[#102B5C]/90">
+                <div className="flex items-center justify-center gap-1 text-[8px] sm:text-[9px] font-bold tracking-wider uppercase text-[#260814]/90">
                   <span>NOVRIA & MUFLIH</span>
-                  <Heart size={8} className="text-[#102B5C] fill-[#102B5C]" />
+                  <Heart size={8} className="text-[#8B1E2E] fill-[#8B1E2E]" />
                   <span>24.11.2007</span>
                 </div>
-                <p className="text-[7px] text-[#102B5C]/60 font-mono tracking-widest mt-0.5">
+                <p className="text-[7px] text-[#260814]/60 font-mono tracking-widest mt-0.5">
                   MEMORIES ARCHIVE · KEEP FOREVER
                 </p>
               </div>
@@ -364,20 +364,20 @@ export default function MemoriesSection({ onPhotoClick }) {
       <div className="max-w-md mx-auto flex items-center justify-center gap-4 mt-6">
         <button
           onClick={() => handleManualNudge(-1)}
-          className="w-10 h-10 rounded-full flex items-center justify-center bg-white/10 hover:bg-white/20 text-[#A9C7EA] hover:text-white transition-all cursor-pointer border border-white/15 active:scale-95 shadow-md"
+          className="w-10 h-10 rounded-full flex items-center justify-center bg-white/10 hover:bg-white/20 text-[#F7C2CF] hover:text-white transition-all cursor-pointer border border-white/15 active:scale-95 shadow-md"
           title="Geser ke kiri"
           aria-label="Geser ke kiri"
         >
           <ChevronLeft size={20} />
         </button>
 
-        <span className="text-xs font-medium text-[#A9C7EA]/80 tracking-wider uppercase px-2 text-center">
+        <span className="text-xs font-medium text-[#F7C2CF]/80 tracking-wider uppercase px-2 text-center">
           ✦ Photo Strips Gliding Right ✦
         </span>
 
         <button
           onClick={() => handleManualNudge(1)}
-          className="w-10 h-10 rounded-full flex items-center justify-center bg-white/10 hover:bg-white/20 text-[#A9C7EA] hover:text-white transition-all cursor-pointer border border-white/15 active:scale-95 shadow-md"
+          className="w-10 h-10 rounded-full flex items-center justify-center bg-white/10 hover:bg-white/20 text-[#F7C2CF] hover:text-white transition-all cursor-pointer border border-white/15 active:scale-95 shadow-md"
           title="Geser ke kanan"
           aria-label="Geser ke kanan"
         >
@@ -388,9 +388,9 @@ export default function MemoriesSection({ onPhotoClick }) {
       {/* Custom Center Magnification & Glow Styling */}
       <style jsx>{`
         [data-center="true"] {
-          box-shadow: 0 30px 70px rgba(0, 0, 0, 0.7),
-                      0 0 40px rgba(169, 199, 234, 0.6) !important;
-          border: 2px solid rgba(169, 199, 234, 0.95) !important;
+          box-shadow: 0 30px 70px rgba(0, 0, 0, 0.75),
+                      0 0 45px rgba(217, 43, 107, 0.55) !important;
+          border: 2px solid rgba(226, 125, 155, 0.95) !important;
         }
       `}</style>
     </section>

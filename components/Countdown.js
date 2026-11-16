@@ -53,14 +53,14 @@ export default function Countdown() {
           style={{
             background: "rgba(255,255,255,0.08)",
             backdropFilter: "blur(12px)",
-            border: "1px solid rgba(169,199,234,0.2)",
-            boxShadow: "0 4px 15px rgba(0,0,0,0.15)",
+            border: "1px solid rgba(226,125,155,0.3)",
+            boxShadow: "0 4px 15px rgba(0,0,0,0.3)",
           }}
         >
-          <span className="text-2xl md:text-4xl font-extrabold text-[#A9C7EA] tabular-nums">
+          <span className="text-2xl md:text-4xl font-extrabold text-[#F7C2CF] tabular-nums">
             {padZero(unit.value)}
           </span>
-          <span className="text-xs md:text-sm font-medium text-[#A9C7EA]/60 mt-1 uppercase tracking-wider">
+          <span className="text-xs md:text-sm font-medium text-[#F7C2CF]/70 mt-1 uppercase tracking-wider">
             {unit.label}
           </span>
         </motion.div>

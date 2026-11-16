@@ -72,10 +72,10 @@ export default function MusicPlayer({ autoPlayTrigger = false, visible = true })
               onClick={togglePlay}
               className="w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 group relative cursor-pointer"
               style={{
-                background: "rgba(16, 43, 92, 0.9)",
+                background: "rgba(45, 10, 24, 0.9)",
                 backdropFilter: "blur(20px)",
-                border: "1px solid rgba(169, 199, 234, 0.4)",
-                boxShadow: "0 8px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(169, 199, 234, 0.2)",
+                border: "1px solid rgba(226, 125, 155, 0.4)",
+                boxShadow: "0 8px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(217, 43, 107, 0.3)",
               }}
               initial={{ scale: 0, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -87,16 +87,16 @@ export default function MusicPlayer({ autoPlayTrigger = false, visible = true })
             >
               {isPlaying ? (
                 <motion.div animate={{ rotate: 360 }} transition={{ duration: 3, repeat: Infinity, ease: "linear" }}>
-                  <DiscIcon size={26} className="text-[#A9C7EA]" />
+                  <DiscIcon size={26} className="text-[#E27D9B]" />
                 </motion.div>
               ) : (
-                <MusicIcon size={24} className="text-[#A9C7EA] animate-bounce" />
+                <MusicIcon size={24} className="text-[#E27D9B] animate-bounce" />
               )}
 
               {/* Tooltip on hover */}
               <span
-                className="absolute bottom-full mb-2.5 px-3 py-1.5 text-xs rounded-xl whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-lg border border-[#A9C7EA]/20"
-                style={{ background: "rgba(16, 43, 92, 0.95)", color: "#F8F8FF" }}
+                className="absolute bottom-full mb-2.5 px-3 py-1.5 text-xs rounded-xl whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-lg border border-[#E27D9B]/30"
+                style={{ background: "rgba(38, 8, 20, 0.95)", color: "#FFF5F7" }}
               >
                 {isPlaying ? `Pause: ${musicData.title} - ${musicData.artist}` : `Play: ${musicData.title} - ${musicData.artist} ♫`}
               </span>
@@ -104,7 +104,7 @@ export default function MusicPlayer({ autoPlayTrigger = false, visible = true })
               {/* Glowing Pulse Ring while playing */}
               {isPlaying && (
                 <motion.div
-                  className="absolute -inset-1.5 rounded-full border-2 border-[#A9C7EA] pointer-events-none"
+                  className="absolute -inset-1.5 rounded-full border-2 border-[#D92B6B] pointer-events-none"
                   animate={{ scale: [1, 1.4], opacity: [0.7, 0] }}
                   transition={{ duration: 1.5, repeat: Infinity, ease: "easeOut" }}
                 />

@@ -9,11 +9,11 @@ export default function SparkleStars() {
   useEffect(() => {
     const generated = Array.from({ length: 28 }, (_, i) => ({
       id: i,
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      size: 2 + Math.random() * 4,
-      delay: Math.random() * 4,
-      duration: 1.5 + Math.random() * 3,
+      x: (i * 37 + 11) % 100,
+      y: (i * 53 + 7) % 100,
+      size: 2 + (i % 4),
+      delay: (i % 5) * 0.7,
+      duration: 1.8 + (i % 3) * 0.8,
     }));
     setStars(generated);
   }, []);
@@ -26,7 +26,7 @@ export default function SparkleStars() {
         <motion.div key={star.id} className="absolute rounded-full"
           style={{
             left: `${star.x}%`, top: `${star.y}%`, width: star.size, height: star.size,
-            background: star.id % 3 === 0 ? "rgba(255,255,255,0.9)" : star.id % 3 === 1 ? "rgba(169,199,234,0.7)" : "rgba(220,229,245,0.6)",
+            background: star.id % 3 === 0 ? "rgba(255,255,255,0.95)" : star.id % 3 === 1 ? "rgba(247,194,207,0.85)" : "rgba(226,125,155,0.7)",
           }}
           animate={{ opacity: [0, 1, 0], scale: [0.5, 1.2, 0.5] }}
           transition={{ duration: star.duration, delay: star.delay, repeat: Infinity, ease: "easeInOut" }} />

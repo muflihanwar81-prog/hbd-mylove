@@ -11,7 +11,7 @@ export default function FinaleSection({ onRestart }) {
   const [celebrate, setCelebrate] = useState(true);
 
   return (
-    <section id="finale" className="relative min-h-screen px-4 py-24 flex flex-col justify-center items-center text-center overflow-hidden section-navy">
+    <section id="finale" className="relative min-h-screen px-4 py-24 flex flex-col justify-center items-center text-center overflow-hidden section-wine">
       <Confetti active={celebrate} />
 
       <div className="relative z-20 max-w-2xl mx-auto flex flex-col items-center">
@@ -25,17 +25,17 @@ export default function FinaleSection({ onRestart }) {
           style={{
             background: "rgba(255, 255, 255, 0.08)",
             backdropFilter: "blur(12px)",
-            border: "1px solid rgba(169, 199, 234, 0.3)",
+            border: "1px solid rgba(226, 125, 155, 0.35)",
           }}
         >
-          <Star className="w-10 h-10 md:w-12 md:h-12 text-[#A9C7EA] fill-[#A9C7EA]/40 animate-pulse" />
+          <Star className="w-10 h-10 md:w-12 md:h-12 text-[#E27D9B] fill-[#D92B6B]/40 animate-pulse" />
         </motion.div>
 
         <motion.p
           initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-sm md:text-base font-semibold tracking-widest text-[#A9C7EA] mb-2 uppercase"
+          className="text-sm md:text-base font-semibold tracking-widest text-[#E8A2B5] mb-2 uppercase"
         >
           {finalData.title}
         </motion.p>
@@ -49,7 +49,7 @@ export default function FinaleSection({ onRestart }) {
           style={{ fontFamily: "'Playfair Display', serif" }}
         >
           {finalData.mainText} <br />
-          <span style={{ fontFamily: "'Dancing Script', cursive" }} className="gradient-text-blue text-3xl md:text-5xl font-normal block mt-2">
+          <span style={{ fontFamily: "'Dancing Script', cursive" }} className="gradient-text-wine text-3xl md:text-5xl font-normal block mt-2">
             {coupleData.name || finalData.nameText}
           </span>
         </motion.h2>
@@ -59,7 +59,7 @@ export default function FinaleSection({ onRestart }) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.2 }}
-          className="text-base md:text-lg text-[#A9C7EA]/85 max-w-lg mb-8 leading-relaxed font-light"
+          className="text-base md:text-lg text-[#F7C2CF]/85 max-w-lg mb-8 leading-relaxed font-light"
         >
           {finalData.message}
         </motion.p>
@@ -71,7 +71,7 @@ export default function FinaleSection({ onRestart }) {
 
         {/* Restart Button */}
         <motion.button
-          whileHover={{ scale: 1.05, boxShadow: "0 10px 25px rgba(169, 199, 234, 0.3)" }}
+          whileHover={{ scale: 1.05, boxShadow: "0 10px 30px rgba(217, 43, 107, 0.45)" }}
           whileTap={{ scale: 0.95 }}
           onClick={() => {
             setCelebrate(true);
@@ -79,9 +79,9 @@ export default function FinaleSection({ onRestart }) {
           }}
           className="inline-flex items-center gap-2.5 px-8 py-4 rounded-full font-bold text-base shadow-xl transition-all cursor-pointer"
           style={{
-            background: "linear-gradient(135deg, #A9C7EA, #DCE5F5, #F8F8FF)",
-            color: "#102B5C",
-            border: "1px solid rgba(255, 255, 255, 0.6)",
+            background: "linear-gradient(135deg, #D92B6B 0%, #B81B52 50%, #8F123C 100%)",
+            color: "#FFFFFF",
+            border: "1px solid rgba(255, 255, 255, 0.4)",
           }}
         >
           <RotateCcw size={18} />
@@ -90,11 +90,11 @@ export default function FinaleSection({ onRestart }) {
 
         {/* Footer */}
         <div
-          className="mt-16 pt-8 w-full text-xs md:text-sm text-[#A9C7EA]/50 flex items-center justify-center gap-1.5"
-          style={{ borderTop: "1px solid rgba(169, 199, 234, 0.15)" }}
+          className="mt-16 pt-8 w-full text-xs md:text-sm text-[#F7C2CF]/50 flex items-center justify-center gap-1.5"
+          style={{ borderTop: "1px solid rgba(226, 125, 155, 0.2)" }}
         >
           <span>{finalData.footerText}</span>
-          <Sparkles size={14} className="text-[#A9C7EA]" />
+          <Sparkles size={14} className="text-[#E27D9B]" />
         </div>
       </div>
     </section>

@@ -1,20 +1,20 @@
 @import "tailwindcss";
 
-/* ============================================ */
-/* A Letter For You - Blue & White Theme       */
-/* ============================================ */
+/* ================================================= */
+/* A Letter For You - Maroon & Red Wine Romantic Theme */
+/* ================================================= */
 
 ::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: rgba(16, 43, 92, 0.1); }
-::-webkit-scrollbar-thumb { background: rgba(169, 199, 234, 0.6); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(169, 199, 234, 0.8); }
+::-webkit-scrollbar-track { background: rgba(38, 8, 20, 0.4); }
+::-webkit-scrollbar-thumb { background: rgba(226, 125, 155, 0.6); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(226, 125, 155, 0.85); }
 
 html { scroll-behavior: smooth; }
 
 body {
-  background: linear-gradient(135deg, #102B5C 0%, #173B73 25%, #102B5C 50%, #0d2249 75%, #102B5C 100%);
+  background: linear-gradient(135deg, #260814 0%, #3B0B1E 25%, #260814 50%, #1D040E 75%, #260814 100%);
   background-attachment: fixed;
-  color: #F8F8FF;
+  color: #FFF5F7;
   font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   overflow-x: hidden;
   min-height: 100vh;
@@ -23,8 +23,9 @@ body {
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 .cursor-blink { animation: blink 1s infinite; }
 
-.gradient-text-blue {
-  background: linear-gradient(135deg, #A9C7EA, #F8F8FF, #DCE5F5);
+.gradient-text-blue,
+.gradient-text-wine {
+  background: linear-gradient(135deg, #F7C2CF 0%, #FFF5F7 50%, #E8A2B5 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -45,17 +46,20 @@ body {
 }
 
 .paper-texture {
-  background-image: repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(169,199,234,0.1) 28px, rgba(169,199,234,0.1) 29px);
+  background-image: repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(226,125,155,0.12) 28px, rgba(226,125,155,0.12) 29px);
 }
 
-.glow-blue { box-shadow: 0 0 20px rgba(169,199,234,0.3), 0 0 40px rgba(169,199,234,0.1); }
+.glow-blue,
+.glow-wine {
+  box-shadow: 0 0 25px rgba(217, 43, 107, 0.35), 0 0 50px rgba(163, 24, 70, 0.15);
+}
 
 @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 .animated-gradient { background-size: 200% 200%; animation: gradientShift 8s ease infinite; }
 
-::selection { background: rgba(169, 199, 234, 0.3); color: #F8F8FF; }
+::selection { background: rgba(217, 43, 107, 0.35); color: #FFF5F7; }
 
-*:focus-visible { outline: 2px solid rgba(169, 199, 234, 0.5); outline-offset: 2px; border-radius: 4px; }
+*:focus-visible { outline: 2px solid rgba(226, 125, 155, 0.5); outline-offset: 2px; border-radius: 4px; }
 
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
@@ -67,12 +71,13 @@ body {
 .font-script { font-family: 'Dancing Script', cursive; }
 .font-heading { font-family: 'Playfair Display', 'Georgia', serif; }
 
-.section-white { background: linear-gradient(180deg, #F8F8FF 0%, #E8E9FA 50%, #F8F8FF 100%); }
-.section-navy { background: linear-gradient(180deg, #102B5C 0%, #173B73 50%, #102B5C 100%); }
+.section-white { background: linear-gradient(180deg, #FFF5F8 0%, #FCE8EE 50%, #FFF5F8 100%); }
+.section-navy,
+.section-wine { background: linear-gradient(180deg, #260814 0%, #3B0B1E 50%, #260814 100%); }
 
 .polaroid {
   background: white;
   padding: 12px 12px 40px 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
   border-radius: 4px;
 }

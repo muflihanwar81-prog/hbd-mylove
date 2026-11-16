@@ -48,11 +48,11 @@ export default function Navigation() {
         <div
           className="mx-auto max-w-6xl flex items-center justify-between px-6 py-3 rounded-full"
           style={{
-            background: "rgba(10, 25, 55, 0.65)",
+            background: "rgba(38, 8, 20, 0.75)",
             backdropFilter: "blur(20px)",
             WebkitBackdropFilter: "blur(20px)",
-            border: "1px solid rgba(255, 255, 255, 0.12)",
-            boxShadow: "0 10px 30px rgba(0, 0, 0, 0.25)",
+            border: "1px solid rgba(226, 125, 155, 0.22)",
+            boxShadow: "0 10px 30px rgba(0, 0, 0, 0.35)",
           }}
         >
           {/* Brand Logo / Title on Left */}
@@ -60,7 +60,7 @@ export default function Navigation() {
             onClick={() => scrollToSection("home")}
             className="flex items-center gap-2 cursor-pointer group"
           >
-            <Sparkles size={16} className="text-[#A9C7EA] group-hover:rotate-12 transition-transform" />
+            <Sparkles size={16} className="text-[#E27D9B] group-hover:rotate-12 transition-transform" />
             <span
               className="text-white font-semibold text-sm sm:text-base tracking-wide"
               style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
@@ -78,14 +78,14 @@ export default function Navigation() {
                   key={item.id}
                   onClick={() => scrollToSection(item.id)}
                   className={`relative px-4 py-1.5 text-xs sm:text-sm font-medium transition-all duration-300 cursor-pointer ${
-                    isActive ? "text-white font-semibold" : "text-[#A9C7EA]/75 hover:text-white"
+                    isActive ? "text-white font-semibold" : "text-[#F7C2CF]/75 hover:text-white"
                   }`}
                 >
                   <span>{item.label === "Home" ? "Surface" : item.label}</span>
                   {isActive && (
                     <motion.div
                       layoutId="activeNavIndicator"
-                      className="absolute bottom-0 left-3 right-3 h-[2px] bg-gradient-to-r from-[#A9C7EA] to-[#F8F8FF] rounded-full shadow-sm"
+                      className="absolute bottom-0 left-3 right-3 h-[2px] bg-gradient-to-r from-[#D92B6B] to-[#F7C2CF] rounded-full shadow-sm"
                       transition={{ type: "spring", stiffness: 380, damping: 30 }}
                     />
                   )}
@@ -97,7 +97,7 @@ export default function Navigation() {
           {/* Mobile Menu Toggle Button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-1.5 text-[#A9C7EA] hover:text-white transition-colors cursor-pointer"
+            className="md:hidden p-1.5 text-[#E27D9B] hover:text-white transition-colors cursor-pointer"
             aria-label="Toggle Menu"
           >
             {isOpen ? <X size={20} /> : <Menu size={20} />}
@@ -111,7 +111,7 @@ export default function Navigation() {
           <motion.div
             className="fixed inset-0 z-30 md:hidden flex items-center justify-center p-6"
             style={{
-              background: "rgba(10, 25, 55, 0.95)",
+              background: "rgba(38, 8, 20, 0.96)",
               backdropFilter: "blur(24px)",
             }}
             initial={{ opacity: 0 }}
@@ -127,7 +127,7 @@ export default function Navigation() {
               transition={{ delay: 0.1 }}
             >
               <div className="flex items-center gap-2 mb-4">
-                <Sparkles size={20} className="text-[#A9C7EA]" />
+                <Sparkles size={20} className="text-[#E27D9B]" />
                 <span
                   className="text-xl text-white font-bold"
                   style={{ fontFamily: "'Playfair Display', serif" }}
@@ -144,8 +144,8 @@ export default function Navigation() {
                     onClick={() => scrollToSection(item.id)}
                     className={`w-full py-3 px-6 rounded-2xl text-center text-base font-semibold transition-all ${
                       isActive
-                        ? "bg-[#A9C7EA]/25 text-white border border-[#A9C7EA]/40"
-                        : "text-[#A9C7EA]/80 hover:bg-white/5"
+                        ? "bg-[#D92B6B]/30 text-white border border-[#E27D9B]/50"
+                        : "text-[#F7C2CF]/80 hover:bg-white/5"
                     }`}
                     initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}

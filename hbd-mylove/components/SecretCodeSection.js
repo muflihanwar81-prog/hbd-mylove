@@ -157,7 +157,7 @@ export default function SecretCodeSection({ onUnlock }) {
         isUnlocking ? "pointer-events-none" : ""
       }`}
       style={{
-        background: "linear-gradient(135deg, #0a1e3d 0%, #102B5C 30%, #173B73 60%, #102B5C 100%)",
+        background: "linear-gradient(135deg, #1A030C 0%, #260814 30%, #3B0B1E 60%, #260814 100%)",
       }}
       initial={{ opacity: 1 }}
       exit={{ opacity: 0, scale: 1.05 }}
@@ -211,11 +211,11 @@ export default function SecretCodeSection({ onUnlock }) {
           shaking ? "shake" : ""
         }`}
         style={{
-          background: "rgba(255, 255, 255, 0.08)",
+          background: "rgba(45, 10, 24, 0.75)",
           backdropFilter: "blur(24px)",
           WebkitBackdropFilter: "blur(24px)",
-          border: "1px solid rgba(255, 255, 255, 0.18)",
-          boxShadow: "0 12px 40px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2)",
+          border: "1px solid rgba(226, 125, 155, 0.25)",
+          boxShadow: "0 15px 45px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15)",
         }}
         initial={{ opacity: 0, y: 30, scale: 0.95 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -231,9 +231,9 @@ export default function SecretCodeSection({ onUnlock }) {
             className="w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center shadow-lg transition-colors duration-300"
             style={{
               background: isUnlocking
-                ? "linear-gradient(135deg, rgba(169, 199, 234, 0.6), rgba(248, 248, 255, 0.4))"
-                : "linear-gradient(135deg, rgba(169, 199, 234, 0.35), rgba(220, 229, 245, 0.2))",
-              border: "1px solid rgba(255, 255, 255, 0.3)",
+                ? "linear-gradient(135deg, rgba(217, 43, 107, 0.7), rgba(247, 194, 207, 0.4))"
+                : "linear-gradient(135deg, rgba(217, 43, 107, 0.35), rgba(163, 24, 70, 0.2))",
+              border: "1px solid rgba(226, 125, 155, 0.35)",
             }}
           >
             {isUnlocking ? (
@@ -242,10 +242,10 @@ export default function SecretCodeSection({ onUnlock }) {
                 animate={{ scale: 1, rotate: 360 }}
                 transition={{ type: "spring", stiffness: 200 }}
               >
-                <Unlock size={26} className="text-[#F8F8FF]" />
+                <Unlock size={26} className="text-[#FFF5F7]" />
               </motion.div>
             ) : (
-              <Lock size={26} className="text-[#A9C7EA]" />
+              <Lock size={26} className="text-[#F7C2CF]" />
             )}
           </div>
         </motion.div>
@@ -313,12 +313,12 @@ export default function SecretCodeSection({ onUnlock }) {
                   error
                     ? "rgba(248, 113, 113, 0.7)"
                     : isUnlocking
-                    ? "rgba(169, 199, 234, 0.9)"
+                    ? "rgba(217, 43, 107, 0.9)"
                     : digit
-                    ? "rgba(169, 199, 234, 0.7)"
+                    ? "rgba(226, 125, 155, 0.85)"
                     : "rgba(255, 255, 255, 0.2)"
                 }`,
-                boxShadow: digit ? "0 0 15px rgba(169, 199, 234, 0.25)" : "none",
+                boxShadow: digit ? "0 0 15px rgba(217, 43, 107, 0.35)" : "none",
               }}
             />
           ))}
@@ -342,21 +342,21 @@ export default function SecretCodeSection({ onUnlock }) {
         <motion.button
           onClick={() => checkAndSubmit(code)}
           disabled={!isComplete || isUnlocking}
-          className={`w-full py-3.5 sm:py-4 rounded-2xl font-semibold text-sm sm:text-base transition-all duration-300 flex items-center justify-center gap-2 ${
+          className={`w-full py-3.5 sm:py-4 rounded-2xl font-bold text-sm sm:text-base transition-all duration-300 flex items-center justify-center gap-2 ${
             isComplete && !isUnlocking
-              ? "text-[#102B5C] cursor-pointer"
+              ? "text-white cursor-pointer shadow-lg"
               : isUnlocking
-              ? "text-[#102B5C]"
+              ? "text-white"
               : "text-white/40 cursor-not-allowed"
           }`}
           style={{
             background:
               isComplete || isUnlocking
-                ? "linear-gradient(135deg, #A9C7EA, #DCE5F5, #F8F8FF)"
+                ? "linear-gradient(135deg, #D92B6B 0%, #B81B52 50%, #8F123C 100%)"
                 : "rgba(255, 255, 255, 0.08)",
-            border: "1px solid rgba(255, 255, 255, 0.2)",
+            border: "1px solid rgba(226, 125, 155, 0.35)",
             boxShadow:
-              isComplete || isUnlocking ? "0 10px 25px rgba(169, 199, 234, 0.35)" : "none",
+              isComplete || isUnlocking ? "0 10px 30px rgba(217, 43, 107, 0.45)" : "none",
           }}
           whileHover={isComplete && !isUnlocking ? { scale: 1.02 } : {}}
           whileTap={isComplete && !isUnlocking ? { scale: 0.98 } : {}}

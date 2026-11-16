@@ -78,7 +78,7 @@ export default function CountdownGateSection({ onTimeReached, onPreviewUnlock })
       onClick={onPreviewUnlock}
       className="fixed inset-0 z-40 flex flex-col items-center justify-center cursor-pointer select-none px-4 text-center"
       style={{
-        backgroundColor: "#102B5C", // Biru dongker solid tanpa gradasi
+        backgroundColor: "#260814", // Merah maron / red wine solid tanpa gradasi
       }}
       title="Klik untuk membuka beranda (mode preview)"
     >
