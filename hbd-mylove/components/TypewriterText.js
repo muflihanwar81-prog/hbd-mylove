@@ -7,9 +7,7 @@ export default function TypewriterText({ text = "", speed = 40, delay = 300, cla
   const [isTyping, setIsTyping] = useState(false);
 
   useEffect(() => {
-    let timeoutId;
     let index = 0;
-
     setDisplayedText("");
     setIsTyping(true);
 
@@ -23,21 +21,17 @@ export default function TypewriterText({ text = "", speed = 40, delay = 300, cla
           setIsTyping(false);
         }
       }, speed);
-
       return () => clearInterval(intervalId);
     }, delay);
 
-    return () => {
-      clearTimeout(startTimeout);
-      clearTimeout(timeoutId);
-    };
+    return () => clearTimeout(startTimeout);
   }, [text, speed, delay]);
 
   return (
     <span className={`inline-block ${className}`}>
       {displayedText}
       {isTyping && (
-        <span className="inline-block w-[2px] h-[1em] ml-1 bg-pink-500 animate-pulse align-middle" />
+        <span className="inline-block w-[2px] h-[1em] ml-1 bg-[#102B5C] animate-pulse align-middle" />
       )}
     </span>
   );

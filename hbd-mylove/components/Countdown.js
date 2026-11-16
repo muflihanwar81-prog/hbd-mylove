@@ -6,25 +6,25 @@ import { getCountdown, padZero } from "@/lib/format";
 import { coupleData } from "@/lib/data-konten";
 
 export default function Countdown() {
-  const [timeLeft, setTimeLeft] = useState(getCountdown(coupleData.birthday));
+  const [timeLeft, setTimeLeft] = useState(null);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+    setTimeLeft(getCountdown(coupleData.birthday));
     const timer = setInterval(() => {
       setTimeLeft(getCountdown(coupleData.birthday));
     }, 1000);
-
     return () => clearInterval(timer);
   }, []);
 
-  if (!mounted) return null;
+  if (!mounted || !timeLeft) return null;
 
   if (timeLeft.isPassed) {
     return (
       <div className="text-center py-4">
         <motion.p
-          className="text-2xl md:text-3xl font-bold text-pink-600 animate-pulse"
+          className="text-2xl md:text-3xl font-bold text-[#A9C7EA] animate-pulse"
           initial={{ scale: 0.8 }}
           animate={{ scale: 1 }}
         >
@@ -49,12 +49,18 @@ export default function Countdown() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: idx * 0.1, duration: 0.5 }}
-          className="flex flex-col items-center justify-center p-3 md:p-5 min-w-[70px] md:min-w-[95px] rounded-2xl bg-white/40 backdrop-blur-md border border-white/60 shadow-lg shadow-pink-200/40"
+          className="flex flex-col items-center justify-center p-3 md:p-5 min-w-[70px] md:min-w-[95px] rounded-2xl"
+          style={{
+            background: "rgba(255,255,255,0.08)",
+            backdropFilter: "blur(12px)",
+            border: "1px solid rgba(169,199,234,0.2)",
+            boxShadow: "0 4px 15px rgba(0,0,0,0.15)",
+          }}
         >
-          <span className="text-2xl md:text-4xl font-extrabold text-pink-600 tabular-nums">
+          <span className="text-2xl md:text-4xl font-extrabold text-[#A9C7EA] tabular-nums">
             {padZero(unit.value)}
           </span>
-          <span className="text-xs md:text-sm font-medium text-pink-500/80 mt-1 uppercase tracking-wider">
+          <span className="text-xs md:text-sm font-medium text-[#A9C7EA]/60 mt-1 uppercase tracking-wider">
             {unit.label}
           </span>
         </motion.div>
