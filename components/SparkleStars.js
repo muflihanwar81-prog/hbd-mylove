@@ -23,32 +23,13 @@ export default function SparkleStars() {
   return (
     <div className="fixed inset-0 pointer-events-none z-10 overflow-hidden">
       {stars.map((star) => (
-        <motion.div
-          key={star.id}
-          className="absolute rounded-full"
+        <motion.div key={star.id} className="absolute rounded-full"
           style={{
-            left: `${star.x}%`,
-            top: `${star.y}%`,
-            width: star.size,
-            height: star.size,
-            background:
-              star.id % 3 === 0
-                ? "rgba(255, 255, 255, 0.9)"
-                : star.id % 3 === 1
-                ? "rgba(253, 230, 138, 0.8)"
-                : "rgba(251, 207, 232, 0.8)",
+            left: `${star.x}%`, top: `${star.y}%`, width: star.size, height: star.size,
+            background: star.id % 3 === 0 ? "rgba(255,255,255,0.9)" : star.id % 3 === 1 ? "rgba(169,199,234,0.7)" : "rgba(220,229,245,0.6)",
           }}
-          animate={{
-            opacity: [0, 1, 0],
-            scale: [0.5, 1.2, 0.5],
-          }}
-          transition={{
-            duration: star.duration,
-            delay: star.delay,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
+          animate={{ opacity: [0, 1, 0], scale: [0.5, 1.2, 0.5] }}
+          transition={{ duration: star.duration, delay: star.delay, repeat: Infinity, ease: "easeInOut" }} />
       ))}
     </div>
   );
