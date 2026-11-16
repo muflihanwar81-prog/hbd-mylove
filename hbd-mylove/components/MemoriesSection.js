@@ -93,8 +93,8 @@ export default function MemoriesSection({ onPhotoClick }) {
 
       const containerWidth = container.offsetWidth;
       const isMobile = containerWidth < 640;
-      const stripWidth = isMobile ? 220 : 270;
-      const slotWidth = isMobile ? 260 : 330;
+      const stripWidth = isMobile ? 180 : 210;
+      const slotWidth = isMobile ? 220 : 265;
       const totalTrackWidth = totalStrips * slotWidth;
 
       // Auto-advance offset continuously to the right
@@ -122,11 +122,11 @@ export default function MemoriesSection({ onPhotoClick }) {
         const itemX = centerX + diffX - stripWidth / 2;
 
         // Dynamic center magnification:
-        // As a photostrip approaches the center, it gets larger (scale ~1.18x)
+        // As a photostrip approaches the center, it gets larger smoothly
         const normDist = Math.min(dist / maxDist, 1);
         const factor = Math.cos(normDist * Math.PI * 0.5);
 
-        const scale = (isMobile ? 0.82 : 0.85) + factor * (isMobile ? 0.30 : 0.33);
+        const scale = (isMobile ? 0.82 : 0.85) + factor * (isMobile ? 0.26 : 0.30);
         const opacity = 0.55 + factor * 0.45;
         const zIndex = Math.round(10 + factor * 40);
 
@@ -172,7 +172,7 @@ export default function MemoriesSection({ onPhotoClick }) {
   };
 
   const handleManualNudge = (direction) => {
-    const slot = typeof window !== "undefined" && window.innerWidth < 640 ? 260 : 330;
+    const slot = typeof window !== "undefined" && window.innerWidth < 640 ? 220 : 265;
     offsetRef.current += direction * slot;
   };
 
@@ -184,7 +184,7 @@ export default function MemoriesSection({ onPhotoClick }) {
 
       <div className="max-w-6xl mx-auto">
         {/* Section Header */}
-        <div className="text-center mb-8 sm:mb-12">
+        <div className="text-center mb-6 sm:mb-10">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -217,14 +217,14 @@ export default function MemoriesSection({ onPhotoClick }) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="text-[#A9C7EA]/80 max-w-lg mx-auto mt-3 text-xs sm:text-sm md:text-base font-light"
+            className="text-[#A9C7EA]/80 max-w-lg mx-auto mt-2 text-xs sm:text-sm md:text-base font-light"
           >
             Setiap lembar strip foto membawa kenangan manis yang terus berjalan indah
           </motion.p>
         </div>
       </div>
 
-      {/* Infinite Gliding Photo Strip Carousel */}
+      {/* Infinite Gliding Photo Strip Carousel (Generous height to prevent top/bottom clipping) */}
       <div
         ref={containerRef}
         onMouseEnter={() => setIsSlowed(true)}
@@ -238,7 +238,7 @@ export default function MemoriesSection({ onPhotoClick }) {
         onTouchStart={(e) => handleDragStart(e.touches[0].clientX)}
         onTouchMove={(e) => handleDragMove(e.touches[0].clientX)}
         onTouchEnd={handleDragEnd}
-        className="relative w-full h-[520px] sm:h-[620px] md:h-[650px] overflow-hidden cursor-grab active:cursor-grabbing"
+        className="relative w-full h-[580px] sm:h-[660px] md:h-[700px] overflow-hidden cursor-grab active:cursor-grabbing"
       >
         {/* Left & Right Edge Vignette Gradient Masks */}
         <div className="absolute top-0 bottom-0 left-0 w-16 sm:w-36 md:w-56 bg-gradient-to-r from-[#102B5C] via-[#102B5C]/85 to-transparent z-40 pointer-events-none" />
@@ -250,7 +250,7 @@ export default function MemoriesSection({ onPhotoClick }) {
             <div
               key={`${strip.id}-${idx}`}
               ref={(el) => (itemRefs.current[idx] = el)}
-              className="absolute top-1/2 left-0 w-[220px] sm:w-[270px] will-change-transform rounded-2xl p-3 sm:p-3.5 shadow-2xl transition-shadow duration-300 group photostrip-card"
+              className="absolute top-1/2 left-0 w-[180px] sm:w-[210px] will-change-transform rounded-2xl p-2.5 sm:p-3 shadow-2xl transition-shadow duration-300 group photostrip-card"
               style={{
                 background: "#FAF9F6", // Classic Korean photobooth ivory paper
                 border: "1px solid rgba(255, 255, 255, 0.9)",
@@ -259,7 +259,7 @@ export default function MemoriesSection({ onPhotoClick }) {
             >
               {/* Top Washi Tape Sticker */}
               <div
-                className="absolute -top-3 left-1/2 -translate-x-1/2 w-16 sm:w-20 h-5 rounded-sm -rotate-2 pointer-events-none z-20"
+                className="absolute -top-2.5 left-1/2 -translate-x-1/2 w-14 sm:w-16 h-4 sm:h-5 rounded-sm -rotate-2 pointer-events-none z-20"
                 style={{
                   background: "rgba(16, 43, 92, 0.25)",
                   borderTop: "1px dashed rgba(255, 255, 255, 0.8)",
@@ -269,13 +269,13 @@ export default function MemoriesSection({ onPhotoClick }) {
               />
 
               {/* Strip Header */}
-              <div className="text-center pt-1 pb-2 border-b border-[#102B5C]/15 mb-2.5">
-                <div className="flex items-center justify-between px-1 text-[9px] sm:text-[10px] font-mono tracking-widest text-[#102B5C]/70 font-bold uppercase">
-                  <span>✦ PHOTOBOOTH</span>
+              <div className="text-center pt-0.5 pb-1.5 border-b border-[#102B5C]/15 mb-2">
+                <div className="flex items-center justify-between px-1 text-[8px] sm:text-[9px] font-mono tracking-wider text-[#102B5C]/70 font-bold uppercase">
+                  <span>✦ BOOTH</span>
                   <span>{strip.edition} ✦</span>
                 </div>
                 <h4
-                  className="text-[11px] sm:text-xs font-bold text-[#102B5C] tracking-wide mt-0.5 truncate"
+                  className="text-[10px] sm:text-[11px] font-bold text-[#102B5C] tracking-wide mt-0.5 truncate"
                   style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
                 >
                   {strip.title}
@@ -283,7 +283,7 @@ export default function MemoriesSection({ onPhotoClick }) {
               </div>
 
               {/* Stacked 3 Photo Frames inside the Strip */}
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 {strip.photos.map((photo, pIdx) => (
                   <div
                     key={`${photo.id}-${pIdx}`}
@@ -291,7 +291,7 @@ export default function MemoriesSection({ onPhotoClick }) {
                       e.stopPropagation();
                       if (onPhotoClick) onPhotoClick(photo);
                     }}
-                    className="relative aspect-[16/10] w-full rounded-lg overflow-hidden bg-[#0d2249] shadow-inner cursor-pointer group/photo border border-black/10"
+                    className="relative aspect-[16/11] w-full rounded-md overflow-hidden bg-[#0d2249] shadow-inner cursor-pointer group/photo border border-black/10"
                   >
                     {photo.src ? (
                       <img
@@ -307,22 +307,22 @@ export default function MemoriesSection({ onPhotoClick }) {
 
                     {/* Fallback Icon */}
                     <div
-                      className="w-full h-full flex flex-col items-center justify-center text-[#A9C7EA] p-2 text-center"
+                      className="w-full h-full flex flex-col items-center justify-center text-[#A9C7EA] p-1.5 text-center"
                       style={{ display: photo.src ? "none" : "flex" }}
                     >
-                      <Star className="w-6 h-6 text-[#A9C7EA] fill-[#A9C7EA]/30 mb-0.5" />
-                      <span className="text-[10px] font-medium text-white/90">{photo.caption}</span>
+                      <Star className="w-4 h-4 text-[#A9C7EA] fill-[#A9C7EA]/30 mb-0.5 shrink-0" />
+                      <span className="text-[8px] sm:text-[9px] font-medium text-white/90 line-clamp-1 leading-tight">{photo.caption}</span>
                     </div>
 
                     {/* Frame Number Tag */}
-                    <div className="absolute top-1 left-1.5 px-1.5 py-0.5 rounded bg-black/60 backdrop-blur-sm text-[8px] font-mono text-white/90 font-bold">
+                    <div className="absolute top-1 left-1 px-1 py-0.2 rounded bg-black/60 backdrop-blur-sm text-[7px] font-mono text-white/90 font-bold">
                       0{pIdx + 1}
                     </div>
 
                     {/* Hover Overlay */}
                     <div className="absolute inset-0 bg-[#102B5C]/50 opacity-0 group-hover/photo:opacity-100 transition-opacity duration-200 flex items-center justify-center">
-                      <span className="px-2.5 py-1 rounded-full bg-white text-[#102B5C] font-bold text-[10px] shadow flex items-center gap-1">
-                        <Eye size={11} />
+                      <span className="px-2 py-0.5 rounded-full bg-white text-[#102B5C] font-bold text-[9px] shadow flex items-center gap-1">
+                        <Eye size={10} />
                         Buka
                       </span>
                     </div>
@@ -331,27 +331,27 @@ export default function MemoriesSection({ onPhotoClick }) {
               </div>
 
               {/* Strip Footer: Barcode & Couple Branding */}
-              <div className="pt-2.5 mt-2 border-t border-[#102B5C]/15 text-[#102B5C] flex flex-col items-center justify-center">
+              <div className="pt-2 mt-1.5 border-t border-[#102B5C]/15 text-[#102B5C] flex flex-col items-center justify-center">
                 {/* Simulated Barcode */}
-                <div className="flex items-center justify-center gap-[2px] h-4 mb-1 opacity-70">
+                <div className="flex items-center justify-center gap-[1.5px] h-3.5 mb-1 opacity-70">
                   {[3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8, 9, 7, 9, 3, 2, 3, 8, 4, 6].map((w, bIdx) => (
                     <div
                       key={bIdx}
                       className="bg-[#102B5C]"
                       style={{
-                        width: `${(w % 3) + 1}px`,
+                        width: `${(w % 2.5) + 0.8}px`,
                         height: "100%",
                       }}
                     />
                   ))}
                 </div>
 
-                <div className="flex items-center justify-center gap-1 text-[9px] sm:text-[10px] font-bold tracking-wider uppercase text-[#102B5C]/90">
+                <div className="flex items-center justify-center gap-1 text-[8px] sm:text-[9px] font-bold tracking-wider uppercase text-[#102B5C]/90">
                   <span>NOVRIA & MUFLIH</span>
-                  <Heart size={9} className="text-[#102B5C] fill-[#102B5C]" />
+                  <Heart size={8} className="text-[#102B5C] fill-[#102B5C]" />
                   <span>24.11.2007</span>
                 </div>
-                <p className="text-[8px] text-[#102B5C]/60 font-mono tracking-widest mt-0.5">
+                <p className="text-[7px] text-[#102B5C]/60 font-mono tracking-widest mt-0.5">
                   MEMORIES ARCHIVE · KEEP FOREVER
                 </p>
               </div>
