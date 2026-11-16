@@ -250,16 +250,16 @@ export default function MemoriesSection({ onPhotoClick }) {
             <div
               key={`${strip.id}-${idx}`}
               ref={(el) => (itemRefs.current[idx] = el)}
-              className="absolute top-1/2 left-0 w-[180px] sm:w-[210px] will-change-transform rounded-2xl p-2.5 sm:p-3 shadow-2xl transition-shadow duration-300 group photostrip-card"
+              className="absolute top-1/2 left-0 w-[180px] sm:w-[210px] will-change-transform rounded-none p-2.5 sm:p-3 shadow-2xl transition-shadow duration-300 group photostrip-card"
               style={{
                 background: "#FAF9F6", // Classic Korean photobooth ivory paper
                 border: "1px solid rgba(255, 255, 255, 0.9)",
                 boxShadow: "0 20px 50px rgba(0, 0, 0, 0.5), 0 2px 10px rgba(0, 0, 0, 0.2)",
               }}
             >
-              {/* Top Washi Tape Sticker */}
+              {/* Top Washi Tape Sticker (Siku-siku) */}
               <div
-                className="absolute -top-2.5 left-1/2 -translate-x-1/2 w-14 sm:w-16 h-4 sm:h-5 rounded-sm -rotate-2 pointer-events-none z-20"
+                className="absolute -top-2.5 left-1/2 -translate-x-1/2 w-14 sm:w-16 h-4 sm:h-5 rounded-none -rotate-2 pointer-events-none z-20"
                 style={{
                   background: "rgba(16, 43, 92, 0.25)",
                   borderTop: "1px dashed rgba(255, 255, 255, 0.8)",
@@ -282,7 +282,7 @@ export default function MemoriesSection({ onPhotoClick }) {
                 </h4>
               </div>
 
-              {/* Stacked 3 Photo Frames inside the Strip */}
+              {/* Stacked 3 Photo Frames inside the Strip (Siku-siku) */}
               <div className="space-y-1.5">
                 {strip.photos.map((photo, pIdx) => (
                   <div
@@ -291,7 +291,7 @@ export default function MemoriesSection({ onPhotoClick }) {
                       e.stopPropagation();
                       if (onPhotoClick) onPhotoClick(photo);
                     }}
-                    className="relative aspect-[16/11] w-full rounded-md overflow-hidden bg-[#0d2249] shadow-inner cursor-pointer group/photo border border-black/10"
+                    className="relative aspect-[16/11] w-full rounded-none overflow-hidden bg-[#0d2249] shadow-inner cursor-pointer group/photo border border-black/10"
                   >
                     {photo.src ? (
                       <img
@@ -314,14 +314,14 @@ export default function MemoriesSection({ onPhotoClick }) {
                       <span className="text-[8px] sm:text-[9px] font-medium text-white/90 line-clamp-1 leading-tight">{photo.caption}</span>
                     </div>
 
-                    {/* Frame Number Tag */}
-                    <div className="absolute top-1 left-1 px-1 py-0.2 rounded bg-black/60 backdrop-blur-sm text-[7px] font-mono text-white/90 font-bold">
+                    {/* Frame Number Tag (Siku-siku) */}
+                    <div className="absolute top-1 left-1 px-1 py-0.2 rounded-none bg-black/60 backdrop-blur-sm text-[7px] font-mono text-white/90 font-bold">
                       0{pIdx + 1}
                     </div>
 
                     {/* Hover Overlay */}
                     <div className="absolute inset-0 bg-[#102B5C]/50 opacity-0 group-hover/photo:opacity-100 transition-opacity duration-200 flex items-center justify-center">
-                      <span className="px-2 py-0.5 rounded-full bg-white text-[#102B5C] font-bold text-[9px] shadow flex items-center gap-1">
+                      <span className="px-2 py-0.5 rounded-none bg-white text-[#102B5C] font-bold text-[9px] shadow flex items-center gap-1">
                         <Eye size={10} />
                         Buka
                       </span>
