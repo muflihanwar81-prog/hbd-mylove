@@ -1,0 +1,13 @@
+<svg width="600" height="450" viewBox="0 0 600 450" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg11" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#122E5C" />
+      <stop offset="100%" style="stop-color:#08162E" />
+    </linearGradient>
+  </defs>
+  <rect width="600" height="450" fill="url(#bg11)" rx="24"/>
+  <circle cx="300" cy="180" r="60" fill="rgba(169,199,234,0.15)"/>
+  <text x="300" y="195" text-anchor="middle" font-size="44">💙</text>
+  <text x="300" y="265" text-anchor="middle" font-family="'Playfair Display', serif" font-size="22" font-weight="bold" fill="#F8F8FF">A Promise For Forever</text>
+  <text x="300" y="300" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#A9C7EA">Endless Love • Menua Bersama, Selamanya</text>
+</svg>

@@ -6,7 +6,7 @@
 // ============================================
 
 export const siteConfig = {
-  title: "A Letter For You 💙",
+  title: "happy birthday sayang",
   description: "A romantic birthday surprise for someone special",
   secretCode: "241107", // Ganti kode rahasia 6 digit di sini (default: 161103)
 };
@@ -20,7 +20,7 @@ export const coupleData = {
 };
 
 export const secretCodeData = {
-  title: "A Little Secret For You",
+  title: "happy birthday sayang",
   subtitle: "Something special is waiting behind this little secret.",
   buttonText: "Unlock My Surprise",
   wrongCodeMessage: "Oops! That's not the right code. Try again, my love.",
@@ -31,7 +31,7 @@ export const countdownGateData = {
   title: "A Little More Patience, Love 💙",
   subtitle: "Sesuatu yang sangat indah telah disiapkan khusus untukmu. Beranda utama akan otomatis terbuka tepat pada pukul 00:00 di hari ulang tahunmu!",
   targetDateLabel: "Menuju Pukul 00:00",
-  previewButtonText: "Buka Beranda Sekarang (Mode Preview) 🔓",
+  previewButtonText: "Buka Beranda Sekarang",
 };
 
 export const openingData = {
@@ -56,6 +56,11 @@ export const memoriesData = {
     { id: 4, src: "/images/memory-4.svg", alt: "Special occasion", caption: "Celebrating us, always 🥂", date: "Celebration" },
     { id: 5, src: "/images/memory-5.svg", alt: "Sunset together", caption: "Sunsets are prettier with you 🌅", date: "Golden Hour" },
     { id: 6, src: "/images/memory-6.svg", alt: "Fun times", caption: "Laughing with you is my therapy 😄", date: "Fun Times" },
+    { id: 7, src: "/images/memory-7.svg", alt: "Holding hands under the rain", caption: "Warmest place is right by your side 🌧️", date: "Rainy Days" },
+    { id: 8, src: "/images/memory-8.svg", alt: "Late night deep talks", caption: "Talking about everything and nothing 🌙", date: "Midnight Talks" },
+    { id: 9, src: "/images/memory-9.svg", alt: "Coffee dates and quiet mornings", caption: "Simple moments that mean the world ☕", date: "Quiet Mornings" },
+    { id: 10, src: "/images/memory-10.svg", alt: "Stargazing night together", caption: "You shine brighter than any constellation ✨", date: "Under The Stars" },
+    { id: 11, src: "/images/memory-11.svg", alt: "Forever promise", caption: "Choosing you, today, tomorrow, always 💙", date: "Forever & Always" },
   ],
 };
 

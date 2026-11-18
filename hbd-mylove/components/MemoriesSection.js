@@ -20,8 +20,9 @@ const LOOK_AHEAD_RAD = 0.26;// Forward gaze angle along circular trajectory
 // Placed closely along both walls at comfortable human eye level
 const buildCircularArtworks = (photos) => {
   const count = photos.length;
-  const deltaAngle = 0.65;   // ~37.2° spacing between consecutive artworks
-  const startAngle = 0.45;   // Initial angle for first artwork
+  // Natural angular spacing: for 11 photos, 0.52 rad (~30°) distributes them evenly around ~300° of the circle
+  const deltaAngle = count > 8 ? 0.52 : 0.65;
+  const startAngle = 0.40;
 
   return photos.map((photo, i) => {
     const angle = startAngle + i * deltaAngle;
@@ -476,9 +477,10 @@ export default function MemoriesSection({ onPhotoClick }) {
     // ─── CENTER-LINE CEILING CORRIDOR LIGHTING (3000K WARM WHITE) ─────────────
     // Distributed evenly along the circular walking centerline (radius R_PATH)
     // Illuminates the floor path and surrounding corridor walls naturally
+    const lastArtAngle = artworks[artworks.length - 1]?.angle || Math.PI * 1.8;
     const lightAngleStart = 0.0;
-    const lightAngleEnd = Math.PI * 1.8;
-    const numCenterLights = 14; // Evenly distributed along circular trajectory
+    const lightAngleEnd = lastArtAngle + 0.45;
+    const numCenterLights = Math.max(16, artworks.length * 2); // Scales with number of artworks
     const lightStep = (lightAngleEnd - lightAngleStart) / (numCenterLights - 1);
 
     for (let j = 0; j < numCenterLights; j++) {
@@ -724,11 +726,14 @@ export default function MemoriesSection({ onPhotoClick }) {
 
   // ─── Interaction Handlers (Wheel, Touch, Drag) ──────────────────────────────
 
+  // Dynamic walk limits based on total artwork count
+  const maxWalkAngle = (artworks[artworks.length - 1]?.angle || 4.0) + 0.35;
+
   // Mouse wheel forward/backward along curve
   const handleWheel = useCallback((e) => {
     const scrollDelta = e.deltaY * 0.0014;
-    targetAngleRef.current = Math.max(0.1, Math.min(4.3, targetAngleRef.current + scrollDelta));
-  }, []);
+    targetAngleRef.current = Math.max(0.1, Math.min(maxWalkAngle, targetAngleRef.current + scrollDelta));
+  }, [maxWalkAngle]);
 
   // Mouse drag forward/backward
   const handleMouseDown = (e) => {
@@ -750,7 +755,7 @@ export default function MemoriesSection({ onPhotoClick }) {
     lastPointerPosRef.current = { x: e.clientX, y: e.clientY };
 
     const dragDelta = (-dx * 0.003) + (dy * 0.003);
-    targetAngleRef.current = Math.max(0.1, Math.min(4.3, targetAngleRef.current + dragDelta));
+    targetAngleRef.current = Math.max(0.1, Math.min(maxWalkAngle, targetAngleRef.current + dragDelta));
   };
 
   const handleMouseUp = (e) => {
@@ -797,7 +802,7 @@ export default function MemoriesSection({ onPhotoClick }) {
     lastPointerPosRef.current = { x: currentX, y: currentY };
 
     const touchDelta = (dy * 0.0032) + (dx * 0.0032);
-    targetAngleRef.current = Math.max(0.1, Math.min(4.3, targetAngleRef.current + touchDelta));
+    targetAngleRef.current = Math.max(0.1, Math.min(maxWalkAngle, targetAngleRef.current + touchDelta));
   };
 
   const handleTouchEnd = (e) => {
@@ -960,7 +965,7 @@ export default function MemoriesSection({ onPhotoClick }) {
           </button>
         </div>
 
-        <div className="flex items-center gap-1.5 pointer-events-auto">
+        <div className="flex items-center gap-1.5 pointer-events-auto flex-wrap justify-end max-w-[280px] sm:max-w-none">
           {artworks.map((art, idx) => {
             const isCurrent = activeArtwork?.id === art.id;
             return (
