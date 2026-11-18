@@ -11,8 +11,8 @@ const COLOR_FLOOR = "#29292C";      // Dark charcoal floor
 const COLOR_VOID = "#111521";       // Deep midnight navy void/ceiling
 
 const R_OUTER_WALL = 19.5;          // Outer curved wall radius (Right side)
-const R_INNER_WALL = 13.5;          // Inner curved wall radius (Left side)
-const R_CAM = 15.6;                 // Camera circular walking path radius
+const R_INNER_WALL = 14.3;          // Inner curved wall radius (Left side - dimajukan agar foto jelas terlihat)
+const R_CAM = 16.0;                 // Camera circular walking path radius
 const WALL_HEIGHT = 4.8;            // Wall height from floor to top edge
 const EYE_HEIGHT = 1.68;            // Natural human eye level
 const LOOK_AHEAD_RAD = 0.28;        // Look-ahead angle along the sweeping curve
@@ -65,10 +65,11 @@ const buildEndlessCircularArtworks = (basePhotos) => {
   }
 
   // 2. DINDING KIRI (Inner Wall): Diberi jeda ("jarak beberapa foto" setiap 3 slot)
+  // Dimensi foto diperbesar agar jelas terlihat dari sudut pandang kamera
   for (let slot = 0; slot < TOTAL_SLOTS; slot += 3) {
     const angle = slot * DELTA_ANGLE;
     const photo = basePhotos[(slot + 2) % count];
-    const dim = (slot % 2 === 0) ? { w: 2.4, h: 2.0 } : { w: 2.0, h: 2.3 };
+    const dim = (slot % 2 === 0) ? { w: 2.7, h: 2.1 } : { w: 2.2, h: 2.5 };
 
     artworkList.push({
       ...photo,
@@ -312,6 +313,8 @@ export default function MemoriesSection({ onPhotoClick }) {
 
   // Smooth lerp & interaction tracking
   const isDraggingRef = useRef(false);
+  const isHoveredRef = useRef(false);
+  const modalOpenRef = useRef(false);
   const lastPointerPosRef = useRef({ x: 0, y: 0 });
   const touchStartYRef = useRef(null);
   const raycasterRef = useRef(new THREE.Raycaster());
@@ -346,7 +349,8 @@ export default function MemoriesSection({ onPhotoClick }) {
     scene.fog = new THREE.FogExp2(COLOR_VOID, 0.016);
 
     // 2. Camera: Wide cinematic perspective matching the reference
-    const camera = new THREE.PerspectiveCamera(58, width / height, 0.1, 100);
+    // FOV 64° menangkap lukisan di dinding kiri dan sapuan dinding kanan secara seimbang
+    const camera = new THREE.PerspectiveCamera(64, width / height, 0.1, 100);
     camera.position.set(0, EYE_HEIGHT, R_CAM);
 
     // 3. Renderer
@@ -515,21 +519,33 @@ export default function MemoriesSection({ onPhotoClick }) {
     artworkMeshesRef.current = meshInteractiveList;
 
     // ─── Render Animation Loop (Seamless Endless Navigation) ──────────────────
-    const animate = () => {
+    let lastTime = performance.now();
+
+    const animate = (currentTime) => {
+      const dt = Math.min((currentTime - lastTime) / 1000, 0.1);
+      lastTime = currentTime;
+
+      // MUTER SENDIRI (Auto-rotation / Auto-stroll):
+      // Kamera otomatis meluncur maju secara anggun dan konstan
+      // Berhenti sejenak saat pengunjung sedang drag, hover foto, atau membuka modal
+      if (!isDraggingRef.current && !isHoveredRef.current && !modalOpenRef.current) {
+        targetAngleRef.current += 0.042 * dt;
+      }
+
       // Smooth continuous camera interpolation (no clamping, infinite walk)
       const diff = targetAngleRef.current - currentAngleRef.current;
       currentAngleRef.current += diff * 0.075;
 
       const theta = currentAngleRef.current;
 
-      // Camera position along circular corridor (R_CAM = 15.6m)
+      // Camera position along circular corridor (R_CAM = 16.0m)
       const camX = Math.sin(theta) * R_CAM;
       const camZ = Math.cos(theta) * R_CAM;
       camera.position.set(camX, EYE_HEIGHT, camZ);
 
-      // Look-at point: forward along curve and slightly biased towards the outer wall
+      // Look-at point: forward along curve (framed to display both left and right walls clearly)
       const lookTheta = theta + LOOK_AHEAD_RAD;
-      const lookR = 17.5;
+      const lookR = 17.0;
       const lookX = Math.sin(lookTheta) * lookR;
       const lookZ = Math.cos(lookTheta) * lookR;
       camera.lookAt(lookX, EYE_HEIGHT, lookZ);
@@ -540,9 +556,11 @@ export default function MemoriesSection({ onPhotoClick }) {
 
       if (intersects.length > 0) {
         const hit = intersects[0].object;
+        isHoveredRef.current = true;
         setHoveredArtwork(hit.userData.artwork);
         if (canvas) canvas.style.cursor = "pointer";
       } else {
+        isHoveredRef.current = false;
         setHoveredArtwork(null);
         if (canvas) canvas.style.cursor = isDraggingRef.current ? "grabbing" : "grab";
       }
@@ -644,6 +662,7 @@ export default function MemoriesSection({ onPhotoClick }) {
       if (intersects.length > 0) {
         const art = intersects[0].object.userData.artwork;
         if (art) {
+          modalOpenRef.current = true;
           setInspectModalArtwork(art);
           if (onPhotoClick) onPhotoClick(art);
         }
@@ -732,6 +751,7 @@ export default function MemoriesSection({ onPhotoClick }) {
         <button
           onClick={() => {
             if (activeArtwork) {
+              modalOpenRef.current = true;
               setInspectModalArtwork(activeArtwork);
               if (onPhotoClick) onPhotoClick(activeArtwork);
             }
@@ -807,7 +827,10 @@ export default function MemoriesSection({ onPhotoClick }) {
       {inspectModalArtwork && (
         <ArtworkModal
           artwork={inspectModalArtwork}
-          onClose={() => setInspectModalArtwork(null)}
+          onClose={() => {
+            modalOpenRef.current = false;
+            setInspectModalArtwork(null);
+          }}
         />
       )}
     </section>
