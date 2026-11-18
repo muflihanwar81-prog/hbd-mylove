@@ -10,51 +10,73 @@ const COLOR_WALL = "#F2F0E9";       // Warm off-white / ivory
 const COLOR_FLOOR = "#29292C";      // Dark charcoal floor
 const COLOR_VOID = "#111521";       // Deep midnight navy void/ceiling
 
-const R_OUTER_WALL = 19.5;          // Main exhibition curved wall radius
-const R_INNER_WALL = 13.5;          // Opposite curved boundary wall
+const R_OUTER_WALL = 19.5;          // Outer curved wall radius (Right side)
+const R_INNER_WALL = 13.5;          // Inner curved wall radius (Left side)
 const R_CAM = 15.6;                 // Camera circular walking path radius
 const WALL_HEIGHT = 4.8;            // Wall height from floor to top edge
-const EYE_HEIGHT = 1.68;            // Natural eye level
+const EYE_HEIGHT = 1.68;            // Natural human eye level
 const LOOK_AHEAD_RAD = 0.28;        // Look-ahead angle along the sweeping curve
 
-// ─── Photograph Placement (Exact Match to Reference Spacing) ───────────────────
-// Artwork width: ~2.8m. Spacing between artworks: ~0.8m (approx 28% of artwork width).
-// At R = 19.4m, angular spacing deltaTheta = 3.6 / 19.4 = ~0.185 rad (~10.6°).
-// Multiple artworks are visible simultaneously sweeping gracefully into the distance!
-const buildReferenceArtworks = (photos) => {
-  const deltaAngle = 0.185; // Consistent moderate spacing: ~28% of artwork width
-  const startAngle = 0.22;
+// ─── Infinite Seamless 360° Circular Artwork Distribution ─────────────────────
+// Total slots around full 2*PI circle: 33 slots
+// DELTA_ANGLE = 2 * PI / 33 = ~0.1904 rad (~10.9°)
+// Outer wall has consecutive artworks matching the reference spacing.
+// Inner wall (Left wall) has curated artworks placed with spacing ("jarak beberapa foto") every 3 slots!
+const TOTAL_SLOTS = 33;
+const DELTA_ANGLE = (Math.PI * 2) / TOTAL_SLOTS;
 
-  // Curate realistic aspect ratios to match reference (mix of landscape and portrait)
-  const dimensions = [
-    { w: 3.1, h: 2.1 }, // 01 - Grand landscape (like basketball court)
-    { w: 2.8, h: 2.0 }, // 02 - Landscape (like orchestra)
-    { w: 2.5, h: 2.1 }, // 03 - Wide scene
-    { w: 1.8, h: 2.4 }, // 04 - Portrait poster
-    { w: 2.6, h: 2.0 }, // 05 - Landscape
-    { w: 2.2, h: 2.2 }, // 06 - Square
-    { w: 2.9, h: 2.0 }, // 07 - Wide landscape
-    { w: 1.9, h: 2.4 }, // 08 - Portrait
-    { w: 2.7, h: 2.0 }, // 09 - Landscape
-    { w: 2.4, h: 2.2 }, // 10 - Medium landscape
-    { w: 3.0, h: 2.1 }, // 11 - Grand finale landscape
+const buildEndlessCircularArtworks = (basePhotos) => {
+  if (!basePhotos || basePhotos.length === 0) return [];
+  const count = basePhotos.length;
+
+  const landscapeDims = [
+    { w: 3.1, h: 2.1 },
+    { w: 2.8, h: 2.0 },
+    { w: 2.5, h: 2.1 },
+    { w: 2.6, h: 2.0 },
+    { w: 2.9, h: 2.0 },
+  ];
+  const portraitDims = [
+    { w: 1.8, h: 2.4 },
+    { w: 2.2, h: 2.2 },
+    { w: 1.9, h: 2.4 },
   ];
 
-  return photos.map((photo, i) => {
-    const angle = startAngle + i * deltaAngle;
-    const dim = dimensions[i % dimensions.length];
+  const artworkList = [];
+  let photoIdx = 0;
 
-    return {
+  for (let slot = 0; slot < TOTAL_SLOTS; slot++) {
+    const angle = slot * DELTA_ANGLE;
+    const photo = basePhotos[photoIdx % count];
+    photoIdx++;
+
+    // Dinding sebelah kiri (Inner wall) ditempatkan foto setiap 3 slot ("jarak beberapa foto")
+    const isLeftWall = slot % 3 === 1;
+
+    let dim;
+    if (isLeftWall) {
+      // Left wall: slightly more compact and intimate
+      dim = (slot % 2 === 0) ? { w: 2.4, h: 2.0 } : { w: 2.0, h: 2.3 };
+    } else {
+      // Right wall (Outer wall): prominent reference proportions
+      dim = (slot % 3 === 0)
+        ? portraitDims[slot % portraitDims.length]
+        : landscapeDims[slot % landscapeDims.length];
+    }
+
+    artworkList.push({
       ...photo,
-      index: i,
-      artworkNumber: String(i + 1).padStart(2, "0"),
+      uniqueId: `art-${slot}`,
+      artworkNumber: String(photo.id || (photoIdx % count) + 1).padStart(2, "0"),
       angle,
+      isLeftWall,
       w: dim.w,
       h: dim.h,
-      // Target camera position to center this artwork comfortably
       viewAngle: angle - 0.12,
-    };
-  });
+    });
+  }
+
+  return artworkList;
 };
 
 // ─── Helper: Create High-Resolution Photo Texture ─────────────────────────────
@@ -147,7 +169,6 @@ function createSpotlightHaloTexture() {
   canvas.height = 512;
   const ctx = canvas.getContext("2d");
 
-  // Soft warm spotlight pool matching the reference's circular light wash
   const grad = ctx.createRadialGradient(256, 256, 20, 256, 256, 250);
   grad.addColorStop(0, "rgba(255, 250, 238, 0.55)");
   grad.addColorStop(0.35, "rgba(255, 248, 232, 0.32)");
@@ -225,7 +246,7 @@ function ArtworkModal({ artwork, onClose }) {
                 {artwork.artworkNumber}
               </span>
               <span className="text-[11px] font-mono text-neutral-400">
-                Exhibition Corridor
+                {artwork.isLeftWall ? "Inner Gallery" : "Main Exhibition Wall"}
               </span>
             </div>
 
@@ -254,7 +275,7 @@ function ArtworkModal({ artwork, onClose }) {
 
           <div className="pt-8 border-t border-neutral-200 flex items-center justify-between mt-6">
             <span className="text-[11px] font-mono text-neutral-400 uppercase tracking-wider">
-              Museum Archive
+              Circular Museum Archive
             </span>
             <button
               onClick={onClose}
@@ -273,12 +294,12 @@ function ArtworkModal({ artwork, onClose }) {
 export default function MemoriesSection({ onPhotoClick }) {
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
-  const artworks = useRef(buildReferenceArtworks(memoriesData.photos || [])).current;
+  const artworks = useRef(buildEndlessCircularArtworks(memoriesData.photos || [])).current;
 
-  // Camera walkthrough state
-  const targetAngleRef = useRef(0.18);
-  const currentAngleRef = useRef(0.18);
-  const [activeArtwork, setActiveArtwork] = useState(artworks[0]);
+  // Camera walkthrough state (Endless float angle)
+  const targetAngleRef = useRef(0.20);
+  const currentAngleRef = useRef(0.20);
+  const [activeArtwork, setActiveArtwork] = useState(artworks[0] || null);
   const [hoveredArtwork, setHoveredArtwork] = useState(null);
   const [inspectModalArtwork, setInspectModalArtwork] = useState(null);
 
@@ -298,16 +319,9 @@ export default function MemoriesSection({ onPhotoClick }) {
     animId: null,
   });
 
-  // Navigate directly to artwork by index
-  const navigateToArtwork = useCallback((idx) => {
-    const art = artworks[idx];
-    if (art) {
-      targetAngleRef.current = art.viewAngle;
-    }
-  }, [artworks]);
-
+  // Endless Step Navigation: Moves smoothly by 1 slot (~10.9°)
   const stepWalk = useCallback((direction) => {
-    targetAngleRef.current += direction * 0.18;
+    targetAngleRef.current += direction * DELTA_ANGLE;
   }, []);
 
   // ─── Three.js Scene Setup ───────────────────────────────────────────────────
@@ -344,8 +358,8 @@ export default function MemoriesSection({ onPhotoClick }) {
     threeStateRef.current = { scene, camera, renderer, animId: null };
 
     // ─── Reference Lighting Setup ─────────────────────────────────────────────
-    // Clean, bright, soft white museum lighting
-    const ambientLight = new THREE.AmbientLight("#FAF7EE", 0.76);
+    // Soft, bright, warm white museum ambient lighting
+    const ambientLight = new THREE.AmbientLight("#FAF7EE", 0.78);
     scene.add(ambientLight);
 
     const hemiLight = new THREE.HemisphereLight("#FFFFFF", "#1E2028", 0.45);
@@ -368,9 +382,8 @@ export default function MemoriesSection({ onPhotoClick }) {
       side: THREE.DoubleSide,
     });
 
-    // ─── Architecture Geometry ────────────────────────────────────────────────
-    // 1. MAIN EXHIBITION CURVED WALL (Outer Cylinder at R_OUTER_WALL = 19.5m)
-    // Continuous smooth curved architectural wall where artworks hang
+    // ─── Seamless 360° Circular Architecture ──────────────────────────────────
+    // 1. OUTER CURVED WALL (Right Wall at R_OUTER_WALL = 19.5m)
     const outerWallGeo = new THREE.CylinderGeometry(
       R_OUTER_WALL,
       R_OUTER_WALL,
@@ -384,7 +397,7 @@ export default function MemoriesSection({ onPhotoClick }) {
     outerWallMesh.receiveShadow = true;
     scene.add(outerWallMesh);
 
-    // 2. OPPOSITE INNER CURVED WALL (Framing the left side of the corridor)
+    // 2. INNER CURVED WALL (Left Wall at R_INNER_WALL = 13.5m)
     const innerWallGeo = new THREE.CylinderGeometry(
       R_INNER_WALL,
       R_INNER_WALL,
@@ -409,22 +422,27 @@ export default function MemoriesSection({ onPhotoClick }) {
     // Shared spotlight halo texture for wall light pools
     const haloTexture = createSpotlightHaloTexture();
 
-    // ─── Artworks Mounted on Outer Curved Wall ────────────────────────────────
+    // ─── Mount Artworks on Right and Left Curved Walls ────────────────────────
     const meshInteractiveList = [];
 
     artworks.forEach((artwork) => {
-      const { angle, w, h } = artwork;
-      const wallRadius = R_OUTER_WALL - 0.04;
+      const { angle, w, h, isLeftWall } = artwork;
+
+      // Position flush against the respective wall
+      const wallRadius = isLeftWall ? R_INNER_WALL + 0.04 : R_OUTER_WALL - 0.04;
       const x = Math.sin(angle) * wallRadius;
       const z = Math.cos(angle) * wallRadius;
-      const y = 2.22; // Natural human eye level
+      const y = 2.22; // Natural eye level
 
       const artworkGroup = new THREE.Group();
       artworkGroup.position.set(x, y, z);
-      // Tangent rotation: facing inward towards camera corridor
-      artworkGroup.rotation.y = angle + Math.PI;
 
-      // 1. Soft Circular Spotlight Pool on Wall (Matching Reference)
+      // Tangent rotation:
+      // Outer wall looks inward toward camera: angle + PI
+      // Inner wall looks outward toward camera: angle
+      artworkGroup.rotation.y = isLeftWall ? angle : angle + Math.PI;
+
+      // 1. Soft Circular Spotlight Pool on Wall (Reference Light Wash)
       const haloGeo = new THREE.PlaneGeometry(w * 1.55, h * 1.65);
       const haloMat = new THREE.MeshBasicMaterial({
         map: haloTexture,
@@ -473,7 +491,6 @@ export default function MemoriesSection({ onPhotoClick }) {
         transparent: false,
       });
       const labelCardMesh = new THREE.Mesh(labelCardGeo, labelCardMat);
-      // Positioned underneath the bottom-left corner of the artwork
       labelCardMesh.position.set(-w / 2 + cardW / 2, -h / 2 - cardH / 2 - 0.12, 0.002);
       artworkGroup.add(labelCardMesh);
 
@@ -490,22 +507,22 @@ export default function MemoriesSection({ onPhotoClick }) {
 
     artworkMeshesRef.current = meshInteractiveList;
 
-    // ─── Render Animation Loop ────────────────────────────────────────────────
+    // ─── Render Animation Loop (Seamless Endless Navigation) ──────────────────
     const animate = () => {
-      // Smooth camera interpolation along circular corridor
+      // Smooth continuous camera interpolation (no clamping, infinite walk)
       const diff = targetAngleRef.current - currentAngleRef.current;
       currentAngleRef.current += diff * 0.075;
 
       const theta = currentAngleRef.current;
 
-      // Camera position along circular pathway (R_CAM = 15.6m)
+      // Camera position along circular corridor (R_CAM = 15.6m)
       const camX = Math.sin(theta) * R_CAM;
       const camZ = Math.cos(theta) * R_CAM;
       camera.position.set(camX, EYE_HEIGHT, camZ);
 
-      // Look-at point: forward along curve and slightly outward toward the exhibition wall
+      // Look-at point: forward along curve and slightly biased towards the outer wall
       const lookTheta = theta + LOOK_AHEAD_RAD;
-      const lookR = 17.5; // Biased toward wall so paintings fill the right and center frame
+      const lookR = 17.5;
       const lookX = Math.sin(lookTheta) * lookR;
       const lookZ = Math.cos(lookTheta) * lookR;
       camera.lookAt(lookX, EYE_HEIGHT, lookZ);
@@ -523,13 +540,16 @@ export default function MemoriesSection({ onPhotoClick }) {
         if (canvas) canvas.style.cursor = isDraggingRef.current ? "grabbing" : "grab";
       }
 
-      // Identify closest artwork being walked past
+      // Identify nearest artwork using toroidal circular angular distance (modulo 2*PI)
       let closestArt = artworks[0];
       let minAngleDist = 999;
+      const twoPi = Math.PI * 2;
+
       artworks.forEach((art) => {
-        const dist = Math.abs(art.angle - (theta + 0.08));
-        if (dist < minAngleDist) {
-          minAngleDist = dist;
+        // Toroidal shortest angle distance around circle
+        let diffA = Math.abs((((art.angle - (theta + 0.08)) % twoPi) + twoPi * 1.5) % twoPi - Math.PI);
+        if (diffA < minAngleDist) {
+          minAngleDist = diffA;
           closestArt = art;
         }
       });
@@ -570,13 +590,12 @@ export default function MemoriesSection({ onPhotoClick }) {
     };
   }, [artworks]);
 
-  // ─── Interaction Handlers (Wheel, Touch, Drag) ──────────────────────────────
-  const maxWalkAngle = (artworks[artworks.length - 1]?.angle || 2.5) + 0.15;
-
+  // ─── Infinite Scroll & Drag Handlers (No Wall, No Clamping) ────────────────
   const handleWheel = useCallback((e) => {
+    // Endless continuous scrolling
     const scrollDelta = e.deltaY * 0.0011;
-    targetAngleRef.current = Math.max(0.12, Math.min(maxWalkAngle, targetAngleRef.current + scrollDelta));
-  }, [maxWalkAngle]);
+    targetAngleRef.current += scrollDelta;
+  }, []);
 
   const handleMouseDown = (e) => {
     isDraggingRef.current = true;
@@ -597,7 +616,7 @@ export default function MemoriesSection({ onPhotoClick }) {
     lastPointerPosRef.current = { x: e.clientX, y: e.clientY };
 
     const dragDelta = (-dx * 0.0025) + (dy * 0.0025);
-    targetAngleRef.current = Math.max(0.12, Math.min(maxWalkAngle, targetAngleRef.current + dragDelta));
+    targetAngleRef.current += dragDelta;
   };
 
   const handleMouseUp = (e) => {
@@ -643,7 +662,7 @@ export default function MemoriesSection({ onPhotoClick }) {
     lastPointerPosRef.current = { x: currentX, y: currentY };
 
     const touchDelta = (dy * 0.0028) + (dx * 0.0028);
-    targetAngleRef.current = Math.max(0.12, Math.min(maxWalkAngle, targetAngleRef.current + touchDelta));
+    targetAngleRef.current += touchDelta;
   };
 
   const handleTouchEnd = () => {
