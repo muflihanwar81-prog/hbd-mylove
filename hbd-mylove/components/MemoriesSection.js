@@ -6,26 +6,28 @@ import { X, Calendar, Compass, ArrowRight, ArrowLeft, Maximize2 } from "lucide-r
 import { memoriesData } from "@/lib/data-konten";
 
 // ─── Museum Architectural Parameters ──────────────────────────────────────────
-const R_INNER = 13.5;       // Inner curved wall radius (meters)
-const R_OUTER = 21.5;       // Outer curved wall radius (meters)
-const R_PATH = 17.5;        // Circular visitor walkway centerline radius
-const WALL_HEIGHT = 5.8;    // Grand contemporary gallery ceiling height
+// Narrowed, intimate corridor so walls and large photographs are close to visitor
+const R_PATH = 17.0;        // Circular visitor walkway centerline radius
+const CORRIDOR_WIDTH = 4.6; // Intimate 4.6m corridor width (visitor is only 2.3m from each wall!)
+const R_INNER = R_PATH - CORRIDOR_WIDTH / 2; // 14.7m Inner curved wall radius
+const R_OUTER = R_PATH + CORRIDOR_WIDTH / 2; // 19.3m Outer curved wall radius
+const WALL_HEIGHT = 5.2;    // Gallery ceiling height
 const EYE_HEIGHT = 1.72;    // Natural human eye level in meters
-const LOOK_AHEAD_RAD = 0.28;// Look-ahead angle along the circular trajectory
+const LOOK_AHEAD_RAD = 0.26;// Forward gaze angle along circular trajectory
 
-// ─── PRIORITY 1: Photograph Spacing (Reduced by ~38%) ────────────────────────
-// Build artwork placement along the circular museum walls
-// Distance between consecutive artworks is reduced from ~1.16 rad to 0.72 rad (~38% reduction)
-// Creates a cohesive, intimate gallery rhythm without large empty gaps.
+// ─── Photograph Placement & Scaling ──────────────────────────────────────────
+// Photographs are scaled up ~2.2x (width 4.8m, height 3.3m)
+// Placed closely along both walls at comfortable human eye level
 const buildCircularArtworks = (photos) => {
   const count = photos.length;
-  const deltaAngle = 0.72;   // ~41.2° spacing between consecutive artworks (reduced ~38%)
+  const deltaAngle = 0.65;   // ~37.2° spacing between consecutive artworks
   const startAngle = 0.45;   // Initial angle for first artwork
 
   return photos.map((photo, i) => {
     const angle = startAngle + i * deltaAngle;
     const isOuter = i % 2 === 0;
-    const wallRadius = isOuter ? R_OUTER - 0.12 : R_INNER + 0.12;
+    // Positioned physically flush on the curved walls
+    const wallRadius = isOuter ? R_OUTER - 0.08 : R_INNER + 0.08;
 
     return {
       ...photo,
@@ -34,8 +36,8 @@ const buildCircularArtworks = (photos) => {
       angle,
       isOuter,
       wallRadius,
-      // Target viewing position along circular path when visitor is framed nicely
-      viewAngle: angle - 0.18,
+      // Target viewing angle when visitor stands directly alongside the piece
+      viewAngle: angle - 0.16,
     };
   });
 };
@@ -43,21 +45,21 @@ const buildCircularArtworks = (photos) => {
 // ─── Helper: Create Crisp Texture from Image/SVG ──────────────────────────────
 function createTextureFromSrc(src) {
   const canvas = document.createElement("canvas");
-  canvas.width = 1024;
-  canvas.height = 768;
+  canvas.width = 1200;
+  canvas.height = 850;
   const ctx = canvas.getContext("2d");
 
   // Initial architectural placeholder gradient
-  const grad = ctx.createLinearGradient(0, 0, 1024, 768);
+  const grad = ctx.createLinearGradient(0, 0, 1200, 850);
   grad.addColorStop(0, "#102B5C");
   grad.addColorStop(1, "#173B73");
   ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, 1024, 768);
+  ctx.fillRect(0, 0, 1200, 850);
 
   ctx.fillStyle = "#A9C7EA";
-  ctx.font = "bold 32px 'Plus Jakarta Sans', sans-serif";
+  ctx.font = "bold 36px 'Plus Jakarta Sans', sans-serif";
   ctx.textAlign = "center";
-  ctx.fillText("Exhibition Archive", 512, 384);
+  ctx.fillText("Exhibition Archive", 600, 425);
 
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
@@ -68,14 +70,14 @@ function createTextureFromSrc(src) {
     const img = new Image();
     img.crossOrigin = "anonymous";
     img.onload = () => {
-      ctx.clearRect(0, 0, 1024, 768);
-      ctx.drawImage(img, 0, 0, 1024, 768);
+      ctx.clearRect(0, 0, 1200, 850);
+      ctx.drawImage(img, 0, 0, 1200, 850);
       // Subtle archival vignette
-      const vig = ctx.createRadialGradient(512, 384, 300, 512, 384, 600);
+      const vig = ctx.createRadialGradient(600, 425, 360, 600, 425, 720);
       vig.addColorStop(0, "rgba(0,0,0,0)");
-      vig.addColorStop(1, "rgba(0,0,0,0.18)");
+      vig.addColorStop(1, "rgba(0,0,0,0.16)");
       ctx.fillStyle = vig;
-      ctx.fillRect(0, 0, 1024, 768);
+      ctx.fillRect(0, 0, 1200, 850);
 
       texture.needsUpdate = true;
     };
@@ -83,25 +85,6 @@ function createTextureFromSrc(src) {
   }
 
   return texture;
-}
-
-// ─── Helper: Create 3000K Warm Wall Glow Texture ──────────────────────────────
-function createWallGlowTexture() {
-  const canvas = document.createElement("canvas");
-  canvas.width = 512;
-  canvas.height = 512;
-  const ctx = canvas.getContext("2d");
-  const grad = ctx.createRadialGradient(256, 256, 15, 256, 256, 250);
-  grad.addColorStop(0, "rgba(255, 232, 192, 0.42)");
-  grad.addColorStop(0.35, "rgba(255, 230, 185, 0.24)");
-  grad.addColorStop(0.70, "rgba(255, 225, 175, 0.08)");
-  grad.addColorStop(1, "rgba(255, 225, 175, 0)");
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, 512, 512);
-
-  const tex = new THREE.CanvasTexture(canvas);
-  tex.colorSpace = THREE.SRGBColorSpace;
-  return tex;
 }
 
 // ─── Minimalist Artwork Inspection Modal ──────────────────────────────────────
@@ -151,7 +134,6 @@ function ArtworkModal({ artwork, onClose }) {
 
         {/* Artwork Display */}
         <div className="w-full md:w-3/5 bg-[#0D1117] p-6 md:p-10 flex items-center justify-center relative overflow-hidden group">
-          {/* Subtle museum spotlight behind painting */}
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
@@ -159,7 +141,6 @@ function ArtworkModal({ artwork, onClose }) {
             }}
           />
 
-          {/* Picture with realistic frame */}
           <div
             className="relative p-3 md:p-4 max-w-full"
             style={{
@@ -244,8 +225,8 @@ export default function MemoriesSection({ onPhotoClick }) {
   const artworks = useRef(buildCircularArtworks(memoriesData.photos || [])).current;
 
   // Camera walkthrough state
-  const targetAngleRef = useRef(0.25);    // Initial position slightly ahead of first artwork
-  const currentAngleRef = useRef(0.25);   // Current interpolated camera theta
+  const targetAngleRef = useRef(0.20);    // Start position slightly before first artwork
+  const currentAngleRef = useRef(0.20);   // Current interpolated camera theta
   const [activeArtwork, setActiveArtwork] = useState(null);
   const [hoveredArtwork, setHoveredArtwork] = useState(null);
   const [inspectModalArtwork, setInspectModalArtwork] = useState(null);
@@ -275,9 +256,9 @@ export default function MemoriesSection({ onPhotoClick }) {
     }
   }, [artworks]);
 
-  // Next / Prev step navigation (tuned to tighter artwork pacing)
+  // Next / Prev step navigation
   const stepWalk = useCallback((direction) => {
-    targetAngleRef.current += direction * 0.36;
+    targetAngleRef.current += direction * 0.34;
   }, []);
 
   // ─── Three.js Scene Setup ───────────────────────────────────────────────────
@@ -291,12 +272,11 @@ export default function MemoriesSection({ onPhotoClick }) {
 
     // 1. Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color("#080A12");
-    // Deep contemporary atmospheric fog
-    scene.fog = new THREE.FogExp2("#080A12", 0.024);
+    scene.background = new THREE.Color("#0A0D16");
+    scene.fog = new THREE.FogExp2("#0A0D16", 0.020);
 
-    // 2. Camera
-    const camera = new THREE.PerspectiveCamera(65, width / height, 0.1, 100);
+    // 2. Camera: Centered on the walking path at human eye level
+    const camera = new THREE.PerspectiveCamera(62, width / height, 0.1, 100);
     camera.position.set(0, EYE_HEIGHT, R_PATH);
 
     // 3. Renderer
@@ -310,52 +290,51 @@ export default function MemoriesSection({ onPhotoClick }) {
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.05;
+    renderer.toneMappingExposure = 1.15;
 
     threeStateRef.current = { scene, camera, renderer, animId: null };
 
-    // ─── Lighting Setup ───────────────────────────────────────────────────────
-    // Soft architectural ambient light (calibrated to give rich contrast for 3000K spotlights)
-    const ambientLight = new THREE.AmbientLight("#FAF8F2", 0.32);
+    // ─── Balanced Gallery Ambient Lighting ────────────────────────────────────
+    // Keeps both exhibition walls and large photographs clearly illuminated and visible
+    const ambientLight = new THREE.AmbientLight("#FAF7F0", 0.68);
     scene.add(ambientLight);
 
-    // Central atrium glow (subtle blue & warm light radiating from inner rotunda)
-    const centralBlueGlow = new THREE.PointLight("#3B82F6", 1.8, 30, 1.2);
-    centralBlueGlow.position.set(0, 3.5, 0);
+    const hemiLight = new THREE.HemisphereLight("#FFF8EE", "#161B26", 0.42);
+    scene.add(hemiLight);
+
+    // Central atrium ambient glow (radiating from inner circular rotunda)
+    const centralBlueGlow = new THREE.PointLight("#3B82F6", 1.4, 28, 1.2);
+    centralBlueGlow.position.set(0, 3.2, 0);
     scene.add(centralBlueGlow);
 
-    const centralWarmLight = new THREE.PointLight("#FFF6E5", 1.1, 35, 1.2);
-    centralWarmLight.position.set(0, 4.8, 0);
-    scene.add(centralWarmLight);
-
     // ─── Materials ────────────────────────────────────────────────────────────
-    // Curved white museum wall material
+    // Elegant curved off-white museum wall plaster
     const wallMaterial = new THREE.MeshStandardMaterial({
-      color: "#F6F5F0",
-      roughness: 0.88,
+      color: "#F7F6F2",
+      roughness: 0.82,
       metalness: 0.02,
       side: THREE.DoubleSide,
     });
 
     // Dark polished terrazzo/marble floor
     const floorMaterial = new THREE.MeshStandardMaterial({
-      color: "#0F1118",
-      roughness: 0.28,
+      color: "#0F121A",
+      roughness: 0.24,
       metalness: 0.45,
       side: THREE.DoubleSide,
     });
 
-    // Elegant baseboard trim material (midnight blue / obsidian)
+    // Obsidian baseboard trim
     const trimMaterial = new THREE.MeshStandardMaterial({
-      color: "#0A1224",
-      roughness: 0.5,
-      metalness: 0.2,
+      color: "#0B0E17",
+      roughness: 0.4,
+      metalness: 0.25,
       side: THREE.DoubleSide,
     });
 
     // Ceiling material
     const ceilingMaterial = new THREE.MeshStandardMaterial({
-      color: "#ECEAE3",
+      color: "#ECEAE4",
       roughness: 0.95,
       metalness: 0.0,
       side: THREE.DoubleSide,
@@ -389,17 +368,17 @@ export default function MemoriesSection({ onPhotoClick }) {
     outerTrimMesh.position.y = 0.11;
     scene.add(outerTrimMesh);
 
-    // Outer wall ceiling cove light rail
+    // Outer wall ceiling cove trim
     const outerCoveGeo = new THREE.CylinderGeometry(
-      R_OUTER - 0.04,
-      R_OUTER - 0.04,
-      0.15,
+      R_OUTER - 0.03,
+      R_OUTER - 0.03,
+      0.14,
       128,
       1,
       true
     );
     const outerCoveMesh = new THREE.Mesh(outerCoveGeo, trimMaterial);
-    outerCoveMesh.position.y = WALL_HEIGHT - 0.075;
+    outerCoveMesh.position.y = WALL_HEIGHT - 0.07;
     scene.add(outerCoveMesh);
 
     // 2. INNER CURVED WALL (Radius R_INNER, height WALL_HEIGHT)
@@ -429,18 +408,31 @@ export default function MemoriesSection({ onPhotoClick }) {
     innerTrimMesh.position.y = 0.11;
     scene.add(innerTrimMesh);
 
-    // 3. CIRCULAR EXHIBITION CORRIDOR FLOOR (Annulus between R_INNER and R_OUTER)
-    const floorGeo = new THREE.RingGeometry(R_INNER - 0.2, R_OUTER + 0.2, 128);
+    // Inner wall ceiling cove trim
+    const innerCoveGeo = new THREE.CylinderGeometry(
+      R_INNER + 0.03,
+      R_INNER + 0.03,
+      0.14,
+      128,
+      1,
+      true
+    );
+    const innerCoveMesh = new THREE.Mesh(innerCoveGeo, trimMaterial);
+    innerCoveMesh.position.y = WALL_HEIGHT - 0.07;
+    scene.add(innerCoveMesh);
+
+    // 3. CIRCULAR EXHIBITION CORRIDOR FLOOR (Between R_INNER and R_OUTER)
+    const floorGeo = new THREE.RingGeometry(R_INNER - 0.15, R_OUTER + 0.15, 128);
     const floorMesh = new THREE.Mesh(floorGeo, floorMaterial);
     floorMesh.rotation.x = -Math.PI / 2;
     floorMesh.position.y = 0.001;
     floorMesh.receiveShadow = true;
     scene.add(floorMesh);
 
-    // Subtle blue architectural inlay guide along centerline of path
-    const guideGeo = new THREE.RingGeometry(R_PATH - 0.04, R_PATH + 0.04, 128);
+    // Subtle blue architectural inlay guide along walking centerline
+    const guideGeo = new THREE.RingGeometry(R_PATH - 0.05, R_PATH + 0.05, 128);
     const guideMat = new THREE.MeshBasicMaterial({
-      color: "#2563EB",
+      color: "#3B82F6",
       transparent: true,
       opacity: 0.35,
       side: THREE.DoubleSide,
@@ -451,16 +443,16 @@ export default function MemoriesSection({ onPhotoClick }) {
     scene.add(guideMesh);
 
     // 4. CIRCULAR CORRIDOR CEILING
-    const ceilingGeo = new THREE.RingGeometry(R_INNER - 0.2, R_OUTER + 0.2, 128);
+    const ceilingGeo = new THREE.RingGeometry(R_INNER - 0.15, R_OUTER + 0.15, 128);
     const ceilingMesh = new THREE.Mesh(ceilingGeo, ceilingMaterial);
     ceilingMesh.rotation.x = Math.PI / 2;
     ceilingMesh.position.y = WALL_HEIGHT;
     scene.add(ceilingMesh);
 
-    // 5. SPACIOUS CENTRAL ATRIUM (Interior circular courtyard r < R_INNER)
+    // 5. SPACIOUS CENTRAL ATRIUM
     const atriumFloorGeo = new THREE.CircleGeometry(R_INNER, 64);
     const atriumFloorMat = new THREE.MeshStandardMaterial({
-      color: "#070B14",
+      color: "#080C14",
       roughness: 0.15,
       metalness: 0.85,
     });
@@ -469,225 +461,159 @@ export default function MemoriesSection({ onPhotoClick }) {
     atriumFloor.position.y = 0;
     scene.add(atriumFloor);
 
-    // Central contemporary sculpture installation
-    const sculptureGeo = new THREE.TorusKnotGeometry(2.2, 0.45, 128, 32);
+    // Central sculpture installation
+    const sculptureGeo = new THREE.TorusKnotGeometry(2.0, 0.42, 128, 32);
     const sculptureMat = new THREE.MeshStandardMaterial({
       color: "#E2E8F0",
       metalness: 0.85,
       roughness: 0.18,
     });
     const sculptureMesh = new THREE.Mesh(sculptureGeo, sculptureMat);
-    sculptureMesh.position.set(0, 2.8, 0);
+    sculptureMesh.position.set(0, 2.6, 0);
     sculptureMesh.castShadow = true;
     scene.add(sculptureMesh);
 
-    // Central circular glass Oculus in ceiling letting in soft celestial light
-    const oculusLight = new THREE.DirectionalLight("#DDE8FF", 0.65);
-    oculusLight.position.set(0, 15, 0);
-    scene.add(oculusLight);
+    // ─── CENTER-LINE CEILING CORRIDOR LIGHTING (3000K WARM WHITE) ─────────────
+    // Distributed evenly along the circular walking centerline (radius R_PATH)
+    // Illuminates the floor path and surrounding corridor walls naturally
+    const lightAngleStart = 0.0;
+    const lightAngleEnd = Math.PI * 1.8;
+    const numCenterLights = 14; // Evenly distributed along circular trajectory
+    const lightStep = (lightAngleEnd - lightAngleStart) / (numCenterLights - 1);
 
-    // Shared wall glow texture for warm 3000K halos
-    const wallGlowTexture = createWallGlowTexture();
+    for (let j = 0; j < numCenterLights; j++) {
+      const lAngle = lightAngleStart + j * lightStep;
+      const lx = Math.sin(lAngle) * R_PATH;
+      const lz = Math.cos(lAngle) * R_PATH;
+      const ly = WALL_HEIGHT - 0.08;
 
-    // ─── PRIORITY 2: Mount Framed Artworks & Dedicated Spotlights ────────────
+      // 1. Recessed Ceiling Architectural Downlight Canister
+      const fixtureGeo = new THREE.CylinderGeometry(0.18, 0.18, 0.10, 24);
+      const fixtureMat = new THREE.MeshStandardMaterial({
+        color: "#161820",
+        roughness: 0.4,
+        metalness: 0.5,
+      });
+      const fixtureMesh = new THREE.Mesh(fixtureGeo, fixtureMat);
+      fixtureMesh.position.set(lx, ly, lz);
+      scene.add(fixtureMesh);
+
+      // 2. Glowing Warm 3000K Emitter Disc
+      const emitterGeo = new THREE.CircleGeometry(0.14, 24);
+      const emitterMat = new THREE.MeshStandardMaterial({
+        color: 0xFFE6C4,
+        emissive: 0xFFD89E,
+        emissiveIntensity: 1.8,
+        roughness: 0.1,
+      });
+      const emitterMesh = new THREE.Mesh(emitterGeo, emitterMat);
+      emitterMesh.rotation.x = Math.PI / 2; // Facing downward
+      emitterMesh.position.set(lx, ly - 0.051, lz);
+      scene.add(emitterMesh);
+
+      // 3. Wide Downward PointLight illuminating the floor and corridor walls
+      const centerLight = new THREE.PointLight(0xFFE8C6, 2.2, 7.5, 1.4);
+      centerLight.position.set(lx, ly - 0.15, lz);
+      scene.add(centerLight);
+    }
+
+    // ─── LARGE FRAMED PHOTOGRAPHS (2–2.5x Scale, Close to Visitor) ───────────
     const meshInteractiveList = [];
 
     artworks.forEach((artwork) => {
       const { angle, isOuter, wallRadius } = artwork;
       const x = Math.sin(angle) * wallRadius;
       const z = Math.cos(angle) * wallRadius;
-      const y = 2.15; // Standard museum hanging centerline height
+      const y = 2.25; // Centered at comfortable human eye level
 
       const artworkGroup = new THREE.Group();
       artworkGroup.position.set(x, y, z);
 
-      // Tangent rotation so the frame conforms precisely to the circular wall
+      // Tangent rotation so the large frame conforms flush to the curved wall
       // On outer wall: looks toward center (angle + PI)
       // On inner wall: looks outward from center (angle)
       const facingAngle = isOuter ? angle + Math.PI : angle;
       artworkGroup.rotation.y = facingAngle;
 
-      // Realistic Museum Frame Dimensions
-      const frameW = 2.3;
-      const frameH = 1.72;
-      const frameDepth = 0.08;
+      // Grand Museum Frame Dimensions (approx 2.2x larger: 4.8m width x 3.3m height)
+      const frameW = 4.8;
+      const frameH = 3.3;
+      const frameDepth = 0.10;
 
-      // 0. Warm Wall Illumination Halo (ensures illuminated area is clearly visible on wall)
-      const wallHaloGeo = new THREE.PlaneGeometry(3.6, 3.2);
-      const wallHaloMat = new THREE.MeshBasicMaterial({
-        map: wallGlowTexture,
-        transparent: true,
-        opacity: 0.85,
-        blending: THREE.AdditiveBlending,
-        depthWrite: false,
-      });
-      const wallHaloMesh = new THREE.Mesh(wallHaloGeo, wallHaloMat);
-      wallHaloMesh.position.set(0, 0.15, -0.01);
-      artworkGroup.add(wallHaloMesh);
-
-      // 1. Ornate Dark Timber / Obsidian Frame Box
+      // 1. Deep Espresso / Obsidian Museum Frame Box
       const frameBoxGeo = new THREE.BoxGeometry(frameW, frameH, frameDepth);
       const frameBoxMat = new THREE.MeshStandardMaterial({
-        color: "#18181B",
-        roughness: 0.35,
-        metalness: 0.25,
+        color: "#16161A",
+        roughness: 0.32,
+        metalness: 0.22,
       });
       const frameBox = new THREE.Mesh(frameBoxGeo, frameBoxMat);
       frameBox.castShadow = true;
       frameBox.receiveShadow = true;
       artworkGroup.add(frameBox);
 
-      // Subtle Champagne Brass inner trim
-      const brassTrimGeo = new THREE.BoxGeometry(frameW - 0.12, frameH - 0.12, frameDepth + 0.005);
+      // Subtle Champagne Brass inner bevel
+      const brassTrimGeo = new THREE.BoxGeometry(frameW - 0.18, frameH - 0.18, frameDepth + 0.006);
       const brassTrimMat = new THREE.MeshStandardMaterial({
         color: "#C5A869",
-        roughness: 0.3,
-        metalness: 0.7,
+        roughness: 0.28,
+        metalness: 0.75,
       });
       const brassTrim = new THREE.Mesh(brassTrimGeo, brassTrimMat);
       artworkGroup.add(brassTrim);
 
-      // 2. White Museum Mat Board
-      const matGeo = new THREE.PlaneGeometry(frameW - 0.22, frameH - 0.22);
+      // 2. Archival White Museum Mat Board
+      const matGeo = new THREE.PlaneGeometry(frameW - 0.36, frameH - 0.36);
       const matMat = new THREE.MeshStandardMaterial({
-        color: "#FAF9F5",
-        roughness: 0.9,
+        color: "#FAF8F4",
+        roughness: 0.92,
       });
       const matMesh = new THREE.Mesh(matGeo, matMat);
       matMesh.position.z = frameDepth / 2 + 0.004;
       artworkGroup.add(matMesh);
 
-      // 3. Artwork Canvas / Photo Plane
+      // 3. Large Photograph Canvas (clearly visible and recognizable while walking)
       const photoTexture = createTextureFromSrc(artwork.src);
-      const photoGeo = new THREE.PlaneGeometry(frameW - 0.52, frameH - 0.52);
+      const photoGeo = new THREE.PlaneGeometry(frameW - 0.75, frameH - 0.75);
       const photoMat = new THREE.MeshStandardMaterial({
         map: photoTexture,
-        roughness: 0.45,
-        metalness: 0.05,
+        roughness: 0.42,
+        metalness: 0.02,
       });
       const photoMesh = new THREE.Mesh(photoGeo, photoMat);
-      photoMesh.position.z = frameDepth / 2 + 0.006;
+      photoMesh.position.z = frameDepth / 2 + 0.007;
       artworkGroup.add(photoMesh);
 
-      // 4. Subtle Museum Spotlight Glass Glare Plane
-      const glassGeo = new THREE.PlaneGeometry(frameW - 0.22, frameH - 0.22);
+      // 4. Subtle Museum Art Glass Reflection
+      const glassGeo = new THREE.PlaneGeometry(frameW - 0.36, frameH - 0.36);
       const glassMat = new THREE.MeshPhysicalMaterial({
         color: "#FFFFFF",
         transparent: true,
-        opacity: 0.06,
-        roughness: 0.1,
-        transmission: 0.9,
+        opacity: 0.045,
+        roughness: 0.08,
+        transmission: 0.95,
         ior: 1.5,
       });
       const glassMesh = new THREE.Mesh(glassGeo, glassMat);
-      glassMesh.position.z = frameDepth / 2 + 0.008;
+      glassMesh.position.z = frameDepth / 2 + 0.010;
       artworkGroup.add(glassMesh);
 
       // 5. Minimalist Museum Plaque / Wall Label below painting
-      const plaqueGeo = new THREE.PlaneGeometry(0.55, 0.22);
+      const plaqueGeo = new THREE.PlaneGeometry(0.75, 0.28);
       const plaqueMat = new THREE.MeshStandardMaterial({
         color: "#E2E8F0",
-        roughness: 0.4,
+        roughness: 0.38,
         metalness: 0.15,
       });
       const plaqueMesh = new THREE.Mesh(plaqueGeo, plaqueMat);
-      plaqueMesh.position.set(0, -frameH / 2 - 0.26, frameDepth / 2 + 0.002);
+      plaqueMesh.position.set(0, -frameH / 2 - 0.32, frameDepth / 2 + 0.002);
       artworkGroup.add(plaqueMesh);
 
-      // ─── INDIVIDUAL CEILING-MOUNTED SPOTLIGHT (3000K WARM WHITE) ───────────
-      // Positioned on the ceiling slightly in front of the photograph (27° museum accent angle)
-      // Automatically moves together with the artwork when positioning changes.
-      const spotOffsetRadius = isOuter ? -1.65 : 1.65;
-      const spotRadius = wallRadius + spotOffsetRadius;
-      const spotX = Math.sin(angle) * spotRadius;
-      const spotZ = Math.cos(angle) * spotRadius;
-      const spotY = WALL_HEIGHT - 0.16; // Ceiling mounted
-
-      // Dedicated target placed precisely at photograph center
-      const spotTarget = new THREE.Object3D();
-      spotTarget.position.set(x, y, z);
-      scene.add(spotTarget);
-
-      // 3000K warm white SpotLight (0xFFE3BA)
-      const spotLight = new THREE.SpotLight(0xFFE3BA, 3.8, 9.5, Math.PI / 6.2, 0.62, 1.35);
-      spotLight.position.set(spotX, spotY, spotZ);
-      spotLight.target = spotTarget;
-      spotLight.castShadow = true;
-      spotLight.shadow.mapSize.set(512, 512);
-      spotLight.shadow.bias = -0.0006;
-      scene.add(spotLight);
-
-      // ─── 3D Architectural Ceiling Fixture (Luminaire Canister) ─────────────
-      const fixtureGroup = new THREE.Group();
-      fixtureGroup.position.set(spotX, spotY, spotZ);
-
-      // Ceiling track base plate
-      const basePlateGeo = new THREE.BoxGeometry(0.26, 0.04, 0.26);
-      const fixtureMat = new THREE.MeshStandardMaterial({
-        color: "#181A20",
-        roughness: 0.35,
-        metalness: 0.6,
-      });
-      const basePlate = new THREE.Mesh(basePlateGeo, fixtureMat);
-      basePlate.position.y = 0.02;
-      fixtureGroup.add(basePlate);
-
-      // Canister aimed down toward artwork target
-      const spotPos = new THREE.Vector3(spotX, spotY, spotZ);
-      const targetPos = new THREE.Vector3(x, y, z);
-      const beamVec = new THREE.Vector3().subVectors(targetPos, spotPos);
-      const beamDist = beamVec.length();
-      const beamDir = beamVec.clone().normalize();
-
-      const canisterGeo = new THREE.CylinderGeometry(0.11, 0.14, 0.32, 16);
-      const canister = new THREE.Mesh(canisterGeo, fixtureMat);
-      // Align canister axis along beam vector
-      const defUp = new THREE.Vector3(0, 1, 0);
-      canister.quaternion.setFromUnitVectors(defUp, beamDir);
-      canister.position.addScaledVector(beamDir, 0.16);
-      fixtureGroup.add(canister);
-
-      // Glowing 3000K Warm Lens Emitter Disc
-      const lensGeo = new THREE.CircleGeometry(0.10, 16);
-      const lensMat = new THREE.MeshStandardMaterial({
-        color: 0xFFE3BA,
-        emissive: 0xFFD28A,
-        emissiveIntensity: 2.4,
-        roughness: 0.1,
-      });
-      const lens = new THREE.Mesh(lensGeo, lensMat);
-      lens.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), beamDir);
-      lens.position.addScaledVector(beamDir, 0.33);
-      fixtureGroup.add(lens);
-
-      scene.add(fixtureGroup);
-
-      // ─── Volumetric Cone-Shaped Light Beam ──────────────────────────────────
-      // Realistic visible beam of warm light traveling from luminaire down to artwork
-      const beamHeight = beamDist - 0.3;
-      const beamGeo = new THREE.CylinderGeometry(0.13, 1.40, beamHeight, 28, 1, true);
-      const beamMat = new THREE.MeshBasicMaterial({
-        color: 0xFFE6BA,
-        transparent: true,
-        opacity: 0.082,
-        blending: THREE.AdditiveBlending,
-        side: THREE.DoubleSide,
-        depthWrite: false,
-      });
-      const beamMesh = new THREE.Mesh(beamGeo, beamMat);
-      // Midpoint between fixture lens and artwork
-      const beamMid = new THREE.Vector3().addVectors(spotPos, targetPos).multiplyScalar(0.5);
-      beamMesh.position.copy(beamMid);
-      // In Three.js cylinder height is along Y. We align +Y with -beamDir (pointing from target back to light)
-      const invBeamDir = beamDir.clone().negate();
-      beamMesh.quaternion.setFromUnitVectors(defUp, invBeamDir);
-      scene.add(beamMesh);
-
-      // ─── Trackable Hit-Box for Raycasting ───────────────────────────────────
-      const hitBoxGeo = new THREE.BoxGeometry(frameW + 0.3, frameH + 0.6, 0.4);
+      // 6. Trackable Hit-Box for Raycaster (sized to the large frame)
+      const hitBoxGeo = new THREE.BoxGeometry(frameW + 0.4, frameH + 0.8, 0.5);
       const hitBoxMat = new THREE.MeshBasicMaterial({ visible: false });
       const hitBox = new THREE.Mesh(hitBoxGeo, hitBoxMat);
-      hitBox.userData = { artwork, frameBox, spotLight };
+      hitBox.userData = { artwork, frameBox };
       artworkGroup.add(hitBox);
 
       scene.add(artworkGroup);
@@ -703,9 +629,9 @@ export default function MemoriesSection({ onPhotoClick }) {
       const dt = Math.min((currentTime - lastTime) / 1000, 0.1);
       lastTime = currentTime;
 
-      // Rotate central sculpture gently
-      sculptureMesh.rotation.y += dt * 0.12;
-      sculptureMesh.rotation.x += dt * 0.06;
+      // Rotate central atrium sculpture gently
+      sculptureMesh.rotation.y += dt * 0.10;
+      sculptureMesh.rotation.x += dt * 0.05;
 
       // Camera Smooth Interpolation along circular path
       const diff = targetAngleRef.current - currentAngleRef.current;
@@ -713,18 +639,18 @@ export default function MemoriesSection({ onPhotoClick }) {
 
       const theta = currentAngleRef.current;
 
-      // Calculate camera position along circular corridor
+      // Camera stays centered on the walking path (R_PATH)
       const camX = Math.sin(theta) * R_PATH;
       const camZ = Math.cos(theta) * R_PATH;
       camera.position.set(camX, EYE_HEIGHT, camZ);
 
-      // Calculate camera look-at point along the curved forward trajectory
+      // Look along the forward curved trajectory
       const lookTheta = theta + LOOK_AHEAD_RAD;
       const lookX = Math.sin(lookTheta) * R_PATH;
       const lookZ = Math.cos(lookTheta) * R_PATH;
       camera.lookAt(lookX, EYE_HEIGHT, lookZ);
 
-      // Raycaster check for hovering over artwork
+      // Raycaster check for hovering over large artwork
       raycasterRef.current.setFromCamera(mouseCoordsRef.current, camera);
       const intersects = raycasterRef.current.intersectObjects(artworkMeshesRef.current);
 
@@ -738,7 +664,7 @@ export default function MemoriesSection({ onPhotoClick }) {
         if (canvas) canvas.style.cursor = isDraggingRef.current ? "grabbing" : "grab";
       }
 
-      // Identify nearest artwork being walked past (tuned to tighter 0.72 rad spacing)
+      // Identify nearest artwork being walked past
       let closestArt = null;
       let minAngleDist = 999;
       artworks.forEach((art) => {
@@ -748,13 +674,13 @@ export default function MemoriesSection({ onPhotoClick }) {
           closestArt = art;
         }
       });
-      if (minAngleDist < 0.42) {
+      if (minAngleDist < 0.40) {
         setActiveArtwork(closestArt);
       } else {
         setActiveArtwork(null);
       }
 
-      // Calculate overall circular progress percentage along the exhibition span
+      // Calculate circular progress percentage
       const startA = artworks[0].angle;
       const endA = artworks[artworks.length - 1].angle;
       const span = endA - startA;
@@ -786,7 +712,6 @@ export default function MemoriesSection({ onPhotoClick }) {
         cancelAnimationFrame(threeStateRef.current.animId);
       }
       renderer.dispose();
-      // Dispose materials & geometries
       scene.traverse((obj) => {
         if (obj.geometry) obj.geometry.dispose();
         if (obj.material) {
@@ -799,10 +724,10 @@ export default function MemoriesSection({ onPhotoClick }) {
 
   // ─── Interaction Handlers (Wheel, Touch, Drag) ──────────────────────────────
 
-  // Mouse wheel forward/backward along curve (smoothly clamped)
+  // Mouse wheel forward/backward along curve
   const handleWheel = useCallback((e) => {
     const scrollDelta = e.deltaY * 0.0014;
-    targetAngleRef.current = Math.max(0.1, Math.min(4.4, targetAngleRef.current + scrollDelta));
+    targetAngleRef.current = Math.max(0.1, Math.min(4.3, targetAngleRef.current + scrollDelta));
   }, []);
 
   // Mouse drag forward/backward
@@ -815,7 +740,6 @@ export default function MemoriesSection({ onPhotoClick }) {
     const container = containerRef.current;
     if (!container) return;
 
-    // Update normalized mouse coords for Raycasting
     const rect = container.getBoundingClientRect();
     mouseCoordsRef.current.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
     mouseCoordsRef.current.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
@@ -825,9 +749,8 @@ export default function MemoriesSection({ onPhotoClick }) {
     const dy = e.clientY - lastPointerPosRef.current.y;
     lastPointerPosRef.current = { x: e.clientX, y: e.clientY };
 
-    // Moving horizontal or vertical drag navigates along the curved exhibition path
     const dragDelta = (-dx * 0.003) + (dy * 0.003);
-    targetAngleRef.current = Math.max(0.1, Math.min(4.4, targetAngleRef.current + dragDelta));
+    targetAngleRef.current = Math.max(0.1, Math.min(4.3, targetAngleRef.current + dragDelta));
   };
 
   const handleMouseUp = (e) => {
@@ -873,9 +796,8 @@ export default function MemoriesSection({ onPhotoClick }) {
     touchStartYRef.current = currentY;
     lastPointerPosRef.current = { x: currentX, y: currentY };
 
-    // Move camera along curved path
     const touchDelta = (dy * 0.0032) + (dx * 0.0032);
-    targetAngleRef.current = Math.max(0.1, Math.min(4.4, targetAngleRef.current + touchDelta));
+    targetAngleRef.current = Math.max(0.1, Math.min(4.3, targetAngleRef.current + touchDelta));
   };
 
   const handleTouchEnd = (e) => {
@@ -902,12 +824,12 @@ export default function MemoriesSection({ onPhotoClick }) {
         className="absolute inset-0 w-full h-full block z-0"
       />
 
-      {/* ── Museum Vignette & Horizon Lighting Overlay ── */}
+      {/* ── Museum Horizon Lighting & Atmospheric Vignette ── */}
       <div
         className="absolute inset-0 pointer-events-none z-10"
         style={{
           background:
-            "radial-gradient(ellipse at 50% 50%, transparent 45%, rgba(6,9,18,0.7) 100%)",
+            "radial-gradient(ellipse at 50% 50%, transparent 50%, rgba(6,9,18,0.65) 100%)",
         }}
       />
 
@@ -942,14 +864,11 @@ export default function MemoriesSection({ onPhotoClick }) {
             </span>
           </div>
 
-          {/* Minimap Circle */}
           <div
             className="relative w-11 h-11 rounded-full border border-white/20 flex items-center justify-center p-1"
             style={{ background: "rgba(10, 16, 30, 0.65)", backdropFilter: "blur(8px)" }}
           >
-            {/* Inner Wall indicator */}
             <div className="w-5 h-5 rounded-full border border-blue-400/40" />
-            {/* Visitor marker dot orbiting along circle */}
             <div
               className="absolute w-2 h-2 rounded-full bg-[#3B82F6]"
               style={{
@@ -963,7 +882,7 @@ export default function MemoriesSection({ onPhotoClick }) {
         </div>
       </div>
 
-      {/* ── Floating Hover / Focus Artwork Pill ── */}
+      {/* ── Floating Focus Artwork Pill ── */}
       {(hoveredArtwork || activeArtwork) && (
         <div
           className="absolute bottom-28 left-1/2 -translate-x-1/2 z-20 pointer-events-auto transition-all duration-300"
@@ -1004,17 +923,15 @@ export default function MemoriesSection({ onPhotoClick }) {
 
       {/* ── Bottom Navigation & Curator Controls ── */}
       <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-4 z-20 pointer-events-none">
-        {/* Left Instruction */}
         <div className="text-left hidden md:block">
           <p className="text-[11px] font-mono tracking-widest text-[#93C5FD]/70 uppercase">
             CONTEMPORARY PHOTOGRAPHY MUSEUM
           </p>
           <p className="text-xs text-neutral-400 font-light">
-            Walk along the continuous curved exhibition gallery
+            Walk along the circular gallery corridor
           </p>
         </div>
 
-        {/* Center: Walking Guidance & Quick Stepper */}
         <div className="flex items-center gap-3 pointer-events-auto">
           <button
             onClick={() => stepWalk(-1)}
@@ -1043,7 +960,6 @@ export default function MemoriesSection({ onPhotoClick }) {
           </button>
         </div>
 
-        {/* Right Artwork Index Navigator */}
         <div className="flex items-center gap-1.5 pointer-events-auto">
           {artworks.map((art, idx) => {
             const isCurrent = activeArtwork?.id === art.id;
