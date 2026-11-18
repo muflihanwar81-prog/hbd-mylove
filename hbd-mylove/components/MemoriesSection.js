@@ -1,398 +1,1000 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
-import { Camera, Calendar, Star, Sparkles, ChevronLeft, ChevronRight, Eye, Heart } from "lucide-react";
-import { memoriesData, coupleData } from "@/lib/data-konten";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { X, Calendar, ChevronDown, ChevronUp } from "lucide-react";
+import { memoriesData } from "@/lib/data-konten";
 
-export default function MemoriesSection({ onPhotoClick }) {
-  const containerRef = useRef(null);
-  const itemRefs = useRef([]);
-  const animationFrameRef = useRef(null);
-  const offsetRef = useRef(0);
-  const isDraggingRef = useRef(false);
-  const dragStartXRef = useRef(0);
-  const dragStartOffsetRef = useRef(0);
-  const [mounted, setMounted] = useState(false);
-  const [isSlowed, setIsSlowed] = useState(false);
+// ─── Museum data ─────────────────────────────────────────────────────────────
+// Each artwork is placed along the corridor.
+// wall: "left" | "right"  — which wall it hangs on
+// posZ: 0 → 1  — how deep along the corridor (0 = entrance, 1 = end)
+// frame: portrait | landscape | square
+const buildArtworks = (photos) => {
+  const walls = ["left", "right", "left", "right", "left", "right"];
+  const frames = ["portrait", "landscape", "portrait", "landscape", "portrait", "landscape"];
+  return photos.map((photo, i) => ({
+    ...photo,
+    wall: walls[i % walls.length],
+    posZ: (i + 0.7) / (photos.length + 0.4),
+    frame: frames[i % frames.length],
+    artworkNumber: String(i + 1).padStart(2, "0"),
+  }));
+};
 
-  // Group photos into authentic 3-photo vertical photostrips
-  const basePhotos = memoriesData.photos || [];
-  
-  const generatePhotoStrips = () => {
-    if (!basePhotos.length) return [];
-    
-    // Curated combinations so each strip tells a cute mini-story
-    const stripConfigs = [
-      {
-        id: "strip-1",
-        title: "SWEET BEGINNINGS",
-        edition: "VOL. 01",
-        photos: [basePhotos[0] || basePhotos[0], basePhotos[1] || basePhotos[0], basePhotos[2] || basePhotos[0]],
-      },
-      {
-        id: "strip-2",
-        title: "ENDLESS ADVENTURES",
-        edition: "VOL. 02",
-        photos: [basePhotos[3] || basePhotos[1], basePhotos[4] || basePhotos[2], basePhotos[5] || basePhotos[0]],
-      },
-      {
-        id: "strip-3",
-        title: "GOLDEN MOMENTS",
-        edition: "VOL. 03",
-        photos: [basePhotos[1] || basePhotos[0], basePhotos[2] || basePhotos[1], basePhotos[4] || basePhotos[2]],
-      },
-      {
-        id: "strip-4",
-        title: "PURE HAPPINESS",
-        edition: "VOL. 04",
-        photos: [basePhotos[0] || basePhotos[0], basePhotos[3] || basePhotos[1], basePhotos[5] || basePhotos[2]],
-      },
-      {
-        id: "strip-5",
-        title: "LAUGHTER & LOVE",
-        edition: "VOL. 05",
-        photos: [basePhotos[2] || basePhotos[0], basePhotos[5] || basePhotos[1], basePhotos[1] || basePhotos[2]],
-      },
-      {
-        id: "strip-6",
-        title: "FOREVER & ALWAYS",
-        edition: "VOL. 06",
-        photos: [basePhotos[4] || basePhotos[0], basePhotos[0] || basePhotos[1], basePhotos[3] || basePhotos[2]],
-      },
-    ];
-
-    // Repeat 2x (total 12 strips) to guarantee infinite continuous loop
-    return [...stripConfigs, ...stripConfigs];
-  };
-
-  const photoStrips = generatePhotoStrips();
-  const totalStrips = photoStrips.length;
-
+// ─── Artwork Modal ─────────────────────────────────────────────────────────────
+function ArtworkModal({ artwork, onClose }) {
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    const handleKey = (e) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
+  }, [onClose]);
 
-  useEffect(() => {
-    if (!mounted || totalStrips === 0) return;
-
-    let lastTime = performance.now();
-    // Gliding speed: moves steadily to the right (offset increments)
-    const normalSpeed = 1.05;
-    const slowSpeed = 0.35;
-
-    const animate = (currentTime) => {
-      const delta = Math.min((currentTime - lastTime) / 16.666, 2.5);
-      lastTime = currentTime;
-
-      const container = containerRef.current;
-      if (!container) {
-        animationFrameRef.current = requestAnimationFrame(animate);
-        return;
-      }
-
-      const containerWidth = container.offsetWidth;
-      const isMobile = containerWidth < 640;
-      const stripWidth = isMobile ? 180 : 210;
-      const slotWidth = isMobile ? 220 : 265;
-      const totalTrackWidth = totalStrips * slotWidth;
-
-      // Auto-advance offset continuously to the right
-      if (!isDraggingRef.current) {
-        const currentSpeed = isSlowed ? slowSpeed : normalSpeed;
-        offsetRef.current = (offsetRef.current + currentSpeed * delta) % totalTrackWidth;
-      }
-
-      const centerX = containerWidth / 2;
-      const maxDist = slotWidth * 1.8;
-
-      // Position each photostrip via hardware-accelerated transforms
-      itemRefs.current.forEach((el, index) => {
-        if (!el) return;
-
-        const baseX = index * slotWidth;
-        const rawX = (baseX + offsetRef.current) % totalTrackWidth;
-
-        // Toroidal wrapping to find shortest distance to container center
-        let diffX = (rawX - centerX) % totalTrackWidth;
-        if (diffX < -totalTrackWidth / 2) diffX += totalTrackWidth;
-        if (diffX > totalTrackWidth / 2) diffX -= totalTrackWidth;
-
-        const dist = Math.abs(diffX);
-        const itemX = centerX + diffX - stripWidth / 2;
-
-        // Dynamic center magnification:
-        // As a photostrip approaches the center, it gets larger smoothly
-        const normDist = Math.min(dist / maxDist, 1);
-        const factor = Math.cos(normDist * Math.PI * 0.5);
-
-        const scale = (isMobile ? 0.82 : 0.85) + factor * (isMobile ? 0.26 : 0.30);
-        const opacity = 0.55 + factor * 0.45;
-        const zIndex = Math.round(10 + factor * 40);
-
-        el.style.transform = `translate3d(${itemX}px, -50%, 0) scale(${scale})`;
-        el.style.opacity = opacity;
-        el.style.zIndex = zIndex;
-
-        // Center spotlight styling toggle
-        if (dist < slotWidth * 0.45) {
-          el.setAttribute("data-center", "true");
-        } else {
-          el.removeAttribute("data-center");
-        }
-      });
-
-      animationFrameRef.current = requestAnimationFrame(animate);
-    };
-
-    animationFrameRef.current = requestAnimationFrame(animate);
-
-    return () => {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-    };
-  }, [mounted, isSlowed, totalStrips]);
-
-  // Drag and Swipe Handlers
-  const handleDragStart = (clientX) => {
-    isDraggingRef.current = true;
-    dragStartXRef.current = clientX;
-    dragStartOffsetRef.current = offsetRef.current;
-  };
-
-  const handleDragMove = (clientX) => {
-    if (!isDraggingRef.current) return;
-    const deltaX = clientX - dragStartXRef.current;
-    offsetRef.current = dragStartOffsetRef.current + deltaX;
-  };
-
-  const handleDragEnd = () => {
-    isDraggingRef.current = false;
-  };
-
-  const handleManualNudge = (direction) => {
-    const slot = typeof window !== "undefined" && window.innerWidth < 640 ? 220 : 265;
-    offsetRef.current += direction * slot;
-  };
+  if (!artwork) return null;
 
   return (
-    <section id="memories" className="relative min-h-screen px-4 py-20 overflow-hidden select-none">
-      {/* Background ambient lighting */}
-      <div className="absolute top-1/4 -left-36 w-96 h-96 rounded-full bg-[#581124]/30 blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/4 -right-36 w-96 h-96 rounded-full bg-[#3B0B1E]/60 blur-3xl pointer-events-none" />
-
-      <div className="max-w-6xl mx-auto">
-        {/* Section Header */}
-        <div className="text-center mb-6 sm:mb-10">
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold mb-3"
-            style={{
-              background: "rgba(226, 125, 155, 0.15)",
-              border: "1px solid rgba(226, 125, 155, 0.3)",
-              color: "#F7C2CF",
-            }}
-          >
-            <Camera size={15} />
-            <span>Photobooth Memory Strips</span>
-            <Sparkles size={14} className="text-[#E27D9B]" />
-          </motion.div>
-
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight"
-            style={{ fontFamily: "'Playfair Display', Georgia, serif", color: "#FFF5F7" }}
-          >
-            {memoriesData.title || "Our Memories"}
-          </motion.h2>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="text-[#F7C2CF]/80 max-w-lg mx-auto mt-2 text-xs sm:text-sm md:text-base font-light"
-          >
-            Setiap lembar strip foto membawa kenangan manis yang terus berjalan indah
-          </motion.p>
-        </div>
-      </div>
-
-      {/* Infinite Gliding Photo Strip Carousel (Generous height to prevent top/bottom clipping) */}
+    <div
+      className="fixed inset-0 z-[200] flex items-center justify-center"
+      style={{ background: "rgba(5, 8, 20, 0.95)", backdropFilter: "blur(16px)" }}
+      onClick={onClose}
+    >
       <div
-        ref={containerRef}
-        onMouseEnter={() => setIsSlowed(true)}
-        onMouseLeave={() => {
-          setIsSlowed(false);
-          handleDragEnd();
+        className="relative mx-4 max-w-3xl w-full"
+        style={{
+          background: "linear-gradient(160deg, #f8f6f1 0%, #ede9e0 100%)",
+          borderRadius: "2px",
+          boxShadow: "0 40px 100px rgba(0,0,0,0.9), 0 0 0 1px rgba(200,190,170,0.4)",
         }}
-        onMouseDown={(e) => handleDragStart(e.clientX)}
-        onMouseMove={(e) => handleDragMove(e.clientX)}
-        onMouseUp={handleDragEnd}
-        onTouchStart={(e) => handleDragStart(e.touches[0].clientX)}
-        onTouchMove={(e) => handleDragMove(e.touches[0].clientX)}
-        onTouchEnd={handleDragEnd}
-        className="relative w-full h-[580px] sm:h-[660px] md:h-[700px] overflow-hidden cursor-grab active:cursor-grabbing"
+        onClick={(e) => e.stopPropagation()}
       >
-        {/* Left & Right Edge Vignette Gradient Masks */}
-        <div className="absolute top-0 bottom-0 left-0 w-16 sm:w-36 md:w-56 bg-gradient-to-r from-[#260814] via-[#260814]/85 to-transparent z-40 pointer-events-none" />
-        <div className="absolute top-0 bottom-0 right-0 w-16 sm:w-36 md:w-56 bg-gradient-to-l from-[#260814] via-[#260814]/85 to-transparent z-40 pointer-events-none" />
+        {/* Museum spotlight top bar */}
+        <div
+          style={{
+            height: "4px",
+            background: "linear-gradient(90deg, #c8a84b, #e8c96a, #c8a84b)",
+            borderRadius: "2px 2px 0 0",
+          }}
+        />
 
-        {/* Carousel Track with Absolute Photo Strips */}
-        <div className="absolute inset-0 w-full h-full">
-          {photoStrips.map((strip, idx) => (
+        <div className="p-6 md:p-10">
+          <div className="flex gap-6 md:gap-10 flex-col md:flex-row">
+            {/* Artwork image */}
             <div
-              key={`${strip.id}-${idx}`}
-              ref={(el) => (itemRefs.current[idx] = el)}
-              className="absolute top-1/2 left-0 w-[180px] sm:w-[210px] will-change-transform rounded-none p-2.5 sm:p-3 shadow-2xl transition-shadow duration-300 group photostrip-card"
+              className="flex-shrink-0 relative"
               style={{
-                background: "#FAF9F6", // Classic Korean photobooth ivory paper
-                border: "1px solid rgba(255, 255, 255, 0.9)",
-                boxShadow: "0 20px 50px rgba(0, 0, 0, 0.5), 0 2px 10px rgba(0, 0, 0, 0.2)",
+                width: "100%",
+                maxWidth: "340px",
+                alignSelf: "flex-start",
               }}
             >
-              {/* Top Washi Tape Sticker (Siku-siku) */}
+              {/* Outer frame */}
               <div
-                className="absolute -top-2.5 left-1/2 -translate-x-1/2 w-14 sm:w-16 h-4 sm:h-5 rounded-none -rotate-2 pointer-events-none z-20"
                 style={{
-                  background: "rgba(16, 43, 92, 0.25)",
-                  borderTop: "1px dashed rgba(255, 255, 255, 0.8)",
-                  borderBottom: "1px dashed rgba(255, 255, 255, 0.8)",
-                  backdropFilter: "blur(4px)",
+                  padding: "14px",
+                  background: "linear-gradient(145deg, #3a2c1a 0%, #5a4228 40%, #3a2c1a 100%)",
+                  boxShadow: "inset 0 2px 4px rgba(255,255,255,0.15), 0 8px 32px rgba(0,0,0,0.6), 6px 6px 20px rgba(0,0,0,0.5)",
+                  borderRadius: "1px",
+                }}
+              >
+                {/* Inner mat */}
+                <div
+                  style={{
+                    padding: "10px",
+                    background: "#f0ebe0",
+                    boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.1)",
+                  }}
+                >
+                  <div className="relative aspect-[4/3] overflow-hidden bg-gray-200">
+                    {artwork.src && (
+                      <img
+                        src={artwork.src}
+                        alt={artwork.alt || artwork.caption}
+                        className="w-full h-full object-cover"
+                        onError={(e) => { e.target.style.display = "none"; }}
+                      />
+                    )}
+                    {/* Spotlight glare */}
+                    <div
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        background:
+                          "radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.12) 0%, transparent 60%)",
+                        pointerEvents: "none",
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Frame shadow */}
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: "-12px",
+                  left: "8px",
+                  right: "8px",
+                  height: "20px",
+                  background: "radial-gradient(ellipse, rgba(0,0,0,0.5) 0%, transparent 70%)",
+                  filter: "blur(6px)",
+                }}
+              />
+            </div>
+
+            {/* Info panel */}
+            <div className="flex-1 flex flex-col justify-center min-w-0">
+              {/* Artwork number */}
+              <p
+                style={{
+                  fontFamily: "monospace",
+                  fontSize: "11px",
+                  letterSpacing: "0.2em",
+                  color: "#8a7a60",
+                  marginBottom: "8px",
+                  textTransform: "uppercase",
+                }}
+              >
+                ARTWORK {artwork.artworkNumber} · PERSONAL COLLECTION
+              </p>
+
+              {/* Title */}
+              <h2
+                style={{
+                  fontFamily: "'Playfair Display', Georgia, serif",
+                  fontSize: "clamp(1.3rem, 3vw, 2rem)",
+                  fontWeight: 700,
+                  color: "#1a1208",
+                  lineHeight: 1.2,
+                  marginBottom: "12px",
+                }}
+              >
+                {artwork.caption}
+              </h2>
+
+              {/* Divider */}
+              <div
+                style={{
+                  width: "48px",
+                  height: "2px",
+                  background: "linear-gradient(90deg, #c8a84b, transparent)",
+                  marginBottom: "16px",
                 }}
               />
 
-              {/* Strip Header */}
-              <div className="text-center pt-0.5 pb-1.5 border-b border-[#260814]/15 mb-2">
-                <div className="flex items-center justify-between px-1 text-[8px] sm:text-[9px] font-mono tracking-wider text-[#260814]/70 font-bold uppercase">
-                  <span>✦ BOOTH</span>
-                  <span>{strip.edition} ✦</span>
-                </div>
-                <h4
-                  className="text-[10px] sm:text-[11px] font-bold text-[#260814] tracking-wide mt-0.5 truncate"
-                  style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+              {/* Date */}
+              {artwork.date && (
+                <div
+                  className="flex items-center gap-2 mb-4"
+                  style={{ color: "#8a7a60", fontSize: "13px" }}
                 >
-                  {strip.title}
-                </h4>
-              </div>
-
-              {/* Stacked 3 Photo Frames inside the Strip (Siku-siku) */}
-              <div className="space-y-1.5">
-                {strip.photos.map((photo, pIdx) => (
-                  <div
-                    key={`${photo.id}-${pIdx}`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (onPhotoClick) onPhotoClick(photo);
-                    }}
-                    className="relative aspect-[16/11] w-full rounded-none overflow-hidden bg-[#1D040E] shadow-inner cursor-pointer group/photo border border-black/10"
+                  <Calendar size={13} />
+                  <span
+                    style={{ fontFamily: "monospace", letterSpacing: "0.08em" }}
                   >
-                    {photo.src ? (
-                      <img
-                        src={photo.src}
-                        alt={photo.alt || photo.caption}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover/photo:scale-108"
-                        onError={(e) => {
-                          e.target.style.display = "none";
-                          if (e.target.nextSibling) e.target.nextSibling.style.display = "flex";
-                        }}
-                      />
-                    ) : null}
-
-                    {/* Fallback Icon */}
-                    <div
-                      className="w-full h-full flex flex-col items-center justify-center text-[#F7C2CF] p-1.5 text-center"
-                      style={{ display: photo.src ? "none" : "flex" }}
-                    >
-                      <Star className="w-4 h-4 text-[#E27D9B] fill-[#E27D9B]/30 mb-0.5 shrink-0" />
-                      <span className="text-[8px] sm:text-[9px] font-medium text-white/90 line-clamp-1 leading-tight">{photo.caption}</span>
-                    </div>
-
-                    {/* Frame Number Tag (Siku-siku) */}
-                    <div className="absolute top-1 left-1 px-1 py-0.2 rounded-none bg-black/60 backdrop-blur-sm text-[7px] font-mono text-white/90 font-bold">
-                      0{pIdx + 1}
-                    </div>
-
-                    {/* Hover Overlay */}
-                    <div className="absolute inset-0 bg-[#260814]/50 opacity-0 group-hover/photo:opacity-100 transition-opacity duration-200 flex items-center justify-center">
-                      <span className="px-2 py-0.5 rounded-none bg-white text-[#260814] font-bold text-[9px] shadow flex items-center gap-1">
-                        <Eye size={10} />
-                        Buka
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Strip Footer: Barcode & Couple Branding */}
-              <div className="pt-2 mt-1.5 border-t border-[#260814]/15 text-[#260814] flex flex-col items-center justify-center">
-                {/* Simulated Barcode */}
-                <div className="flex items-center justify-center gap-[1.5px] h-3.5 mb-1 opacity-70">
-                  {[3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8, 9, 7, 9, 3, 2, 3, 8, 4, 6].map((w, bIdx) => (
-                    <div
-                      key={bIdx}
-                      className="bg-[#260814]"
-                      style={{
-                        width: `${(w % 2.5) + 0.8}px`,
-                        height: "100%",
-                      }}
-                    />
-                  ))}
+                    {artwork.date}
+                  </span>
                 </div>
+              )}
 
-                <div className="flex items-center justify-center gap-1 text-[8px] sm:text-[9px] font-bold tracking-wider uppercase text-[#260814]/90">
-                  <span>NOVRIA & MUFLIH</span>
-                  <Heart size={8} className="text-[#8B1E2E] fill-[#8B1E2E]" />
-                  <span>24.11.2007</span>
-                </div>
-                <p className="text-[7px] text-[#260814]/60 font-mono tracking-widest mt-0.5">
-                  MEMORIES ARCHIVE · KEEP FOREVER
+              {/* Description / alt text as memory */}
+              {artwork.alt && (
+                <p
+                  style={{
+                    fontFamily: "'Playfair Display', Georgia, serif",
+                    fontSize: "15px",
+                    color: "#3a2c1a",
+                    lineHeight: 1.8,
+                    fontStyle: "italic",
+                    borderLeft: "3px solid rgba(200,168,75,0.4)",
+                    paddingLeft: "14px",
+                  }}
+                >
+                  "{artwork.alt}"
                 </p>
-              </div>
+              )}
+
+              {/* Close */}
+              <button
+                onClick={onClose}
+                className="mt-8 self-start flex items-center gap-2 text-sm"
+                style={{
+                  background: "rgba(26,18,8,0.08)",
+                  border: "1px solid rgba(26,18,8,0.2)",
+                  color: "#3a2c1a",
+                  padding: "10px 20px",
+                  borderRadius: "1px",
+                  cursor: "pointer",
+                  letterSpacing: "0.1em",
+                  fontFamily: "monospace",
+                  fontSize: "11px",
+                  textTransform: "uppercase",
+                  transition: "all 0.2s",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "rgba(26,18,8,0.14)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "rgba(26,18,8,0.08)";
+                }}
+              >
+                <X size={13} /> Close Gallery
+              </button>
             </div>
-          ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Framed Artwork on Wall ───────────────────────────────────────────────────
+function FramedArtwork({ artwork, cameraZ, onOpen }) {
+  const [hovered, setHovered] = useState(false);
+
+  // posZ is 0→1 along corridor.
+  // We map cameraZ (0→1) to a "relative depth" so we can position in perspective.
+  // The corridor is rendered as a fixed viewport; artworks move as camera moves.
+  const relZ = artwork.posZ - cameraZ; // negative = behind camera, positive = ahead
+
+  // ─ Perspective projection ─
+  // We use a simple perspective: the further away, the smaller and closer to vanishing point.
+  // Visible range: relZ in (-0.15, 1.2)
+  const fov = 1.1; // perspective strength
+  if (relZ < -0.08 || relZ > 1.3) return null; // cull
+
+  const perspective = fov / Math.max(relZ + fov, 0.05);
+  const scale = perspective * 0.55;
+  const opacity = relZ < 0.05
+    ? Math.max(0, relZ / 0.05)
+    : relZ > 1.0
+    ? Math.max(0, (1.3 - relZ) / 0.3)
+    : 1;
+
+  // Vertical position: closer artwork appears lower (perspective)
+  const baseY = 50; // % from top (vertically centred in corridor)
+  const yShift = (perspective - 0.5) * 10; // small vertical shift for depth
+
+  // Horizontal position: left wall vs right wall
+  // Centre of corridor = 50%. Left artworks shift towards left edge, right towards right edge.
+  const wallSide = artwork.wall === "left" ? 1 : -1; // left = positive offset from center
+  const xBase = artwork.wall === "left" ? 20 : 80; // % from left
+  const xPerspective = 50 + (xBase - 50) * Math.min(perspective, 2.5);
+
+  // Frame aspect
+  const aspectRatios = { portrait: "3/4", landscape: "4/3", square: "1/1" };
+  const aspect = aspectRatios[artwork.frame] || "4/3";
+
+  // Depth shadow & brightness
+  const brightness = 0.5 + Math.min(scale, 1) * 0.65;
+  const shadowBlur = Math.round(relZ * 40 + 8);
+  const shadowOpacity = Math.min(0.8, 0.2 + scale * 0.6);
+
+  return (
+    <div
+      style={{
+        position: "absolute",
+        left: `${xPerspective}%`,
+        top: `${baseY + yShift}%`,
+        transform: `translate(-50%, -50%) scale(${Math.max(scale, 0.01)})`,
+        opacity,
+        cursor: "pointer",
+        zIndex: Math.round(scale * 100),
+        willChange: "transform, opacity",
+        transition: hovered ? "none" : "none",
+      }}
+      onClick={() => onOpen(artwork)}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {/* Outer ornate frame */}
+      <div
+        style={{
+          position: "relative",
+          padding: hovered ? "14px" : "12px",
+          background: hovered
+            ? "linear-gradient(145deg, #4a3820 0%, #7a6240 40%, #4a3820 100%)"
+            : "linear-gradient(145deg, #2e2010 0%, #5a4228 40%, #2e2010 100%)",
+          boxShadow: hovered
+            ? `0 0 0 1px rgba(220,190,100,0.6), 0 0 30px rgba(220,190,100,0.25), 0 ${shadowBlur}px ${shadowBlur * 2}px rgba(0,0,0,${shadowOpacity})`
+            : `0 0 0 1px rgba(180,150,80,0.3), 0 ${shadowBlur}px ${shadowBlur * 2}px rgba(0,0,0,${shadowOpacity})`,
+          transition: "all 0.3s ease",
+          minWidth: "180px",
+          maxWidth: artwork.frame === "portrait" ? "220px" : "280px",
+        }}
+      >
+        {/* Inner frame bevel */}
+        <div
+          style={{
+            padding: "4px",
+            background: hovered
+              ? "linear-gradient(145deg, #c8a84b22, #e8c96a11)"
+              : "transparent",
+            border: "1px solid rgba(200,168,75,0.2)",
+            transition: "all 0.3s ease",
+          }}
+        >
+          {/* Artwork image */}
+          <div
+            style={{
+              position: "relative",
+              aspectRatio: aspect,
+              width: "100%",
+              overflow: "hidden",
+              background: "#1a1208",
+              filter: `brightness(${brightness})`,
+              transition: "filter 0.3s ease",
+            }}
+          >
+            {artwork.src && (
+              <img
+                src={artwork.src}
+                alt={artwork.alt || artwork.caption}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  display: "block",
+                  transform: hovered ? "scale(1.04)" : "scale(1)",
+                  transition: "transform 0.5s ease",
+                }}
+                onError={(e) => { e.target.style.display = "none"; }}
+              />
+            )}
+            {/* Museum spotlight glare */}
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                background:
+                  "radial-gradient(ellipse at 35% 15%, rgba(255,255,255,0.18) 0%, transparent 55%)",
+                pointerEvents: "none",
+                opacity: hovered ? 0.6 : 0.9,
+                transition: "opacity 0.3s",
+              }}
+            />
+            {/* Hover overlay */}
+            {hovered && (
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background: "rgba(10,8,4,0.35)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <span
+                  style={{
+                    fontFamily: "monospace",
+                    fontSize: "10px",
+                    letterSpacing: "0.15em",
+                    color: "#e8d8a0",
+                    textTransform: "uppercase",
+                    border: "1px solid rgba(232,216,160,0.6)",
+                    padding: "6px 14px",
+                    background: "rgba(10,8,4,0.6)",
+                  }}
+                >
+                  View Artwork
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Title plate */}
+        <div
+          style={{
+            marginTop: "8px",
+            padding: "6px 10px",
+            background: "rgba(10,8,4,0.6)",
+            border: "1px solid rgba(200,168,75,0.2)",
+            textAlign: "center",
+            opacity: hovered ? 1 : 0.85,
+            transition: "opacity 0.3s",
+          }}
+        >
+          <p
+            style={{
+              fontFamily: "monospace",
+              fontSize: "9px",
+              letterSpacing: "0.18em",
+              color: "rgba(200,168,75,0.7)",
+              textTransform: "uppercase",
+              marginBottom: "2px",
+            }}
+          >
+            {artwork.artworkNumber}
+          </p>
+          <p
+            style={{
+              fontFamily: "'Playfair Display', Georgia, serif",
+              fontSize: "11px",
+              color: "#e8d8a0",
+              lineHeight: 1.3,
+              maxWidth: "180px",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {artwork.caption}
+          </p>
         </div>
       </div>
 
-      {/* Manual Control Navigation & Continuous Ticker Notice */}
-      <div className="max-w-md mx-auto flex items-center justify-center gap-4 mt-6">
-        <button
-          onClick={() => handleManualNudge(-1)}
-          className="w-10 h-10 rounded-full flex items-center justify-center bg-white/10 hover:bg-white/20 text-[#F7C2CF] hover:text-white transition-all cursor-pointer border border-white/15 active:scale-95 shadow-md"
-          title="Geser ke kiri"
-          aria-label="Geser ke kiri"
-        >
-          <ChevronLeft size={20} />
-        </button>
+      {/* Floor shadow */}
+      <div
+        style={{
+          position: "absolute",
+          bottom: "-18px",
+          left: "10%",
+          right: "10%",
+          height: "16px",
+          background: "radial-gradient(ellipse, rgba(0,0,0,0.6) 0%, transparent 70%)",
+          filter: `blur(${Math.round(4 + relZ * 6)}px)`,
+          pointerEvents: "none",
+        }}
+      />
+    </div>
+  );
+}
 
-        <span className="text-xs font-medium text-[#F7C2CF]/80 tracking-wider uppercase px-2 text-center">
-          ✦ Photo Strips Gliding Right ✦
-        </span>
+// ─── Main component ────────────────────────────────────────────────────────────
+export default function MemoriesSection({ onPhotoClick }) {
+  const photos = memoriesData.photos || [];
+  const artworks = buildArtworks(photos);
+  const totalArtworks = artworks.length;
 
-        <button
-          onClick={() => handleManualNudge(1)}
-          className="w-10 h-10 rounded-full flex items-center justify-center bg-white/10 hover:bg-white/20 text-[#F7C2CF] hover:text-white transition-all cursor-pointer border border-white/15 active:scale-95 shadow-md"
-          title="Geser ke kanan"
-          aria-label="Geser ke kanan"
-        >
-          <ChevronRight size={20} />
-        </button>
+  // cameraZ: 0 = at entrance, 1 = at end of corridor
+  const [cameraZ, setCameraZ] = useState(0);
+  const [selectedArtwork, setSelectedArtwork] = useState(null);
+  const targetZRef = useRef(0);
+  const currentZRef = useRef(0);
+  const rafRef = useRef(null);
+  const sectionRef = useRef(null);
+
+  const minZ = 0;
+  const maxZ = 1;
+
+  // Smooth interpolation loop
+  const startRaf = useCallback(() => {
+    if (rafRef.current) return;
+    const loop = () => {
+      const diff = targetZRef.current - currentZRef.current;
+      if (Math.abs(diff) > 0.0001) {
+        currentZRef.current += diff * 0.08; // lerp factor
+        setCameraZ(currentZRef.current);
+        rafRef.current = requestAnimationFrame(loop);
+      } else {
+        currentZRef.current = targetZRef.current;
+        setCameraZ(targetZRef.current);
+        rafRef.current = null;
+      }
+    };
+    rafRef.current = requestAnimationFrame(loop);
+  }, []);
+
+  const advanceCamera = useCallback((delta) => {
+    // delta is a signed scroll amount normalised to our 0-1 range
+    targetZRef.current = Math.max(minZ, Math.min(maxZ, targetZRef.current + delta));
+    startRaf();
+  }, [startRaf]);
+
+  // ── Wheel handler ──
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const handleWheel = (e) => {
+      // Only intercept if the mouse is over the museum section
+      const rect = section.getBoundingClientRect();
+      const inside =
+        e.clientX >= rect.left &&
+        e.clientX <= rect.right &&
+        e.clientY >= rect.top &&
+        e.clientY <= rect.bottom;
+      if (!inside) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      const step = 0.004;
+      advanceCamera(e.deltaY * step);
+    };
+
+    section.addEventListener("wheel", handleWheel, { passive: false });
+    return () => section.removeEventListener("wheel", handleWheel);
+  }, [advanceCamera]);
+
+  // ── Touch handler ──
+  const touchStartYRef = useRef(null);
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const handleTouchStart = (e) => {
+      touchStartYRef.current = e.touches[0].clientY;
+    };
+    const handleTouchMove = (e) => {
+      if (touchStartYRef.current === null) return;
+      const dy = touchStartYRef.current - e.touches[0].clientY;
+      touchStartYRef.current = e.touches[0].clientY;
+      e.preventDefault();
+      advanceCamera(dy * 0.0025);
+    };
+    const handleTouchEnd = () => {
+      touchStartYRef.current = null;
+    };
+
+    section.addEventListener("touchstart", handleTouchStart, { passive: true });
+    section.addEventListener("touchmove", handleTouchMove, { passive: false });
+    section.addEventListener("touchend", handleTouchEnd, { passive: true });
+    return () => {
+      section.removeEventListener("touchstart", handleTouchStart);
+      section.removeEventListener("touchmove", handleTouchMove);
+      section.removeEventListener("touchend", handleTouchEnd);
+    };
+  }, [advanceCamera]);
+
+  // ── Keyboard fallback ──
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (e.key === "ArrowDown" || e.key === "PageDown") {
+        e.preventDefault();
+        advanceCamera(0.12);
+      } else if (e.key === "ArrowUp" || e.key === "PageUp") {
+        e.preventDefault();
+        advanceCamera(-0.12);
+      }
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [advanceCamera]);
+
+  // Cleanup RAF on unmount
+  useEffect(() => {
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
+
+  const progressPct = Math.round(cameraZ * 100);
+
+  return (
+    <section
+      id="memories"
+      ref={sectionRef}
+      style={{
+        position: "relative",
+        width: "100%",
+        height: "100vh",
+        overflow: "hidden",
+        userSelect: "none",
+        touchAction: "none",
+        cursor: "default",
+      }}
+    >
+      {/* ── Museum Corridor Background ── */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background: "linear-gradient(180deg, #0a0c14 0%, #0d1020 40%, #111428 100%)",
+        }}
+      />
+
+      {/* ── Ceiling ── */}
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: "30%",
+          background:
+            "linear-gradient(180deg, #f2f0ea 0%, #d8d4c8 60%, #a0a098 100%)",
+          transformOrigin: "top center",
+        }}
+      />
+
+      {/* ── Floor ── */}
+      <div
+        style={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: "35%",
+          background:
+            "linear-gradient(0deg, #8a8070 0%, #b0aa9a 50%, #c8c2b0 100%)",
+        }}
+      />
+
+      {/* Floor specular reflection */}
+      <div
+        style={{
+          position: "absolute",
+          bottom: 0,
+          left: "25%",
+          right: "25%",
+          height: "35%",
+          background:
+            "linear-gradient(0deg, rgba(255,255,255,0.08) 0%, transparent 60%)",
+          pointerEvents: "none",
+        }}
+      />
+
+      {/* ── Left Wall ── */}
+      <div
+        style={{
+          position: "absolute",
+          top: "30%",
+          bottom: "35%",
+          left: 0,
+          width: "18%",
+          background: "linear-gradient(90deg, #c0bdb0 0%, #e8e4d8 70%, #d0ccbf 100%)",
+          borderRight: "1px solid rgba(180,170,150,0.4)",
+        }}
+      />
+      {/* Left wall subtle blue accent stripe */}
+      <div
+        style={{
+          position: "absolute",
+          top: "30%",
+          bottom: "35%",
+          left: 0,
+          width: "3px",
+          background: "linear-gradient(180deg, transparent, rgba(100,140,200,0.4), transparent)",
+          pointerEvents: "none",
+        }}
+      />
+
+      {/* ── Right Wall ── */}
+      <div
+        style={{
+          position: "absolute",
+          top: "30%",
+          bottom: "35%",
+          right: 0,
+          width: "18%",
+          background: "linear-gradient(270deg, #c0bdb0 0%, #e8e4d8 70%, #d0ccbf 100%)",
+          borderLeft: "1px solid rgba(180,170,150,0.4)",
+        }}
+      />
+      {/* Right wall subtle blue accent stripe */}
+      <div
+        style={{
+          position: "absolute",
+          top: "30%",
+          bottom: "35%",
+          right: 0,
+          width: "3px",
+          background: "linear-gradient(180deg, transparent, rgba(100,140,200,0.4), transparent)",
+          pointerEvents: "none",
+        }}
+      />
+
+      {/* ── Centre corridor ── */}
+      <div
+        style={{
+          position: "absolute",
+          top: "30%",
+          bottom: "35%",
+          left: "18%",
+          right: "18%",
+          background: "linear-gradient(180deg, #f0ede6 0%, #e8e4dc 100%)",
+        }}
+      />
+
+      {/* Corridor vanishing-point perspective lines */}
+      <svg
+        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" }}
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        {/* Ceiling-wall left */}
+        <line x1="0" y1="30%" x2="50%" y2="50%" stroke="rgba(160,155,145,0.5)" strokeWidth="1" />
+        {/* Ceiling-wall right */}
+        <line x1="100%" y1="30%" x2="50%" y2="50%" stroke="rgba(160,155,145,0.5)" strokeWidth="1" />
+        {/* Floor-wall left */}
+        <line x1="0" y1="65%" x2="50%" y2="50%" stroke="rgba(120,115,105,0.4)" strokeWidth="1" />
+        {/* Floor-wall right */}
+        <line x1="100%" y1="65%" x2="50%" y2="50%" stroke="rgba(120,115,105,0.4)" strokeWidth="1" />
+      </svg>
+
+      {/* ── Ceiling Track Spotlights ── */}
+      {[20, 35, 50, 65, 80].map((x, i) => (
+        <div key={i}>
+          {/* Light track */}
+          <div
+            style={{
+              position: "absolute",
+              top: "2%",
+              left: `${x}%`,
+              width: "1px",
+              height: "5%",
+              background: "rgba(220,215,200,0.6)",
+              pointerEvents: "none",
+            }}
+          />
+          {/* Spotlight cone */}
+          <div
+            style={{
+              position: "absolute",
+              top: "7%",
+              left: `${x}%`,
+              width: "0",
+              height: "0",
+              borderLeft: "30px solid transparent",
+              borderRight: "30px solid transparent",
+              borderTop: `${25 + i * 2}px solid rgba(255,248,220,0.07)`,
+              transform: "translateX(-50%)",
+              pointerEvents: "none",
+            }}
+          />
+        </div>
+      ))}
+
+      {/* Warm overhead light wash */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background:
+            "radial-gradient(ellipse at 50% 0%, rgba(255,245,200,0.12) 0%, transparent 55%)",
+          pointerEvents: "none",
+        }}
+      />
+
+      {/* ── Artworks Layer ── */}
+      <div style={{ position: "absolute", inset: 0, overflow: "hidden" }}>
+        {artworks.map((artwork) => (
+          <FramedArtwork
+            key={artwork.id}
+            artwork={artwork}
+            cameraZ={cameraZ}
+            onOpen={setSelectedArtwork}
+          />
+        ))}
       </div>
 
-      {/* Custom Center Magnification & Glow Styling */}
-      <style jsx>{`
-        [data-center="true"] {
-          box-shadow: 0 30px 70px rgba(0, 0, 0, 0.75),
-                      0 0 45px rgba(217, 43, 107, 0.55) !important;
-          border: 2px solid rgba(226, 125, 155, 0.95) !important;
-        }
-      `}</style>
+      {/* ── Entrance Vignette ── */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background:
+            "radial-gradient(ellipse at 50% 50%, transparent 30%, rgba(5,8,20,0.55) 100%)",
+          pointerEvents: "none",
+        }}
+      />
+
+      {/* ── UI Overlay ── */}
+
+      {/* Top banner */}
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          padding: "16px 24px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          background: "linear-gradient(180deg, rgba(5,8,20,0.85) 0%, transparent 100%)",
+          zIndex: 50,
+          pointerEvents: "none",
+        }}
+      >
+        <div>
+          <p
+            style={{
+              fontFamily: "monospace",
+              fontSize: "9px",
+              letterSpacing: "0.25em",
+              color: "rgba(200,168,75,0.7)",
+              textTransform: "uppercase",
+              marginBottom: "2px",
+            }}
+          >
+            Photography Exhibition
+          </p>
+          <h2
+            style={{
+              fontFamily: "'Playfair Display', Georgia, serif",
+              fontSize: "clamp(1rem, 2.5vw, 1.5rem)",
+              color: "#f0ebe0",
+              fontWeight: 700,
+              letterSpacing: "0.02em",
+            }}
+          >
+            {memoriesData.title || "Our Memories"}
+          </h2>
+        </div>
+
+        <div style={{ textAlign: "right" }}>
+          <p
+            style={{
+              fontFamily: "monospace",
+              fontSize: "9px",
+              letterSpacing: "0.2em",
+              color: "rgba(200,168,75,0.6)",
+              textTransform: "uppercase",
+              marginBottom: "2px",
+            }}
+          >
+            {totalArtworks} Works
+          </p>
+          <p
+            style={{
+              fontFamily: "monospace",
+              fontSize: "10px",
+              color: "rgba(240,235,224,0.5)",
+            }}
+          >
+            Personal Collection
+          </p>
+        </div>
+      </div>
+
+      {/* Progress bar + scroll hint (bottom) */}
+      <div
+        style={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          padding: "16px 24px 20px",
+          background: "linear-gradient(0deg, rgba(5,8,20,0.85) 0%, transparent 100%)",
+          zIndex: 50,
+        }}
+      >
+        {/* Exhibition progress */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            marginBottom: "10px",
+          }}
+        >
+          <span
+            style={{
+              fontFamily: "monospace",
+              fontSize: "9px",
+              letterSpacing: "0.15em",
+              color: "rgba(200,168,75,0.6)",
+              textTransform: "uppercase",
+              whiteSpace: "nowrap",
+            }}
+          >
+            Entrance
+          </span>
+          <div
+            style={{
+              flex: 1,
+              height: "2px",
+              background: "rgba(255,255,255,0.1)",
+              borderRadius: "1px",
+              overflow: "hidden",
+            }}
+          >
+            <div
+              style={{
+                height: "100%",
+                width: `${progressPct}%`,
+                background: "linear-gradient(90deg, #c8a84b, #e8c96a)",
+                borderRadius: "1px",
+                transition: "width 0.1s linear",
+              }}
+            />
+          </div>
+          <span
+            style={{
+              fontFamily: "monospace",
+              fontSize: "9px",
+              letterSpacing: "0.15em",
+              color: "rgba(200,168,75,0.6)",
+              textTransform: "uppercase",
+              whiteSpace: "nowrap",
+            }}
+          >
+            End
+          </span>
+        </div>
+
+        {/* Scroll hint */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "16px",
+          }}
+        >
+          <button
+            onClick={() => advanceCamera(-0.15)}
+            style={{
+              background: "rgba(255,255,255,0.08)",
+              border: "1px solid rgba(255,255,255,0.15)",
+              borderRadius: "50%",
+              width: "32px",
+              height: "32px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              color: "rgba(240,235,224,0.7)",
+              transition: "all 0.2s",
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(200,168,75,0.2)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.08)"; }}
+            aria-label="Move backward"
+          >
+            <ChevronUp size={16} />
+          </button>
+
+          <span
+            style={{
+              fontFamily: "monospace",
+              fontSize: "9px",
+              letterSpacing: "0.2em",
+              color: "rgba(200,168,75,0.55)",
+              textTransform: "uppercase",
+            }}
+          >
+            Scroll or use ↑↓ to explore
+          </span>
+
+          <button
+            onClick={() => advanceCamera(0.15)}
+            style={{
+              background: "rgba(255,255,255,0.08)",
+              border: "1px solid rgba(255,255,255,0.15)",
+              borderRadius: "50%",
+              width: "32px",
+              height: "32px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              color: "rgba(240,235,224,0.7)",
+              transition: "all 0.2s",
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(200,168,75,0.2)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.08)"; }}
+            aria-label="Move forward"
+          >
+            <ChevronDown size={16} />
+          </button>
+        </div>
+      </div>
+
+      {/* Blue accent pilasters on walls */}
+      {["18%", "82%"].map((left, i) => (
+        <div
+          key={i}
+          style={{
+            position: "absolute",
+            top: "30%",
+            bottom: "35%",
+            left,
+            width: "2px",
+            background: "linear-gradient(180deg, transparent 0%, rgba(100,140,220,0.5) 50%, transparent 100%)",
+            transform: "translateX(-50%)",
+            pointerEvents: "none",
+          }}
+        />
+      ))}
+
+      {/* ── Artwork Modal ── */}
+      {selectedArtwork && (
+        <ArtworkModal
+          artwork={selectedArtwork}
+          onClose={() => setSelectedArtwork(null)}
+        />
+      )}
     </section>
   );
 }
