@@ -310,6 +310,8 @@ export default function MemoriesSection({ onPhotoClick }) {
   const [activeArtwork, setActiveArtwork] = useState(artworks[0] || null);
   const [hoveredArtwork, setHoveredArtwork] = useState(null);
   const [inspectModalArtwork, setInspectModalArtwork] = useState(null);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const isAutoPlayingRef = useRef(true);
 
   // Smooth lerp & interaction tracking
   const isDraggingRef = useRef(false);
@@ -332,6 +334,14 @@ export default function MemoriesSection({ onPhotoClick }) {
   // Endless Step Navigation: Moves smoothly by 1 slot (~10.9°)
   const stepWalk = useCallback((direction) => {
     targetAngleRef.current += direction * DELTA_ANGLE;
+  }, []);
+
+  const toggleAutoPlay = useCallback(() => {
+    setIsAutoPlaying((prev) => {
+      const next = !prev;
+      isAutoPlayingRef.current = next;
+      return next;
+    });
   }, []);
 
   // ─── Three.js Scene Setup ───────────────────────────────────────────────────
@@ -519,17 +529,19 @@ export default function MemoriesSection({ onPhotoClick }) {
     artworkMeshesRef.current = meshInteractiveList;
 
     // ─── Render Animation Loop (Seamless Endless Navigation) ──────────────────
-    let lastTime = performance.now();
+    let lastTime = null;
 
     const animate = (currentTime) => {
-      const dt = Math.min((currentTime - lastTime) / 1000, 0.1);
-      lastTime = currentTime;
+      const now = (typeof currentTime === "number" && currentTime > 0) ? currentTime : performance.now();
+      if (lastTime === null) lastTime = now;
+      const dt = Math.min(Math.max((now - lastTime) / 1000, 0.001), 0.1);
+      lastTime = now;
 
-      // MUTER SENDIRI (Auto-rotation / Auto-stroll):
-      // Kamera otomatis meluncur maju secara anggun dan konstan
-      // Berhenti sejenak saat pengunjung sedang drag, hover foto, atau membuka modal
-      if (!isDraggingRef.current && !isHoveredRef.current && !modalOpenRef.current) {
-        targetAngleRef.current += 0.042 * dt;
+      // MUTER SENDIRI (Continuous Smooth Auto-Rotation / Auto-Walk):
+      // Galeri selalu meluncur maju dan berputar sendiri secara anggun dan konstan!
+      // Hanya dijeda jika pengunjung sedang aktif menahan drag/sentuh atau membuka modal inspeksi
+      if (isAutoPlayingRef.current && !isDraggingRef.current && !modalOpenRef.current) {
+        targetAngleRef.current += 0.095 * dt;
       }
 
       // Smooth continuous camera interpolation (no clamping, infinite walk)
@@ -672,6 +684,7 @@ export default function MemoriesSection({ onPhotoClick }) {
 
   const handleTouchStart = (e) => {
     if (e.touches.length === 1) {
+      isDraggingRef.current = true;
       touchStartYRef.current = e.touches[0].clientY;
       lastPointerPosRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
     }
@@ -692,6 +705,7 @@ export default function MemoriesSection({ onPhotoClick }) {
   };
 
   const handleTouchEnd = () => {
+    isDraggingRef.current = false;
     touchStartYRef.current = null;
   };
 
@@ -765,11 +779,11 @@ export default function MemoriesSection({ onPhotoClick }) {
 
       {/* ── Bottom-Right Navigation & Instructions (Exact Reference Layout) ── */}
       <div className="absolute bottom-8 right-8 z-20 pointer-events-auto flex flex-col items-end gap-3">
-        {/* Stepper Buttons: Left Arrow and Right Arrow */}
+        {/* Stepper Buttons: Left Arrow, Auto-Walk Play/Pause, and Right Arrow */}
         <div className="flex items-center gap-2">
           <button
             onClick={() => stepWalk(-1)}
-            className="w-10 h-10 rounded-full flex items-center justify-center transition-all cursor-pointer"
+            className="w-10 h-10 rounded-full flex items-center justify-center transition-all cursor-pointer hover:bg-white/20 active:scale-95"
             style={{
               background: "rgba(35, 38, 48, 0.82)",
               border: "1px solid rgba(255, 255, 255, 0.15)",
@@ -781,8 +795,24 @@ export default function MemoriesSection({ onPhotoClick }) {
             ←
           </button>
           <button
+            onClick={toggleAutoPlay}
+            className="h-10 px-3.5 rounded-full flex items-center justify-center gap-2 transition-all cursor-pointer hover:bg-white/20 active:scale-95"
+            style={{
+              background: isAutoPlaying ? "rgba(225, 29, 72, 0.22)" : "rgba(35, 38, 48, 0.82)",
+              border: isAutoPlaying ? "1px solid rgba(244, 63, 94, 0.55)" : "1px solid rgba(255, 255, 255, 0.15)",
+              color: "#FFFFFF",
+            }}
+            title={isAutoPlaying ? "Pause auto-walk" : "Resume auto-walk"}
+            aria-label={isAutoPlaying ? "Pause auto-walk" : "Resume auto-walk"}
+          >
+            <span className="text-xs">{isAutoPlaying ? "⏸" : "▶"}</span>
+            <span className="text-[10px] font-mono tracking-wider uppercase text-neutral-200">
+              {isAutoPlaying ? "Auto Walk" : "Paused"}
+            </span>
+          </button>
+          <button
             onClick={() => stepWalk(1)}
-            className="w-10 h-10 rounded-full flex items-center justify-center transition-all cursor-pointer"
+            className="w-10 h-10 rounded-full flex items-center justify-center transition-all cursor-pointer hover:bg-white/20 active:scale-95"
             style={{
               background: "rgba(35, 38, 48, 0.82)",
               border: "1px solid rgba(255, 255, 255, 0.15)",
