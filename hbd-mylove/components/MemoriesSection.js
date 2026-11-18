@@ -1,565 +1,238 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { X, Calendar, ChevronDown, ChevronUp } from "lucide-react";
+import { X, Calendar } from "lucide-react";
 import { memoriesData } from "@/lib/data-konten";
 
-// ─── Museum data ─────────────────────────────────────────────────────────────
-// Each artwork is placed along the corridor.
-// wall: "left" | "right"  — which wall it hangs on
-// posZ: 0 → 1  — how deep along the corridor (0 = entrance, 1 = end)
-// frame: portrait | landscape | square
-const buildArtworks = (photos) => {
-  const walls = ["left", "right", "left", "right", "left", "right"];
-  const frames = ["portrait", "landscape", "portrait", "landscape", "portrait", "landscape"];
-  return photos.map((photo, i) => ({
-    ...photo,
-    wall: walls[i % walls.length],
-    posZ: (i + 0.7) / (photos.length + 0.4),
-    frame: frames[i % frames.length],
-    artworkNumber: String(i + 1).padStart(2, "0"),
-  }));
-};
+const RADIUS = 1050;    // cylinder radius — controls how "wrapped" the wall feels
+const ANGLE_STEP = 17;  // degrees between artworks
 
-// ─── Artwork Modal ─────────────────────────────────────────────────────────────
+// ─── Artwork detail modal ────────────────────────────────────────────────────
 function ArtworkModal({ artwork, onClose }) {
   useEffect(() => {
-    const handleKey = (e) => { if (e.key === "Escape") onClose(); };
-    document.addEventListener("keydown", handleKey);
-    return () => document.removeEventListener("keydown", handleKey);
+    const fn = (e) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", fn);
+    return () => document.removeEventListener("keydown", fn);
   }, [onClose]);
 
-  if (!artwork) return null;
-
   return (
     <div
-      className="fixed inset-0 z-[200] flex items-center justify-center"
-      style={{ background: "rgba(5, 8, 20, 0.95)", backdropFilter: "blur(16px)" }}
       onClick={onClose}
-    >
-      <div
-        className="relative mx-4 max-w-3xl w-full"
-        style={{
-          background: "linear-gradient(160deg, #f8f6f1 0%, #ede9e0 100%)",
-          borderRadius: "2px",
-          boxShadow: "0 40px 100px rgba(0,0,0,0.9), 0 0 0 1px rgba(200,190,170,0.4)",
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Museum spotlight top bar */}
-        <div
-          style={{
-            height: "4px",
-            background: "linear-gradient(90deg, #c8a84b, #e8c96a, #c8a84b)",
-            borderRadius: "2px 2px 0 0",
-          }}
-        />
-
-        <div className="p-6 md:p-10">
-          <div className="flex gap-6 md:gap-10 flex-col md:flex-row">
-            {/* Artwork image */}
-            <div
-              className="flex-shrink-0 relative"
-              style={{
-                width: "100%",
-                maxWidth: "340px",
-                alignSelf: "flex-start",
-              }}
-            >
-              {/* Outer frame */}
-              <div
-                style={{
-                  padding: "14px",
-                  background: "linear-gradient(145deg, #3a2c1a 0%, #5a4228 40%, #3a2c1a 100%)",
-                  boxShadow: "inset 0 2px 4px rgba(255,255,255,0.15), 0 8px 32px rgba(0,0,0,0.6), 6px 6px 20px rgba(0,0,0,0.5)",
-                  borderRadius: "1px",
-                }}
-              >
-                {/* Inner mat */}
-                <div
-                  style={{
-                    padding: "10px",
-                    background: "#f0ebe0",
-                    boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.1)",
-                  }}
-                >
-                  <div className="relative aspect-[4/3] overflow-hidden bg-gray-200">
-                    {artwork.src && (
-                      <img
-                        src={artwork.src}
-                        alt={artwork.alt || artwork.caption}
-                        className="w-full h-full object-cover"
-                        onError={(e) => { e.target.style.display = "none"; }}
-                      />
-                    )}
-                    {/* Spotlight glare */}
-                    <div
-                      style={{
-                        position: "absolute",
-                        inset: 0,
-                        background:
-                          "radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.12) 0%, transparent 60%)",
-                        pointerEvents: "none",
-                      }}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Frame shadow */}
-              <div
-                style={{
-                  position: "absolute",
-                  bottom: "-12px",
-                  left: "8px",
-                  right: "8px",
-                  height: "20px",
-                  background: "radial-gradient(ellipse, rgba(0,0,0,0.5) 0%, transparent 70%)",
-                  filter: "blur(6px)",
-                }}
-              />
-            </div>
-
-            {/* Info panel */}
-            <div className="flex-1 flex flex-col justify-center min-w-0">
-              {/* Artwork number */}
-              <p
-                style={{
-                  fontFamily: "monospace",
-                  fontSize: "11px",
-                  letterSpacing: "0.2em",
-                  color: "#8a7a60",
-                  marginBottom: "8px",
-                  textTransform: "uppercase",
-                }}
-              >
-                ARTWORK {artwork.artworkNumber} · PERSONAL COLLECTION
-              </p>
-
-              {/* Title */}
-              <h2
-                style={{
-                  fontFamily: "'Playfair Display', Georgia, serif",
-                  fontSize: "clamp(1.3rem, 3vw, 2rem)",
-                  fontWeight: 700,
-                  color: "#1a1208",
-                  lineHeight: 1.2,
-                  marginBottom: "12px",
-                }}
-              >
-                {artwork.caption}
-              </h2>
-
-              {/* Divider */}
-              <div
-                style={{
-                  width: "48px",
-                  height: "2px",
-                  background: "linear-gradient(90deg, #c8a84b, transparent)",
-                  marginBottom: "16px",
-                }}
-              />
-
-              {/* Date */}
-              {artwork.date && (
-                <div
-                  className="flex items-center gap-2 mb-4"
-                  style={{ color: "#8a7a60", fontSize: "13px" }}
-                >
-                  <Calendar size={13} />
-                  <span
-                    style={{ fontFamily: "monospace", letterSpacing: "0.08em" }}
-                  >
-                    {artwork.date}
-                  </span>
-                </div>
-              )}
-
-              {/* Description / alt text as memory */}
-              {artwork.alt && (
-                <p
-                  style={{
-                    fontFamily: "'Playfair Display', Georgia, serif",
-                    fontSize: "15px",
-                    color: "#3a2c1a",
-                    lineHeight: 1.8,
-                    fontStyle: "italic",
-                    borderLeft: "3px solid rgba(200,168,75,0.4)",
-                    paddingLeft: "14px",
-                  }}
-                >
-                  "{artwork.alt}"
-                </p>
-              )}
-
-              {/* Close */}
-              <button
-                onClick={onClose}
-                className="mt-8 self-start flex items-center gap-2 text-sm"
-                style={{
-                  background: "rgba(26,18,8,0.08)",
-                  border: "1px solid rgba(26,18,8,0.2)",
-                  color: "#3a2c1a",
-                  padding: "10px 20px",
-                  borderRadius: "1px",
-                  cursor: "pointer",
-                  letterSpacing: "0.1em",
-                  fontFamily: "monospace",
-                  fontSize: "11px",
-                  textTransform: "uppercase",
-                  transition: "all 0.2s",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "rgba(26,18,8,0.14)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "rgba(26,18,8,0.08)";
-                }}
-              >
-                <X size={13} /> Close Gallery
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ─── Framed Artwork on Wall ───────────────────────────────────────────────────
-function FramedArtwork({ artwork, cameraZ, onOpen }) {
-  const [hovered, setHovered] = useState(false);
-
-  // posZ is 0→1 along corridor.
-  // We map cameraZ (0→1) to a "relative depth" so we can position in perspective.
-  // The corridor is rendered as a fixed viewport; artworks move as camera moves.
-  const relZ = artwork.posZ - cameraZ; // negative = behind camera, positive = ahead
-
-  // ─ Perspective projection ─
-  // We use a simple perspective: the further away, the smaller and closer to vanishing point.
-  // Visible range: relZ in (-0.15, 1.2)
-  const fov = 1.1; // perspective strength
-  if (relZ < -0.08 || relZ > 1.3) return null; // cull
-
-  const perspective = fov / Math.max(relZ + fov, 0.05);
-  const scale = perspective * 0.55;
-  const opacity = relZ < 0.05
-    ? Math.max(0, relZ / 0.05)
-    : relZ > 1.0
-    ? Math.max(0, (1.3 - relZ) / 0.3)
-    : 1;
-
-  // Vertical position: closer artwork appears lower (perspective)
-  const baseY = 50; // % from top (vertically centred in corridor)
-  const yShift = (perspective - 0.5) * 10; // small vertical shift for depth
-
-  // Horizontal position: left wall vs right wall
-  // Centre of corridor = 50%. Left artworks shift towards left edge, right towards right edge.
-  const wallSide = artwork.wall === "left" ? 1 : -1; // left = positive offset from center
-  const xBase = artwork.wall === "left" ? 20 : 80; // % from left
-  const xPerspective = 50 + (xBase - 50) * Math.min(perspective, 2.5);
-
-  // Frame aspect
-  const aspectRatios = { portrait: "3/4", landscape: "4/3", square: "1/1" };
-  const aspect = aspectRatios[artwork.frame] || "4/3";
-
-  // Depth shadow & brightness
-  const brightness = 0.5 + Math.min(scale, 1) * 0.65;
-  const shadowBlur = Math.round(relZ * 40 + 8);
-  const shadowOpacity = Math.min(0.8, 0.2 + scale * 0.6);
-
-  return (
-    <div
       style={{
-        position: "absolute",
-        left: `${xPerspective}%`,
-        top: `${baseY + yShift}%`,
-        transform: `translate(-50%, -50%) scale(${Math.max(scale, 0.01)})`,
-        opacity,
-        cursor: "pointer",
-        zIndex: Math.round(scale * 100),
-        willChange: "transform, opacity",
-        transition: hovered ? "none" : "none",
+        position: "fixed", inset: 0, zIndex: 300,
+        background: "rgba(5,5,8,0.94)",
+        backdropFilter: "blur(18px)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        padding: "20px",
       }}
-      onClick={() => onOpen(artwork)}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
     >
-      {/* Outer ornate frame */}
       <div
+        onClick={(e) => e.stopPropagation()}
         style={{
+          background: "#fff",
+          maxWidth: 660, width: "100%",
           position: "relative",
-          padding: hovered ? "14px" : "12px",
-          background: hovered
-            ? "linear-gradient(145deg, #4a3820 0%, #7a6240 40%, #4a3820 100%)"
-            : "linear-gradient(145deg, #2e2010 0%, #5a4228 40%, #2e2010 100%)",
-          boxShadow: hovered
-            ? `0 0 0 1px rgba(220,190,100,0.6), 0 0 30px rgba(220,190,100,0.25), 0 ${shadowBlur}px ${shadowBlur * 2}px rgba(0,0,0,${shadowOpacity})`
-            : `0 0 0 1px rgba(180,150,80,0.3), 0 ${shadowBlur}px ${shadowBlur * 2}px rgba(0,0,0,${shadowOpacity})`,
-          transition: "all 0.3s ease",
-          minWidth: "180px",
-          maxWidth: artwork.frame === "portrait" ? "220px" : "280px",
+          boxShadow: "0 50px 120px rgba(0,0,0,0.9)",
         }}
       >
-        {/* Inner frame bevel */}
-        <div
-          style={{
-            padding: "4px",
-            background: hovered
-              ? "linear-gradient(145deg, #c8a84b22, #e8c96a11)"
-              : "transparent",
-            border: "1px solid rgba(200,168,75,0.2)",
-            transition: "all 0.3s ease",
-          }}
-        >
-          {/* Artwork image */}
-          <div
-            style={{
-              position: "relative",
-              aspectRatio: aspect,
-              width: "100%",
-              overflow: "hidden",
-              background: "#1a1208",
-              filter: `brightness(${brightness})`,
-              transition: "filter 0.3s ease",
-            }}
-          >
+        {/* Gold top bar */}
+        <div style={{ height: 3, background: "linear-gradient(90deg, #c8a84b, #f0d878, #c8a84b)" }} />
+
+        <div style={{ padding: "clamp(20px, 5vw, 44px)" }}>
+          {/* Image */}
+          <div style={{ position: "relative", aspectRatio: "4/3", overflow: "hidden", background: "#e8e4dc", marginBottom: 24 }}>
             {artwork.src && (
               <img
                 src={artwork.src}
                 alt={artwork.alt || artwork.caption}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                  display: "block",
-                  transform: hovered ? "scale(1.04)" : "scale(1)",
-                  transition: "transform 0.5s ease",
-                }}
+                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                 onError={(e) => { e.target.style.display = "none"; }}
               />
             )}
-            {/* Museum spotlight glare */}
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                background:
-                  "radial-gradient(ellipse at 35% 15%, rgba(255,255,255,0.18) 0%, transparent 55%)",
-                pointerEvents: "none",
-                opacity: hovered ? 0.6 : 0.9,
-                transition: "opacity 0.3s",
-              }}
-            />
-            {/* Hover overlay */}
-            {hovered && (
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  background: "rgba(10,8,4,0.35)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <span
-                  style={{
-                    fontFamily: "monospace",
-                    fontSize: "10px",
-                    letterSpacing: "0.15em",
-                    color: "#e8d8a0",
-                    textTransform: "uppercase",
-                    border: "1px solid rgba(232,216,160,0.6)",
-                    padding: "6px 14px",
-                    background: "rgba(10,8,4,0.6)",
-                  }}
-                >
-                  View Artwork
-                </span>
-              </div>
-            )}
+            <div style={{
+              position: "absolute", inset: 0,
+              background: "radial-gradient(ellipse at 30% 12%, rgba(255,255,255,0.14) 0%, transparent 55%)",
+              pointerEvents: "none",
+            }} />
           </div>
+
+          {/* Info */}
+          <p style={{ fontFamily: "monospace", fontSize: 10, letterSpacing: "0.22em", color: "#aaa", textTransform: "uppercase", marginBottom: 8 }}>
+            {artwork.artworkNumber} · Personal Collection
+          </p>
+          <h2 style={{
+            fontFamily: "'Playfair Display', Georgia, serif",
+            fontSize: "clamp(1.2rem, 3vw, 1.75rem)",
+            color: "#1a1a1f",
+            lineHeight: 1.2,
+            marginBottom: 12,
+          }}>
+            {artwork.caption}
+          </h2>
+          <div style={{ width: 42, height: 2, background: "linear-gradient(90deg, #c8a84b, transparent)", marginBottom: 16 }} />
+
+          {artwork.date && (
+            <div style={{ display: "flex", alignItems: "center", gap: 7, color: "#888", fontSize: 12, fontFamily: "monospace", marginBottom: 14 }}>
+              <Calendar size={12} /> {artwork.date}
+            </div>
+          )}
+          {artwork.alt && (
+            <p style={{
+              fontFamily: "'Playfair Display', Georgia, serif",
+              fontSize: 14, color: "#555", fontStyle: "italic", lineHeight: 1.8,
+              borderLeft: "3px solid rgba(200,168,75,0.4)", paddingLeft: 14,
+            }}>
+              "{artwork.alt}"
+            </p>
+          )}
+
+          <button
+            onClick={onClose}
+            style={{
+              marginTop: 24, padding: "10px 24px",
+              background: "#1a1a1f", color: "#fff",
+              border: "none", cursor: "pointer",
+              fontFamily: "monospace", fontSize: 10,
+              letterSpacing: "0.15em", textTransform: "uppercase",
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = "#333"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = "#1a1a1f"; }}
+          >
+            ← Back to Exhibition
+          </button>
         </div>
 
-        {/* Title plate */}
-        <div
+        <button
+          onClick={onClose}
           style={{
-            marginTop: "8px",
-            padding: "6px 10px",
-            background: "rgba(10,8,4,0.6)",
-            border: "1px solid rgba(200,168,75,0.2)",
-            textAlign: "center",
-            opacity: hovered ? 1 : 0.85,
-            transition: "opacity 0.3s",
+            position: "absolute", top: 14, right: 14,
+            background: "rgba(0,0,0,0.07)", border: "none",
+            borderRadius: "50%", width: 34, height: 34,
+            cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+            color: "#666",
           }}
         >
-          <p
-            style={{
-              fontFamily: "monospace",
-              fontSize: "9px",
-              letterSpacing: "0.18em",
-              color: "rgba(200,168,75,0.7)",
-              textTransform: "uppercase",
-              marginBottom: "2px",
-            }}
-          >
-            {artwork.artworkNumber}
-          </p>
-          <p
-            style={{
-              fontFamily: "'Playfair Display', Georgia, serif",
-              fontSize: "11px",
-              color: "#e8d8a0",
-              lineHeight: 1.3,
-              maxWidth: "180px",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {artwork.caption}
-          </p>
-        </div>
+          <X size={15} />
+        </button>
       </div>
-
-      {/* Floor shadow */}
-      <div
-        style={{
-          position: "absolute",
-          bottom: "-18px",
-          left: "10%",
-          right: "10%",
-          height: "16px",
-          background: "radial-gradient(ellipse, rgba(0,0,0,0.6) 0%, transparent 70%)",
-          filter: `blur(${Math.round(4 + relZ * 6)}px)`,
-          pointerEvents: "none",
-        }}
-      />
     </div>
   );
 }
 
-// ─── Main component ────────────────────────────────────────────────────────────
-export default function MemoriesSection({ onPhotoClick }) {
+// ─── Main component ───────────────────────────────────────────────────────────
+export default function MemoriesSection() {
   const photos = memoriesData.photos || [];
-  const artworks = buildArtworks(photos);
-  const totalArtworks = artworks.length;
+  const artworks = photos.map((p, i) => ({
+    ...p,
+    artworkNumber: String(i + 1).padStart(2, "0"),
+    angle: i * ANGLE_STEP,
+  }));
 
-  // cameraZ: 0 = at entrance, 1 = at end of corridor
-  const [cameraZ, setCameraZ] = useState(0);
+  const [cameraAngle, setCameraAngle] = useState(0);
+  const [hoveredId, setHoveredId] = useState(null);
   const [selectedArtwork, setSelectedArtwork] = useState(null);
-  const targetZRef = useRef(0);
-  const currentZRef = useRef(0);
+  const [activeIdx, setActiveIdx] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const targetRef = useRef(0);
+  const currentRef = useRef(0);
   const rafRef = useRef(null);
   const sectionRef = useRef(null);
+  const dragXRef = useRef(null);
+  const dragBaseRef = useRef(0);
+  const touchXRef = useRef(null);
 
-  const minZ = 0;
-  const maxZ = 1;
+  const minAngle = 0;
+  const maxAngle = (artworks.length - 1) * ANGLE_STEP;
 
-  // Smooth interpolation loop
-  const startRaf = useCallback(() => {
+  const startLerp = useCallback(() => {
     if (rafRef.current) return;
     const loop = () => {
-      const diff = targetZRef.current - currentZRef.current;
-      if (Math.abs(diff) > 0.0001) {
-        currentZRef.current += diff * 0.08; // lerp factor
-        setCameraZ(currentZRef.current);
+      const diff = targetRef.current - currentRef.current;
+      if (Math.abs(diff) > 0.04) {
+        currentRef.current += diff * 0.075;
+        setCameraAngle(currentRef.current);
+        const idx = Math.max(0, Math.min(artworks.length - 1, Math.round(currentRef.current / ANGLE_STEP)));
+        setActiveIdx(idx);
         rafRef.current = requestAnimationFrame(loop);
       } else {
-        currentZRef.current = targetZRef.current;
-        setCameraZ(targetZRef.current);
+        currentRef.current = targetRef.current;
+        setCameraAngle(targetRef.current);
         rafRef.current = null;
       }
     };
     rafRef.current = requestAnimationFrame(loop);
-  }, []);
+  }, [artworks.length]);
 
-  const advanceCamera = useCallback((delta) => {
-    // delta is a signed scroll amount normalised to our 0-1 range
-    targetZRef.current = Math.max(minZ, Math.min(maxZ, targetZRef.current + delta));
-    startRaf();
-  }, [startRaf]);
+  const move = useCallback((delta) => {
+    targetRef.current = Math.max(minAngle, Math.min(maxAngle, targetRef.current + delta));
+    startLerp();
+  }, [startLerp, minAngle, maxAngle]);
 
-  // ── Wheel handler ──
+  // Wheel
   useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
-
-    const handleWheel = (e) => {
-      // Only intercept if the mouse is over the museum section
-      const rect = section.getBoundingClientRect();
-      const inside =
-        e.clientX >= rect.left &&
-        e.clientX <= rect.right &&
-        e.clientY >= rect.top &&
-        e.clientY <= rect.bottom;
-      if (!inside) return;
-
+    const el = sectionRef.current;
+    if (!el) return;
+    const fn = (e) => {
       e.preventDefault();
-      e.stopPropagation();
-
-      const step = 0.004;
-      advanceCamera(e.deltaY * step);
+      move((e.deltaY + e.deltaX) * 0.022);
     };
+    el.addEventListener("wheel", fn, { passive: false });
+    return () => el.removeEventListener("wheel", fn);
+  }, [move]);
 
-    section.addEventListener("wheel", handleWheel, { passive: false });
-    return () => section.removeEventListener("wheel", handleWheel);
-  }, [advanceCamera]);
-
-  // ── Touch handler ──
-  const touchStartYRef = useRef(null);
+  // Touch
   useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
-
-    const handleTouchStart = (e) => {
-      touchStartYRef.current = e.touches[0].clientY;
-    };
-    const handleTouchMove = (e) => {
-      if (touchStartYRef.current === null) return;
-      const dy = touchStartYRef.current - e.touches[0].clientY;
-      touchStartYRef.current = e.touches[0].clientY;
+    const el = sectionRef.current;
+    if (!el) return;
+    const onStart = (e) => { touchXRef.current = e.touches[0].clientX; };
+    const onMove = (e) => {
+      if (touchXRef.current === null) return;
+      const dx = touchXRef.current - e.touches[0].clientX;
+      touchXRef.current = e.touches[0].clientX;
       e.preventDefault();
-      advanceCamera(dy * 0.0025);
+      move(dx * 0.065);
     };
-    const handleTouchEnd = () => {
-      touchStartYRef.current = null;
-    };
-
-    section.addEventListener("touchstart", handleTouchStart, { passive: true });
-    section.addEventListener("touchmove", handleTouchMove, { passive: false });
-    section.addEventListener("touchend", handleTouchEnd, { passive: true });
+    const onEnd = () => { touchXRef.current = null; };
+    el.addEventListener("touchstart", onStart, { passive: true });
+    el.addEventListener("touchmove", onMove, { passive: false });
+    el.addEventListener("touchend", onEnd);
     return () => {
-      section.removeEventListener("touchstart", handleTouchStart);
-      section.removeEventListener("touchmove", handleTouchMove);
-      section.removeEventListener("touchend", handleTouchEnd);
+      el.removeEventListener("touchstart", onStart);
+      el.removeEventListener("touchmove", onMove);
+      el.removeEventListener("touchend", onEnd);
     };
-  }, [advanceCamera]);
+  }, [move]);
 
-  // ── Keyboard fallback ──
+  // Keyboard
   useEffect(() => {
-    const handleKey = (e) => {
-      if (e.key === "ArrowDown" || e.key === "PageDown") {
-        e.preventDefault();
-        advanceCamera(0.12);
-      } else if (e.key === "ArrowUp" || e.key === "PageUp") {
-        e.preventDefault();
-        advanceCamera(-0.12);
-      }
+    const fn = (e) => {
+      if (e.key === "ArrowRight") move(ANGLE_STEP);
+      if (e.key === "ArrowLeft") move(-ANGLE_STEP);
     };
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
-  }, [advanceCamera]);
+    window.addEventListener("keydown", fn);
+    return () => window.removeEventListener("keydown", fn);
+  }, [move]);
 
-  // Cleanup RAF on unmount
-  useEffect(() => {
-    return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
-  }, []);
+  useEffect(() => () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); }, []);
 
-  const progressPct = Math.round(cameraZ * 100);
+  const onMouseDown = (e) => {
+    dragXRef.current = e.clientX;
+    dragBaseRef.current = targetRef.current;
+    setIsDragging(true);
+  };
+  const onMouseMove = (e) => {
+    if (dragXRef.current === null) return;
+    const dx = dragXRef.current - e.clientX;
+    targetRef.current = Math.max(minAngle, Math.min(maxAngle, dragBaseRef.current + dx * 0.09));
+    startLerp();
+  };
+  const onMouseUp = () => {
+    dragXRef.current = null;
+    setIsDragging(false);
+  };
+
+  const activeArtwork = artworks[activeIdx];
 
   return (
     <section
@@ -572,428 +245,325 @@ export default function MemoriesSection({ onPhotoClick }) {
         overflow: "hidden",
         userSelect: "none",
         touchAction: "none",
-        cursor: "default",
+        cursor: isDragging ? "grabbing" : "grab",
+        background: "#16161b",
       }}
+      onMouseDown={onMouseDown}
+      onMouseMove={onMouseMove}
+      onMouseUp={onMouseUp}
+      onMouseLeave={onMouseUp}
     >
-      {/* ── Museum Corridor Background ── */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          background: "linear-gradient(180deg, #0a0c14 0%, #0d1020 40%, #111428 100%)",
-        }}
-      />
 
-      {/* ── Ceiling ── */}
+      {/* ── Curved white museum wall ── */}
       <div
         style={{
           position: "absolute",
           top: 0,
-          left: 0,
-          right: 0,
-          height: "30%",
-          background:
-            "linear-gradient(180deg, #f2f0ea 0%, #d8d4c8 60%, #a0a098 100%)",
-          transformOrigin: "top center",
+          left: "-18%",
+          right: "-18%",
+          height: "67%",
+          background: "linear-gradient(180deg, #f6f4ef 0%, #eceae2 65%, #cac7bc 100%)",
+          borderRadius: "0 0 55% 55%",
         }}
       />
 
-      {/* ── Floor ── */}
+      {/* Wall edge darkening — depth cue left */}
+      <div style={{
+        position: "absolute", top: 0, left: 0, bottom: "35%", width: "13%",
+        background: "linear-gradient(90deg, rgba(16,16,20,0.72) 0%, transparent 100%)",
+        pointerEvents: "none", zIndex: 8,
+      }} />
+      {/* Wall edge darkening — depth cue right */}
+      <div style={{
+        position: "absolute", top: 0, right: 0, bottom: "35%", width: "13%",
+        background: "linear-gradient(270deg, rgba(16,16,20,0.72) 0%, transparent 100%)",
+        pointerEvents: "none", zIndex: 8,
+      }} />
+
+      {/* ── Dark floor ── */}
+      <div style={{
+        position: "absolute", bottom: 0, left: 0, right: 0, height: "37%",
+        background: "linear-gradient(0deg, #0c0c0f 0%, #18181e 55%, #242430 100%)",
+      }} />
+
+      {/* Floor specular gloss */}
+      <div style={{
+        position: "absolute", bottom: 0, left: "28%", right: "28%", height: "37%",
+        background: "linear-gradient(0deg, rgba(255,255,255,0.025) 0%, transparent 60%)",
+        pointerEvents: "none",
+      }} />
+
+      {/* Floor–wall seam */}
+      <div style={{
+        position: "absolute",
+        top: "58%", left: 0, right: 0, height: "90px",
+        background: "linear-gradient(180deg, transparent 0%, rgba(16,16,20,0.95) 100%)",
+        pointerEvents: "none",
+      }} />
+
+      {/* ── 3D Carousel ── */}
       <div
         style={{
           position: "absolute",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          height: "35%",
-          background:
-            "linear-gradient(0deg, #8a8070 0%, #b0aa9a 50%, #c8c2b0 100%)",
-        }}
-      />
-
-      {/* Floor specular reflection */}
-      <div
-        style={{
-          position: "absolute",
-          bottom: 0,
-          left: "25%",
-          right: "25%",
-          height: "35%",
-          background:
-            "linear-gradient(0deg, rgba(255,255,255,0.08) 0%, transparent 60%)",
-          pointerEvents: "none",
-        }}
-      />
-
-      {/* ── Left Wall ── */}
-      <div
-        style={{
-          position: "absolute",
-          top: "30%",
-          bottom: "35%",
-          left: 0,
-          width: "18%",
-          background: "linear-gradient(90deg, #c0bdb0 0%, #e8e4d8 70%, #d0ccbf 100%)",
-          borderRight: "1px solid rgba(180,170,150,0.4)",
-        }}
-      />
-      {/* Left wall subtle blue accent stripe */}
-      <div
-        style={{
-          position: "absolute",
-          top: "30%",
-          bottom: "35%",
-          left: 0,
-          width: "3px",
-          background: "linear-gradient(180deg, transparent, rgba(100,140,200,0.4), transparent)",
-          pointerEvents: "none",
-        }}
-      />
-
-      {/* ── Right Wall ── */}
-      <div
-        style={{
-          position: "absolute",
-          top: "30%",
-          bottom: "35%",
-          right: 0,
-          width: "18%",
-          background: "linear-gradient(270deg, #c0bdb0 0%, #e8e4d8 70%, #d0ccbf 100%)",
-          borderLeft: "1px solid rgba(180,170,150,0.4)",
-        }}
-      />
-      {/* Right wall subtle blue accent stripe */}
-      <div
-        style={{
-          position: "absolute",
-          top: "30%",
-          bottom: "35%",
-          right: 0,
-          width: "3px",
-          background: "linear-gradient(180deg, transparent, rgba(100,140,200,0.4), transparent)",
-          pointerEvents: "none",
-        }}
-      />
-
-      {/* ── Centre corridor ── */}
-      <div
-        style={{
-          position: "absolute",
-          top: "30%",
-          bottom: "35%",
-          left: "18%",
-          right: "18%",
-          background: "linear-gradient(180deg, #f0ede6 0%, #e8e4dc 100%)",
-        }}
-      />
-
-      {/* Corridor vanishing-point perspective lines */}
-      <svg
-        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" }}
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        {/* Ceiling-wall left */}
-        <line x1="0" y1="30%" x2="50%" y2="50%" stroke="rgba(160,155,145,0.5)" strokeWidth="1" />
-        {/* Ceiling-wall right */}
-        <line x1="100%" y1="30%" x2="50%" y2="50%" stroke="rgba(160,155,145,0.5)" strokeWidth="1" />
-        {/* Floor-wall left */}
-        <line x1="0" y1="65%" x2="50%" y2="50%" stroke="rgba(120,115,105,0.4)" strokeWidth="1" />
-        {/* Floor-wall right */}
-        <line x1="100%" y1="65%" x2="50%" y2="50%" stroke="rgba(120,115,105,0.4)" strokeWidth="1" />
-      </svg>
-
-      {/* ── Ceiling Track Spotlights ── */}
-      {[20, 35, 50, 65, 80].map((x, i) => (
-        <div key={i}>
-          {/* Light track */}
-          <div
-            style={{
-              position: "absolute",
-              top: "2%",
-              left: `${x}%`,
-              width: "1px",
-              height: "5%",
-              background: "rgba(220,215,200,0.6)",
-              pointerEvents: "none",
-            }}
-          />
-          {/* Spotlight cone */}
-          <div
-            style={{
-              position: "absolute",
-              top: "7%",
-              left: `${x}%`,
-              width: "0",
-              height: "0",
-              borderLeft: "30px solid transparent",
-              borderRight: "30px solid transparent",
-              borderTop: `${25 + i * 2}px solid rgba(255,248,220,0.07)`,
-              transform: "translateX(-50%)",
-              pointerEvents: "none",
-            }}
-          />
-        </div>
-      ))}
-
-      {/* Warm overhead light wash */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          background:
-            "radial-gradient(ellipse at 50% 0%, rgba(255,245,200,0.12) 0%, transparent 55%)",
-          pointerEvents: "none",
-        }}
-      />
-
-      {/* ── Artworks Layer ── */}
-      <div style={{ position: "absolute", inset: 0, overflow: "hidden" }}>
-        {artworks.map((artwork) => (
-          <FramedArtwork
-            key={artwork.id}
-            artwork={artwork}
-            cameraZ={cameraZ}
-            onOpen={setSelectedArtwork}
-          />
-        ))}
-      </div>
-
-      {/* ── Entrance Vignette ── */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          background:
-            "radial-gradient(ellipse at 50% 50%, transparent 30%, rgba(5,8,20,0.55) 100%)",
-          pointerEvents: "none",
-        }}
-      />
-
-      {/* ── UI Overlay ── */}
-
-      {/* Top banner */}
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          padding: "16px 24px",
+          top: 0, left: 0, right: 0,
+          bottom: "36%",
           display: "flex",
           alignItems: "center",
-          justifyContent: "space-between",
-          background: "linear-gradient(180deg, rgba(5,8,20,0.85) 0%, transparent 100%)",
-          zIndex: 50,
-          pointerEvents: "none",
+          justifyContent: "center",
+          perspective: "880px",
+          perspectiveOrigin: "50% 58%",
+          zIndex: 5,
         }}
       >
-        <div>
-          <p
-            style={{
-              fontFamily: "monospace",
-              fontSize: "9px",
-              letterSpacing: "0.25em",
-              color: "rgba(200,168,75,0.7)",
-              textTransform: "uppercase",
-              marginBottom: "2px",
-            }}
-          >
-            Photography Exhibition
-          </p>
-          <h2
-            style={{
-              fontFamily: "'Playfair Display', Georgia, serif",
-              fontSize: "clamp(1rem, 2.5vw, 1.5rem)",
-              color: "#f0ebe0",
-              fontWeight: 700,
-              letterSpacing: "0.02em",
-            }}
-          >
-            {memoriesData.title || "Our Memories"}
-          </h2>
-        </div>
+        <div
+          style={{
+            position: "relative",
+            width: 0, height: 0,
+            transformStyle: "preserve-3d",
+            transform: `rotateY(${-cameraAngle}deg)`,
+          }}
+        >
+          {artworks.map((artwork) => {
+            const angleRad = (artwork.angle * Math.PI) / 180;
+            const x = Math.sin(angleRad) * RADIUS;
+            const z = -(RADIUS - Math.cos(angleRad) * RADIUS);
+            const relAngle = artwork.angle - cameraAngle;
+            const isHovered = hoveredId === artwork.id;
 
-        <div style={{ textAlign: "right" }}>
-          <p
-            style={{
-              fontFamily: "monospace",
-              fontSize: "9px",
-              letterSpacing: "0.2em",
-              color: "rgba(200,168,75,0.6)",
-              textTransform: "uppercase",
-              marginBottom: "2px",
-            }}
-          >
-            {totalArtworks} Works
-          </p>
-          <p
-            style={{
-              fontFamily: "monospace",
-              fontSize: "10px",
-              color: "rgba(240,235,224,0.5)",
-            }}
-          >
-            Personal Collection
-          </p>
+            if (Math.abs(relAngle) > 78) return null;
+
+            return (
+              <div
+                key={artwork.id}
+                style={{
+                  position: "absolute",
+                  transform: `translateX(${x}px) translateZ(${z}px) rotateY(${-artwork.angle}deg)`,
+                  transformOrigin: "center center",
+                  cursor: "pointer",
+                  willChange: "transform",
+                }}
+                onMouseEnter={(e) => { e.stopPropagation(); setHoveredId(artwork.id); }}
+                onMouseLeave={() => setHoveredId(null)}
+                onClick={(e) => { e.stopPropagation(); setSelectedArtwork(artwork); }}
+              >
+                {/* Spotlight cone */}
+                <div style={{
+                  position: "absolute",
+                  bottom: "calc(100% - 8px)",
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  width: 0, height: 0,
+                  borderLeft: "58px solid transparent",
+                  borderRight: "58px solid transparent",
+                  borderBottom: "160px solid rgba(255,248,210,0.085)",
+                  pointerEvents: "none",
+                  zIndex: -1,
+                }} />
+
+                {/* Artwork card */}
+                <div
+                  style={{
+                    width: "240px",
+                    background: "#fff",
+                    transform: `translateY(${isHovered ? "-10px" : "0px"})`,
+                    transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                    boxShadow: isHovered
+                      ? "0 28px 70px rgba(0,0,0,0.65), 0 0 0 1px rgba(200,168,75,0.5)"
+                      : "0 12px 44px rgba(0,0,0,0.42), 0 0 0 1px rgba(0,0,0,0.07)",
+                  }}
+                >
+                  {/* Photo */}
+                  <div style={{ position: "relative", aspectRatio: "4/3", overflow: "hidden", background: "#d8d4cc" }}>
+                    {artwork.src && (
+                      <img
+                        src={artwork.src}
+                        alt={artwork.alt || artwork.caption}
+                        style={{
+                          width: "100%", height: "100%",
+                          objectFit: "cover", display: "block",
+                          transform: isHovered ? "scale(1.06)" : "scale(1)",
+                          transition: "transform 0.5s ease",
+                        }}
+                        draggable={false}
+                        onError={(e) => { e.target.style.display = "none"; }}
+                      />
+                    )}
+                    {/* Spotlight glare */}
+                    <div style={{
+                      position: "absolute", inset: 0,
+                      background: "radial-gradient(ellipse at 35% 10%, rgba(255,255,255,0.18) 0%, transparent 55%)",
+                      pointerEvents: "none",
+                    }} />
+                    {/* Hover tint */}
+                    {isHovered && (
+                      <div style={{
+                        position: "absolute", inset: 0,
+                        background: "rgba(0,0,0,0.12)",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                      }}>
+                        <span style={{
+                          fontFamily: "monospace", fontSize: 9, letterSpacing: "0.18em",
+                          color: "#fff", textTransform: "uppercase",
+                          border: "1px solid rgba(255,255,255,0.6)",
+                          padding: "5px 14px",
+                          background: "rgba(0,0,0,0.4)",
+                        }}>
+                          View Memory
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Caption label */}
+                  <div style={{ padding: "9px 13px 11px", borderTop: "1px solid rgba(0,0,0,0.05)" }}>
+                    <p style={{
+                      fontFamily: "monospace", fontSize: 9,
+                      letterSpacing: "0.14em", color: "#c0bbb0",
+                      textTransform: "uppercase", marginBottom: 3,
+                    }}>
+                      {artwork.artworkNumber}
+                    </p>
+                    <p style={{
+                      fontFamily: "'Playfair Display', Georgia, serif",
+                      fontSize: 12, color: "#1a1a1f", lineHeight: 1.3,
+                      whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+                    }}>
+                      {artwork.caption}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 
-      {/* Progress bar + scroll hint (bottom) */}
-      <div
-        style={{
-          position: "absolute",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          padding: "16px 24px 20px",
-          background: "linear-gradient(0deg, rgba(5,8,20,0.85) 0%, transparent 100%)",
-          zIndex: 50,
-        }}
-      >
-        {/* Exhibition progress */}
+      {/* ── Bottom centre overlay ── */}
+      <div style={{
+        position: "absolute",
+        bottom: "15%",
+        left: 0, right: 0,
+        textAlign: "center",
+        pointerEvents: "none",
+        zIndex: 20,
+      }}>
+        <p style={{
+          fontFamily: "monospace", fontSize: 10,
+          letterSpacing: "0.26em", color: "rgba(255,255,255,0.4)",
+          textTransform: "uppercase", marginBottom: 7,
+        }}>
+          YOU ARE WALKING PAST
+        </p>
+        <h2 style={{
+          fontFamily: "'Playfair Display', Georgia, serif",
+          fontSize: "clamp(1.3rem, 2.4vw, 2rem)",
+          color: "#fff", fontWeight: 700,
+          textTransform: "uppercase", letterSpacing: "0.07em",
+          marginBottom: 11,
+          textShadow: "0 2px 24px rgba(0,0,0,0.6)",
+        }}>
+          {activeArtwork?.caption || memoriesData.title}
+        </h2>
         <div
           style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "12px",
-            marginBottom: "10px",
+            display: "inline-flex", alignItems: "center", gap: 8,
+            fontFamily: "monospace", fontSize: 10,
+            letterSpacing: "0.18em", color: "rgba(255,255,255,0.38)",
+            textTransform: "uppercase",
+            cursor: "pointer", pointerEvents: "auto",
+            borderBottom: "1px solid rgba(255,255,255,0.14)",
+            paddingBottom: 2,
+            transition: "color 0.2s",
           }}
+          onClick={() => activeArtwork && setSelectedArtwork(activeArtwork)}
+          onMouseEnter={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.75)"; }}
+          onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.38)"; }}
         >
-          <span
-            style={{
-              fontFamily: "monospace",
-              fontSize: "9px",
-              letterSpacing: "0.15em",
-              color: "rgba(200,168,75,0.6)",
-              textTransform: "uppercase",
-              whiteSpace: "nowrap",
-            }}
-          >
-            Entrance
-          </span>
-          <div
-            style={{
-              flex: 1,
-              height: "2px",
-              background: "rgba(255,255,255,0.1)",
-              borderRadius: "1px",
-              overflow: "hidden",
-            }}
-          >
-            <div
-              style={{
-                height: "100%",
-                width: `${progressPct}%`,
-                background: "linear-gradient(90deg, #c8a84b, #e8c96a)",
-                borderRadius: "1px",
-                transition: "width 0.1s linear",
-              }}
-            />
-          </div>
-          <span
-            style={{
-              fontFamily: "monospace",
-              fontSize: "9px",
-              letterSpacing: "0.15em",
-              color: "rgba(200,168,75,0.6)",
-              textTransform: "uppercase",
-              whiteSpace: "nowrap",
-            }}
-          >
-            End
-          </span>
-        </div>
-
-        {/* Scroll hint */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "16px",
-          }}
-        >
-          <button
-            onClick={() => advanceCamera(-0.15)}
-            style={{
-              background: "rgba(255,255,255,0.08)",
-              border: "1px solid rgba(255,255,255,0.15)",
-              borderRadius: "50%",
-              width: "32px",
-              height: "32px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              color: "rgba(240,235,224,0.7)",
-              transition: "all 0.2s",
-            }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(200,168,75,0.2)"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.08)"; }}
-            aria-label="Move backward"
-          >
-            <ChevronUp size={16} />
-          </button>
-
-          <span
-            style={{
-              fontFamily: "monospace",
-              fontSize: "9px",
-              letterSpacing: "0.2em",
-              color: "rgba(200,168,75,0.55)",
-              textTransform: "uppercase",
-            }}
-          >
-            Scroll or use ↑↓ to explore
-          </span>
-
-          <button
-            onClick={() => advanceCamera(0.15)}
-            style={{
-              background: "rgba(255,255,255,0.08)",
-              border: "1px solid rgba(255,255,255,0.15)",
-              borderRadius: "50%",
-              width: "32px",
-              height: "32px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              color: "rgba(240,235,224,0.7)",
-              transition: "all 0.2s",
-            }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(200,168,75,0.2)"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.08)"; }}
-            aria-label="Move forward"
-          >
-            <ChevronDown size={16} />
-          </button>
+          ENTER THE COLLECTION →
         </div>
       </div>
 
-      {/* Blue accent pilasters on walls */}
-      {["18%", "82%"].map((left, i) => (
-        <div
-          key={i}
+      {/* ── Bottom right hint ── */}
+      <div style={{
+        position: "absolute", bottom: 20, right: 24,
+        textAlign: "right", pointerEvents: "none", zIndex: 20,
+      }}>
+        <p style={{
+          fontFamily: "monospace", fontSize: 9,
+          letterSpacing: "0.12em", color: "rgba(255,255,255,0.22)",
+          textTransform: "uppercase", lineHeight: 2,
+        }}>
+          SCROLL OR DRAG TO WALK ROUND<br />
+          CLICK A PAINTING TO LOOK CLOSER
+        </p>
+      </div>
+
+      {/* ── Top left label ── */}
+      <div style={{ position: "absolute", top: 20, left: 24, zIndex: 20, pointerEvents: "none" }}>
+        <p style={{
+          fontFamily: "monospace", fontSize: 9,
+          letterSpacing: "0.22em", color: "rgba(255,255,255,0.28)",
+          textTransform: "uppercase", marginBottom: 2,
+        }}>
+          Photography Exhibition
+        </p>
+        <h3 style={{
+          fontFamily: "'Playfair Display', Georgia, serif",
+          fontSize: "1rem", color: "#fff", fontWeight: 700,
+        }}>
+          {memoriesData.title || "Our Memories"}
+        </h3>
+      </div>
+
+      {/* ── Top right counter ── */}
+      <div style={{ position: "absolute", top: 20, right: 24, zIndex: 20, pointerEvents: "none", textAlign: "right" }}>
+        <p style={{
+          fontFamily: "monospace", fontSize: 10,
+          color: "rgba(255,255,255,0.28)", letterSpacing: "0.1em",
+        }}>
+          {String(activeIdx + 1).padStart(2, "0")} / {String(artworks.length).padStart(2, "0")}
+        </p>
+      </div>
+
+      {/* ── Prev / Next arrow buttons ── */}
+      {activeIdx > 0 && (
+        <button
+          onClick={() => move(-ANGLE_STEP)}
           style={{
-            position: "absolute",
-            top: "30%",
-            bottom: "35%",
-            left,
-            width: "2px",
-            background: "linear-gradient(180deg, transparent 0%, rgba(100,140,220,0.5) 50%, transparent 100%)",
-            transform: "translateX(-50%)",
-            pointerEvents: "none",
+            position: "absolute", left: 18, top: "44%", transform: "translateY(-50%)",
+            background: "rgba(255,255,255,0.08)",
+            border: "1px solid rgba(255,255,255,0.15)",
+            borderRadius: "50%", width: 42, height: 42,
+            cursor: "pointer", color: "#fff", fontSize: 24,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            zIndex: 20, transition: "background 0.2s",
           }}
-        />
-      ))}
+          onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(200,168,75,0.22)"; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.08)"; }}
+          aria-label="Previous artwork"
+        >‹</button>
+      )}
+      {activeIdx < artworks.length - 1 && (
+        <button
+          onClick={() => move(ANGLE_STEP)}
+          style={{
+            position: "absolute", right: 18, top: "44%", transform: "translateY(-50%)",
+            background: "rgba(255,255,255,0.08)",
+            border: "1px solid rgba(255,255,255,0.15)",
+            borderRadius: "50%", width: 42, height: 42,
+            cursor: "pointer", color: "#fff", fontSize: 24,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            zIndex: 20, transition: "background 0.2s",
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(200,168,75,0.22)"; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.08)"; }}
+          aria-label="Next artwork"
+        >›</button>
+      )}
 
       {/* ── Artwork Modal ── */}
       {selectedArtwork && (
-        <ArtworkModal
-          artwork={selectedArtwork}
-          onClose={() => setSelectedArtwork(null)}
-        />
+        <ArtworkModal artwork={selectedArtwork} onClose={() => setSelectedArtwork(null)} />
       )}
     </section>
   );
