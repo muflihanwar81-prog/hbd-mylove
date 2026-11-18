@@ -6,7 +6,7 @@ import { X, Calendar } from "lucide-react";
 import { memoriesData } from "@/lib/data-konten";
 
 // ─── Reference Palette & Architectural Constants ──────────────────────────────
-const COLOR_WALL = "#F2F0E9";       // Warm off-white / ivory
+const COLOR_WALL = "#FAF8F2";       // Bright radiant warm ivory / off-white
 const COLOR_FLOOR = "#29292C";      // Dark charcoal floor
 const COLOR_VOID = "#111521";       // Deep midnight navy void/ceiling
 
@@ -20,8 +20,8 @@ const LOOK_AHEAD_RAD = 0.28;        // Look-ahead angle along the sweeping curve
 // ─── Infinite Seamless 360° Circular Artwork Distribution ─────────────────────
 // Total slots around full 2*PI circle: 33 slots
 // DELTA_ANGLE = 2 * PI / 33 = ~0.1904 rad (~10.9°)
-// Outer wall has consecutive artworks matching the reference spacing.
-// Inner wall (Left wall) has curated artworks placed with spacing ("jarak beberapa foto") every 3 slots!
+// DINDING KANAN (Outer Wall): Penuh di setiap slot TANPA KOSONG sama sekali!
+// DINDING KIRI (Inner Wall): Ditempatkan foto dengan jeda ("jarak beberapa foto" setiap 3 slot).
 const TOTAL_SLOTS = 33;
 const DELTA_ANGLE = (Math.PI * 2) / TOTAL_SLOTS;
 
@@ -43,33 +43,39 @@ const buildEndlessCircularArtworks = (basePhotos) => {
   ];
 
   const artworkList = [];
-  let photoIdx = 0;
 
+  // 1. DINDING KANAN (Outer Wall): Penuh di SELURUH 33 slot tanpa ada yang kosong!
   for (let slot = 0; slot < TOTAL_SLOTS; slot++) {
     const angle = slot * DELTA_ANGLE;
-    const photo = basePhotos[photoIdx % count];
-    photoIdx++;
-
-    // Dinding sebelah kiri (Inner wall) ditempatkan foto setiap 3 slot ("jarak beberapa foto")
-    const isLeftWall = slot % 3 === 1;
-
-    let dim;
-    if (isLeftWall) {
-      // Left wall: slightly more compact and intimate
-      dim = (slot % 2 === 0) ? { w: 2.4, h: 2.0 } : { w: 2.0, h: 2.3 };
-    } else {
-      // Right wall (Outer wall): prominent reference proportions
-      dim = (slot % 3 === 0)
-        ? portraitDims[slot % portraitDims.length]
-        : landscapeDims[slot % landscapeDims.length];
-    }
+    const photo = basePhotos[slot % count];
+    const dim = (slot % 3 === 0)
+      ? portraitDims[slot % portraitDims.length]
+      : landscapeDims[slot % landscapeDims.length];
 
     artworkList.push({
       ...photo,
-      uniqueId: `art-${slot}`,
-      artworkNumber: String(photo.id || (photoIdx % count) + 1).padStart(2, "0"),
+      uniqueId: `art-right-${slot}`,
+      artworkNumber: String(photo.id || (slot % count) + 1).padStart(2, "0"),
       angle,
-      isLeftWall,
+      isLeftWall: false,
+      w: dim.w,
+      h: dim.h,
+      viewAngle: angle - 0.12,
+    });
+  }
+
+  // 2. DINDING KIRI (Inner Wall): Diberi jeda ("jarak beberapa foto" setiap 3 slot)
+  for (let slot = 0; slot < TOTAL_SLOTS; slot += 3) {
+    const angle = slot * DELTA_ANGLE;
+    const photo = basePhotos[(slot + 2) % count];
+    const dim = (slot % 2 === 0) ? { w: 2.4, h: 2.0 } : { w: 2.0, h: 2.3 };
+
+    artworkList.push({
+      ...photo,
+      uniqueId: `art-left-${slot}`,
+      artworkNumber: String(photo.id || ((slot + 2) % count) + 1).padStart(2, "0"),
+      angle,
+      isLeftWall: true,
       w: dim.w,
       h: dim.h,
       viewAngle: angle - 0.12,
@@ -169,11 +175,12 @@ function createSpotlightHaloTexture() {
   canvas.height = 512;
   const ctx = canvas.getContext("2d");
 
-  const grad = ctx.createRadialGradient(256, 256, 20, 256, 256, 250);
-  grad.addColorStop(0, "rgba(255, 250, 238, 0.55)");
-  grad.addColorStop(0.35, "rgba(255, 248, 232, 0.32)");
-  grad.addColorStop(0.70, "rgba(255, 245, 225, 0.10)");
-  grad.addColorStop(1, "rgba(255, 245, 225, 0)");
+  // Radiant museum warm white light pool
+  const grad = ctx.createRadialGradient(256, 256, 15, 256, 256, 250);
+  grad.addColorStop(0, "rgba(255, 255, 248, 0.72)");
+  grad.addColorStop(0.35, "rgba(255, 252, 242, 0.48)");
+  grad.addColorStop(0.70, "rgba(255, 250, 236, 0.18)");
+  grad.addColorStop(1, "rgba(255, 250, 236, 0)");
 
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, 512, 512);
@@ -353,24 +360,24 @@ export default function MemoriesSection({ onPhotoClick }) {
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.12;
+    renderer.toneMappingExposure = 1.32; // Bright, luminous museum lighting
 
     threeStateRef.current = { scene, camera, renderer, animId: null };
 
     // ─── Reference Lighting Setup ─────────────────────────────────────────────
-    // Soft, bright, warm white museum ambient lighting
-    const ambientLight = new THREE.AmbientLight("#FAF7EE", 0.78);
+    // Bright, soft, radiant warm white museum lighting
+    const ambientLight = new THREE.AmbientLight("#FFFDF5", 1.25);
     scene.add(ambientLight);
 
-    const hemiLight = new THREE.HemisphereLight("#FFFFFF", "#1E2028", 0.45);
+    const hemiLight = new THREE.HemisphereLight("#FFFFFF", "#2A2E3D", 0.68);
     scene.add(hemiLight);
 
     // ─── Materials ────────────────────────────────────────────────────────────
-    // Warm off-white / ivory wall plaster (#F2F0E9)
+    // Clean bright warm ivory wall plaster
     const wallMaterial = new THREE.MeshStandardMaterial({
       color: COLOR_WALL,
-      roughness: 0.88,
-      metalness: 0.01,
+      roughness: 0.65,
+      metalness: 0.0,
       side: THREE.DoubleSide,
     });
 
@@ -443,11 +450,11 @@ export default function MemoriesSection({ onPhotoClick }) {
       artworkGroup.rotation.y = isLeftWall ? angle : angle + Math.PI;
 
       // 1. Soft Circular Spotlight Pool on Wall (Reference Light Wash)
-      const haloGeo = new THREE.PlaneGeometry(w * 1.55, h * 1.65);
+      const haloGeo = new THREE.PlaneGeometry(w * 1.65, h * 1.75);
       const haloMat = new THREE.MeshBasicMaterial({
         map: haloTexture,
         transparent: true,
-        opacity: 0.90,
+        opacity: 0.98,
         blending: THREE.AdditiveBlending,
         depthWrite: false,
       });
