@@ -54,7 +54,7 @@ export default function Home() {
   const isMainSiteActive = isUnlocked && (isBirthdayReached || previewUnlocked);
 
   return (
-    <main className="relative min-h-screen bg-[#260814] text-[#FFF5F7]">
+    <main className="relative min-h-screen bg-[#350B19] text-[#FFF5ED]">
       {/* Background audio player - always mounted in DOM for autoplay reliability */}
       <MusicPlayer autoPlayTrigger={musicTrigger} visible={isUnlocked} />
 
@@ -70,7 +70,7 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      {/* Stage 2: Minimalist Countdown Gate (Hanya angka putih di atas background biru dongker solid) */}
+      {/* Stage 2: Luxury Maroon & Red Wine 3D Gift Box & Countdown Gate */}
       {isUnlocked && !isMainSiteActive && (
         <CountdownGateSection
           onTimeReached={() => setIsBirthdayReached(true)}
@@ -78,7 +78,7 @@ export default function Home() {
         />
       )}
 
-      {/* Floating Particles & Stars (aktif ketika beranda utama sudah terbuka) */}
+      {/* Floating Golden Dust Particles & Stars */}
       {isMainSiteActive && (
         <>
           <FloatingHearts />
@@ -86,19 +86,17 @@ export default function Home() {
         </>
       )}
 
-      {/* Stage 3: Full Landing Page (aktif setelah 00:00 atau klik preview) */}
+      {/* Stage 3: Full Birthday Page (Cinematic Reveal) */}
       {isMainSiteActive && (
-        <>
+        <div className="relative z-10 animate-fade-in transition-opacity duration-1000">
           <Navigation />
-          <div className="relative z-10 transition-opacity duration-700">
-            <OpeningSection />
-            <MemoriesSection onPhotoClick={setSelectedPhoto} />
-            <GallerySection onPhotoClick={setSelectedPhoto} />
-            <LetterSection />
-            <WishesSection />
-            <FinaleSection onRestart={handleRestart} />
-          </div>
-        </>
+          <OpeningSection />
+          <MemoriesSection onPhotoClick={setSelectedPhoto} />
+          <GallerySection onPhotoClick={setSelectedPhoto} />
+          <LetterSection />
+          <WishesSection />
+          <FinaleSection onRestart={handleRestart} />
+        </div>
       )}
 
       {/* Lightbox Photo Modal */}

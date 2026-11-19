@@ -19,19 +19,19 @@ export default function WishesSection() {
         {/* Header */}
         <div className="text-center mb-14">
           <motion.div initial={{ opacity: 0, y: -20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-semibold mb-3"
-            style={{ background: "rgba(217,43,107,0.12)", border: "1px solid rgba(217,43,107,0.25)", color: "#8F123C" }}>
-            <Heart size={16} className="text-[#D92B6B] fill-[#D92B6B]" />
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-semibold mb-3 tracking-widest uppercase"
+            style={{ background: "rgba(53,11,25,0.85)", border: "1px solid rgba(214,165,109,0.35)", color: "#D6A56D" }}>
+            <Heart size={16} className="text-[#D6A56D] fill-[#801F3A]" />
             <span>Doa & Harapan</span>
           </motion.div>
           <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
             transition={{ delay: 0.1 }}
             className="text-3xl md:text-5xl font-bold tracking-tight"
-            style={{ fontFamily: "'Playfair Display', serif", color: "#260814" }}>
+            style={{ fontFamily: "'Playfair Display', serif", color: "#350B19" }}>
             {wishesData.title}
           </motion.h2>
           <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-            transition={{ delay: 0.2 }} className="text-[#3B0B1E]/70 max-w-md mx-auto mt-2 text-sm md:text-base">
+            transition={{ delay: 0.2 }} className="text-[#4A1021]/80 max-w-md mx-auto mt-2 text-sm md:text-base font-light">
             {wishesData.subtitle}
           </motion.p>
         </div>
@@ -44,12 +44,12 @@ export default function WishesSection() {
               viewport={{ once: true }} transition={{ duration: 0.6, delay: idx * 0.1 }}
               whileHover={{ scale: 1.02 }}
               className="p-4 md:p-5 rounded-2xl flex items-center gap-4 shadow-md transition-all"
-              style={{ background: "rgba(255,255,255,0.95)", border: "1px solid rgba(143,18,60,0.1)", boxShadow: "0 4px 15px rgba(38,8,20,0.06)" }}>
+              style={{ background: "#FFFDF9", border: "1px solid rgba(214,165,109,0.25)", boxShadow: "0 4px 15px rgba(53,11,25,0.08)" }}>
               <div className="w-10 h-10 shrink-0 rounded-full flex items-center justify-center"
-                style={{ background: "rgba(217,43,107,0.15)" }}>
-                <Sparkles size={18} className="text-[#8F123C]" />
+                style={{ background: "rgba(128,31,58,0.12)" }}>
+                <Sparkles size={18} className="text-[#801F3A]" />
               </div>
-              <p className="text-base md:text-lg font-medium text-[#260814]">{wish}</p>
+              <p className="text-base md:text-lg font-medium text-[#350B19]">{wish}</p>
             </motion.div>
           ))}
         </div>
@@ -57,9 +57,9 @@ export default function WishesSection() {
         {/* Closing message */}
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
           className="text-center p-8 rounded-3xl"
-          style={{ background: "linear-gradient(135deg, rgba(217,43,107,0.08), rgba(247,194,207,0.15))", border: "1px solid rgba(143,18,60,0.12)" }}>
-          <Star className="w-8 h-8 text-[#D92B6B] fill-[#D92B6B]/40 mx-auto mb-3" />
-          <p className="text-base md:text-lg text-[#3B0B1E] italic leading-relaxed max-w-xl mx-auto"
+          style={{ background: "rgba(53,11,25,0.06)", border: "1px solid rgba(214,165,109,0.25)" }}>
+          <Star className="w-8 h-8 text-[#D6A56D] fill-[#D6A56D]/40 mx-auto mb-3" />
+          <p className="text-base md:text-lg text-[#350B19] italic leading-relaxed max-w-xl mx-auto"
             style={{ fontFamily: "'Playfair Display', serif" }}>
             "{wishesData.closingMessage}"
           </p>

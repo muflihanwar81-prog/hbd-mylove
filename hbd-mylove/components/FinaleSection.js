@@ -23,19 +23,19 @@ export default function FinaleSection({ onRestart }) {
           transition={{ type: "spring", stiffness: 200, damping: 15 }}
           className="w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center mb-6 shadow-xl"
           style={{
-            background: "rgba(255, 255, 255, 0.08)",
+            background: "rgba(53, 11, 25, 0.8)",
             backdropFilter: "blur(12px)",
-            border: "1px solid rgba(226, 125, 155, 0.35)",
+            border: "1px solid rgba(214, 165, 109, 0.45)",
           }}
         >
-          <Star className="w-10 h-10 md:w-12 md:h-12 text-[#E27D9B] fill-[#D92B6B]/40 animate-pulse" />
+          <Star className="w-10 h-10 md:w-12 md:h-12 text-[#D6A56D] fill-[#D6A56D]/40 animate-pulse" />
         </motion.div>
 
         <motion.p
           initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-sm md:text-base font-semibold tracking-widest text-[#E8A2B5] mb-2 uppercase"
+          className="text-sm md:text-base font-semibold tracking-widest text-[#D6A56D] mb-2 uppercase"
         >
           {finalData.title}
         </motion.p>
@@ -45,7 +45,7 @@ export default function FinaleSection({ onRestart }) {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="text-4xl md:text-6xl font-bold mb-4 leading-tight text-white font-heading"
+          className="text-4xl md:text-6xl font-bold mb-4 leading-tight text-[#FFF5ED] font-heading"
           style={{ fontFamily: "'Playfair Display', serif" }}
         >
           {finalData.mainText} <br />
@@ -59,7 +59,7 @@ export default function FinaleSection({ onRestart }) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.2 }}
-          className="text-base md:text-lg text-[#F7C2CF]/85 max-w-lg mb-8 leading-relaxed font-light"
+          className="text-base md:text-lg text-[#FFF5ED]/85 max-w-lg mb-8 leading-relaxed font-light"
         >
           {finalData.message}
         </motion.p>
@@ -71,7 +71,7 @@ export default function FinaleSection({ onRestart }) {
 
         {/* Restart Button */}
         <motion.button
-          whileHover={{ scale: 1.05, boxShadow: "0 10px 30px rgba(217, 43, 107, 0.45)" }}
+          whileHover={{ scale: 1.05, boxShadow: "0 10px 30px rgba(128, 31, 58, 0.55)" }}
           whileTap={{ scale: 0.95 }}
           onClick={() => {
             setCelebrate(true);
@@ -79,9 +79,9 @@ export default function FinaleSection({ onRestart }) {
           }}
           className="inline-flex items-center gap-2.5 px-8 py-4 rounded-full font-bold text-base shadow-xl transition-all cursor-pointer"
           style={{
-            background: "linear-gradient(135deg, #D92B6B 0%, #B81B52 50%, #8F123C 100%)",
-            color: "#FFFFFF",
-            border: "1px solid rgba(255, 255, 255, 0.4)",
+            background: "linear-gradient(135deg, #801F3A 0%, #64152D 50%, #4A1021 100%)",
+            color: "#FFF5ED",
+            border: "1px solid rgba(214, 165, 109, 0.55)",
           }}
         >
           <RotateCcw size={18} />
@@ -90,11 +90,11 @@ export default function FinaleSection({ onRestart }) {
 
         {/* Footer */}
         <div
-          className="mt-16 pt-8 w-full text-xs md:text-sm text-[#F7C2CF]/50 flex items-center justify-center gap-1.5"
-          style={{ borderTop: "1px solid rgba(226, 125, 155, 0.2)" }}
+          className="mt-16 pt-8 w-full text-xs md:text-sm text-[#FFF5ED]/50 flex items-center justify-center gap-1.5"
+          style={{ borderTop: "1px solid rgba(214, 165, 109, 0.25)" }}
         >
           <span>{finalData.footerText}</span>
-          <Sparkles size={14} className="text-[#E27D9B]" />
+          <Sparkles size={14} className="text-[#D6A56D]" />
         </div>
       </div>
     </section>

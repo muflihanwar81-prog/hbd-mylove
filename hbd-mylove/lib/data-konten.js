@@ -1,5 +1,5 @@
 // ============================================
-// DATA KONTEN - A Letter For You 💙
+// DATA KONTEN - A Letter For You ✨
 // ============================================
 // Edit file ini untuk mengubah seluruh konten website
 // tanpa perlu mengubah komponen utama.
@@ -28,7 +28,7 @@ export const secretCodeData = {
 
 export const countdownGateData = {
   badge: "COUNTDOWN TO YOUR SPECIAL DAY ✨",
-  title: "A Little More Patience, Love 💙",
+  title: "A Little More Patience, Love ✨",
   subtitle: "Sesuatu yang sangat indah telah disiapkan khusus untukmu. Beranda utama akan otomatis terbuka tepat pada pukul 00:00 di hari ulang tahunmu!",
   targetDateLabel: "Menuju Pukul 00:00",
   previewButtonText: "Buka Beranda Sekarang",
@@ -43,7 +43,7 @@ export const openingData = {
   buttonSecondary: "Jump Straight to the Letter",
   scrollText: "SCROLL TO DIVE IN",
   polaroidPhoto: "/images/couple-main.svg",
-  polaroidCaption: "Forever My Favorite 💙",
+  polaroidCaption: "Forever My Favorite ✨",
 };
 
 export const memoriesData = {

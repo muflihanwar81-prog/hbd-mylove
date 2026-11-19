@@ -43,9 +43,9 @@ export default function LetterSection() {
             viewport={{ once: true }}
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs md:text-sm font-semibold mb-3 tracking-widest uppercase"
             style={{
-              background: "rgba(226, 125, 155, 0.15)",
-              border: "1px solid rgba(226, 125, 155, 0.3)",
-              color: "#F7C2CF",
+              background: "rgba(53, 11, 25, 0.8)",
+              border: "1px solid rgba(214, 165, 109, 0.35)",
+              color: "#D6A56D",
             }}
           >
             <Mail size={16} />
@@ -57,7 +57,7 @@ export default function LetterSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-4xl md:text-6xl font-bold tracking-tight text-white mb-2"
+            className="text-4xl md:text-6xl font-bold tracking-tight text-[#FFF5ED] mb-2"
             style={{ fontFamily: "'Dancing Script', cursive" }}
           >
             {letterData.title}
@@ -68,7 +68,7 @@ export default function LetterSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="text-sm md:text-base text-[#F7C2CF]/80"
+            className="text-sm md:text-base text-[#D6A56D]/85"
           >
             {letterData.subtitle}
           </motion.p>
@@ -86,7 +86,7 @@ export default function LetterSection() {
             whileHover={{ rotate: 0, scale: 1.05 }}
             className="polaroid shrink-0 cursor-pointer shadow-2xl transition-all duration-300 w-48 sm:w-56 md:w-52 md:-mr-6 z-20 self-center md:self-start md:mt-16"
           >
-            <div className="aspect-[4/3] w-full rounded overflow-hidden bg-[#1D040E]">
+            <div className="aspect-[4/3] w-full rounded overflow-hidden bg-[#24050E]">
               <img
                 src={letterData.polaroidPhoto || "/images/couple-main.svg"}
                 alt="Love memory"
@@ -94,7 +94,7 @@ export default function LetterSection() {
               />
             </div>
             <p
-              className="text-center mt-3 text-xs md:text-sm text-[#260814] font-semibold"
+              className="text-center mt-3 text-xs md:text-sm text-[#350B19] font-semibold"
               style={{ fontFamily: "'Dancing Script', cursive", fontSize: "16px" }}
             >
               {letterData.polaroidCaption || "You & Me ♡"}
@@ -107,7 +107,7 @@ export default function LetterSection() {
             <div
               className="absolute -bottom-3 left-4 right-4 h-full rounded-3xl"
               style={{
-                background: "rgba(255, 245, 248, 0.4)",
+                background: "rgba(255, 245, 237, 0.4)",
                 transform: "rotate(2deg)",
                 filter: "blur(1px)",
               }}
@@ -116,7 +116,7 @@ export default function LetterSection() {
             <div
               className="absolute -bottom-1.5 left-2 right-2 h-full rounded-3xl"
               style={{
-                background: "rgba(255, 245, 248, 0.7)",
+                background: "rgba(255, 245, 237, 0.7)",
                 transform: "rotate(-1deg)",
               }}
             />
@@ -129,17 +129,17 @@ export default function LetterSection() {
               transition={{ duration: 0.8, ease: "easeOut" }}
               className="relative p-6 sm:p-10 md:p-12 rounded-3xl shadow-2xl paper-texture overflow-hidden"
               style={{
-                background: "#FFF7F9",
-                color: "#260814",
-                boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(226,125,155,0.3)",
+                background: "#FFF8F2",
+                color: "#350B19",
+                boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(214, 165, 109, 0.35)",
               }}
             >
               {/* Top corner floral accent inside paper */}
-              <div className="absolute top-0 right-0 w-32 h-32 opacity-10 pointer-events-none">
+              <div className="absolute top-0 right-0 w-32 h-32 opacity-15 pointer-events-none">
                 <svg viewBox="0 0 100 100" fill="none">
-                  <circle cx="80" cy="20" r="25" fill="#D92B6B" />
-                  <circle cx="60" cy="40" r="20" fill="#8F123C" />
-                  <circle cx="90" cy="50" r="15" fill="#E27D9B" />
+                  <circle cx="80" cy="20" r="25" fill="#D6A56D" />
+                  <circle cx="60" cy="40" r="20" fill="#801F3A" />
+                  <circle cx="90" cy="50" r="15" fill="#64152D" />
                 </svg>
               </div>
 
@@ -147,23 +147,23 @@ export default function LetterSection() {
               <div
                 className="absolute top-5 right-5 w-12 h-12 rounded-full flex items-center justify-center -rotate-12 shadow-sm"
                 style={{
-                  border: "2px dashed rgba(143, 18, 60, 0.4)",
-                  background: "rgba(217, 43, 107, 0.15)",
+                  border: "2px dashed rgba(214, 165, 109, 0.6)",
+                  background: "rgba(128, 31, 58, 0.15)",
                 }}
               >
-                <Sparkles size={18} className="text-[#8F123C]" />
+                <Sparkles size={18} className="text-[#801F3A]" />
               </div>
 
               {/* Salutation / Opening */}
               <h3
-                className="text-2xl md:text-3xl font-bold mb-6 text-[#260814]"
+                className="text-2xl md:text-3xl font-bold mb-6 text-[#350B19]"
                 style={{ fontFamily: "'Dancing Script', cursive" }}
               >
                 <TypewriterText text={letterData.opening} speed={45} delay={300} />
               </h3>
 
               {/* Letter Paragraphs */}
-              <div className="space-y-4 text-sm sm:text-base md:text-lg leading-relaxed text-[#3B0B1E] font-normal">
+              <div className="space-y-4 text-sm sm:text-base md:text-lg leading-relaxed text-[#4A1021] font-normal">
                 {letterData.paragraphs.map((p, idx) => (
                   <motion.p
                     key={idx}
@@ -180,16 +180,16 @@ export default function LetterSection() {
               {/* Closing & Signature */}
               <div
                 className="mt-8 pt-6 flex flex-col items-end"
-                style={{ borderTop: "1px solid rgba(143, 18, 60, 0.15)" }}
+                style={{ borderTop: "1px solid rgba(214, 165, 109, 0.25)" }}
               >
                 <p
-                  className="italic text-base md:text-lg text-[#581124]"
+                  className="italic text-base md:text-lg text-[#64152D]"
                   style={{ fontFamily: "'Dancing Script', cursive" }}
                 >
                   {letterData.closing}
                 </p>
                 <p
-                  className="font-bold text-2xl md:text-3xl mt-1 text-[#8F123C]"
+                  className="font-bold text-2xl md:text-3xl mt-1 text-[#801F3A]"
                   style={{ fontFamily: "'Dancing Script', cursive" }}
                 >
                   {letterData.signature}
@@ -197,9 +197,9 @@ export default function LetterSection() {
               </div>
 
               {/* Bottom corner accent inside paper */}
-              <div className="absolute -bottom-6 -left-6 w-24 h-24 opacity-10 pointer-events-none">
+              <div className="absolute -bottom-6 -left-6 w-24 h-24 opacity-15 pointer-events-none">
                 <svg viewBox="0 0 100 100" fill="none">
-                  <circle cx="50" cy="50" r="30" fill="#D92B6B" />
+                  <circle cx="50" cy="50" r="30" fill="#D6A56D" />
                 </svg>
               </div>
             </motion.div>

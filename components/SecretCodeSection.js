@@ -157,7 +157,7 @@ export default function SecretCodeSection({ onUnlock }) {
         isUnlocking ? "pointer-events-none" : ""
       }`}
       style={{
-        background: "linear-gradient(135deg, #1A030C 0%, #260814 30%, #3B0B1E 60%, #260814 100%)",
+        background: "radial-gradient(ellipse at 50% 50%, #4A1021 0%, #350B19 45%, #24050E 80%, #150207 100%)",
       }}
       initial={{ opacity: 1 }}
       exit={{ opacity: 0, scale: 1.05 }}
@@ -176,10 +176,10 @@ export default function SecretCodeSection({ onUnlock }) {
               height: s.size,
               background:
                 s.id % 3 === 0
-                  ? "rgba(255,255,255,0.9)"
+                  ? "rgba(255, 245, 237, 0.95)"
                   : s.id % 3 === 1
-                  ? "rgba(169,199,234,0.7)"
-                  : "rgba(220,229,245,0.6)",
+                  ? "rgba(214, 165, 109, 0.85)"
+                  : "rgba(168, 50, 80, 0.7)",
             }}
             animate={{ opacity: [0.2, 1, 0.2], scale: [0.8, 1.3, 0.8] }}
             transition={{ duration: s.duration, delay: s.delay, repeat: Infinity, ease: "easeInOut" }}
@@ -187,35 +187,35 @@ export default function SecretCodeSection({ onUnlock }) {
         ))}
       </div>
 
-      {/* Decorative Flowers */}
-      <div className="absolute top-0 right-0 w-64 h-64 opacity-[0.08] pointer-events-none">
+      {/* Decorative Warm Accents */}
+      <div className="absolute top-0 right-0 w-64 h-64 opacity-[0.07] pointer-events-none">
         <svg viewBox="0 0 200 200" fill="none">
-          <circle cx="100" cy="60" r="40" fill="#A9C7EA" />
-          <circle cx="60" cy="100" r="35" fill="#DCE5F5" />
-          <circle cx="140" cy="100" r="35" fill="#A9C7EA" />
-          <circle cx="80" cy="140" r="30" fill="#DCE5F5" />
-          <circle cx="120" cy="140" r="30" fill="#A9C7EA" />
+          <circle cx="100" cy="60" r="40" fill="#D6A56D" />
+          <circle cx="60" cy="100" r="35" fill="#801F3A" />
+          <circle cx="140" cy="100" r="35" fill="#D6A56D" />
+          <circle cx="80" cy="140" r="30" fill="#64152D" />
+          <circle cx="120" cy="140" r="30" fill="#D6A56D" />
         </svg>
       </div>
-      <div className="absolute bottom-0 left-0 w-48 h-48 opacity-[0.08] pointer-events-none rotate-180">
+      <div className="absolute bottom-0 left-0 w-48 h-48 opacity-[0.07] pointer-events-none rotate-180">
         <svg viewBox="0 0 200 200" fill="none">
-          <circle cx="100" cy="60" r="40" fill="#A9C7EA" />
-          <circle cx="60" cy="100" r="35" fill="#DCE5F5" />
-          <circle cx="140" cy="100" r="35" fill="#A9C7EA" />
+          <circle cx="100" cy="60" r="40" fill="#D6A56D" />
+          <circle cx="60" cy="100" r="35" fill="#801F3A" />
+          <circle cx="140" cy="100" r="35" fill="#D6A56D" />
         </svg>
       </div>
 
-      {/* Glassmorphic White/Navy Card */}
+      {/* Glassmorphic Luxury Maroon/Wine Card */}
       <motion.div
         className={`relative z-10 w-full max-w-[440px] mx-auto p-6 sm:p-8 rounded-3xl ${
           shaking ? "shake" : ""
         }`}
         style={{
-          background: "rgba(45, 10, 24, 0.75)",
+          background: "rgba(53, 11, 25, 0.82)",
           backdropFilter: "blur(24px)",
           WebkitBackdropFilter: "blur(24px)",
-          border: "1px solid rgba(226, 125, 155, 0.25)",
-          boxShadow: "0 15px 45px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15)",
+          border: "1px solid rgba(214, 165, 109, 0.3)",
+          boxShadow: "0 20px 50px rgba(18, 2, 7, 0.6), inset 0 1px 0 rgba(255, 245, 237, 0.15)",
         }}
         initial={{ opacity: 0, y: 30, scale: 0.95 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -231,9 +231,9 @@ export default function SecretCodeSection({ onUnlock }) {
             className="w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center shadow-lg transition-colors duration-300"
             style={{
               background: isUnlocking
-                ? "linear-gradient(135deg, rgba(217, 43, 107, 0.7), rgba(247, 194, 207, 0.4))"
-                : "linear-gradient(135deg, rgba(217, 43, 107, 0.35), rgba(163, 24, 70, 0.2))",
-              border: "1px solid rgba(226, 125, 155, 0.35)",
+                ? "linear-gradient(135deg, rgba(214, 165, 109, 0.7), rgba(128, 31, 58, 0.5))"
+                : "linear-gradient(135deg, rgba(128, 31, 58, 0.45), rgba(74, 16, 33, 0.3))",
+              border: "1px solid rgba(214, 165, 109, 0.4)",
             }}
           >
             {isUnlocking ? (
@@ -242,17 +242,17 @@ export default function SecretCodeSection({ onUnlock }) {
                 animate={{ scale: 1, rotate: 360 }}
                 transition={{ type: "spring", stiffness: 200 }}
               >
-                <Unlock size={26} className="text-[#FFF5F7]" />
+                <Unlock size={26} className="text-[#FFF5ED]" />
               </motion.div>
             ) : (
-              <Lock size={26} className="text-[#F7C2CF]" />
+              <Lock size={26} className="text-[#D6A56D]" />
             )}
           </div>
         </motion.div>
 
         {/* Title */}
         <motion.h1
-          className="text-2xl sm:text-3xl font-bold text-center text-white mb-2 font-heading"
+          className="text-2xl sm:text-3xl font-bold text-center text-[#FFF5ED] mb-2 font-heading"
           style={{ fontFamily: "'Playfair Display', serif" }}
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -263,7 +263,7 @@ export default function SecretCodeSection({ onUnlock }) {
 
         {/* Subtitle */}
         <motion.p
-          className="text-xs sm:text-sm text-center text-[#A9C7EA] mb-6 font-light"
+          className="text-xs sm:text-sm text-center text-[#D6A56D]/85 mb-6 font-light"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
@@ -271,7 +271,7 @@ export default function SecretCodeSection({ onUnlock }) {
           {secretCodeData.subtitle}
         </motion.p>
 
-        {/* 6 Digit Input Boxes - Perfect Square Boxes Centered Inside Card */}
+        {/* 6 Digit Input Boxes */}
         <motion.div
           className="flex justify-center items-center gap-2 sm:gap-2.5 w-full my-6 px-1"
           initial={{ opacity: 0, y: 20 }}
@@ -295,10 +295,10 @@ export default function SecretCodeSection({ onUnlock }) {
                 error
                   ? "text-red-300 bg-red-500/15"
                   : isUnlocking
-                  ? "text-[#F8F8FF] bg-blue-400/20"
+                  ? "text-[#FFF5ED] bg-[#D6A56D]/20"
                   : digit
-                  ? "text-white bg-white/15"
-                  : "text-white bg-white/5"
+                  ? "text-[#FFF5ED] bg-white/15"
+                  : "text-[#FFF5ED] bg-white/5"
               }`}
               style={{
                 width: "48px",
@@ -313,12 +313,12 @@ export default function SecretCodeSection({ onUnlock }) {
                   error
                     ? "rgba(248, 113, 113, 0.7)"
                     : isUnlocking
-                    ? "rgba(217, 43, 107, 0.9)"
+                    ? "rgba(214, 165, 109, 0.9)"
                     : digit
-                    ? "rgba(226, 125, 155, 0.85)"
-                    : "rgba(255, 255, 255, 0.2)"
+                    ? "rgba(214, 165, 109, 0.85)"
+                    : "rgba(214, 165, 109, 0.25)"
                 }`,
-                boxShadow: digit ? "0 0 15px rgba(217, 43, 107, 0.35)" : "none",
+                boxShadow: digit ? "0 0 15px rgba(214, 165, 109, 0.35)" : "none",
               }}
             />
           ))}
@@ -344,19 +344,19 @@ export default function SecretCodeSection({ onUnlock }) {
           disabled={!isComplete || isUnlocking}
           className={`w-full py-3.5 sm:py-4 rounded-2xl font-bold text-sm sm:text-base transition-all duration-300 flex items-center justify-center gap-2 ${
             isComplete && !isUnlocking
-              ? "text-white cursor-pointer shadow-lg"
+              ? "text-[#FFF5ED] cursor-pointer shadow-lg"
               : isUnlocking
-              ? "text-white"
-              : "text-white/40 cursor-not-allowed"
+              ? "text-[#FFF5ED]"
+              : "text-[#FFF5ED]/40 cursor-not-allowed"
           }`}
           style={{
             background:
               isComplete || isUnlocking
-                ? "linear-gradient(135deg, #D92B6B 0%, #B81B52 50%, #8F123C 100%)"
-                : "rgba(255, 255, 255, 0.08)",
-            border: "1px solid rgba(226, 125, 155, 0.35)",
+                ? "linear-gradient(135deg, #801F3A 0%, #64152D 50%, #4A1021 100%)"
+                : "rgba(53, 11, 25, 0.45)",
+            border: "1px solid rgba(214, 165, 109, 0.4)",
             boxShadow:
-              isComplete || isUnlocking ? "0 10px 30px rgba(217, 43, 107, 0.45)" : "none",
+              isComplete || isUnlocking ? "0 10px 30px rgba(128, 31, 58, 0.45), 0 0 20px rgba(214, 165, 109, 0.25)" : "none",
           }}
           whileHover={isComplete && !isUnlocking ? { scale: 1.02 } : {}}
           whileTap={isComplete && !isUnlocking ? { scale: 0.98 } : {}}
@@ -367,13 +367,13 @@ export default function SecretCodeSection({ onUnlock }) {
           {isUnlocking ? (
             <>
               <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }}>
-                <Sparkles size={18} />
+                <Sparkles size={18} className="text-[#D6A56D]" />
               </motion.div>
               <span>Opening your surprise... 🎵</span>
             </>
           ) : (
             <>
-              <Lock size={16} />
+              <Lock size={16} className="text-[#D6A56D]" />
               <span>{secretCodeData.buttonText}</span>
             </>
           )}
@@ -384,7 +384,7 @@ export default function SecretCodeSection({ onUnlock }) {
           {[0, 1, 2].map((i) => (
             <motion.div
               key={i}
-              className="w-1.5 h-1.5 rounded-full bg-[#A9C7EA]"
+              className="w-1.5 h-1.5 rounded-full bg-[#D6A56D]"
               animate={{ opacity: [0.3, 1, 0.3] }}
               transition={{ duration: 1.5, delay: i * 0.3, repeat: Infinity }}
             />
@@ -401,7 +401,7 @@ export default function SecretCodeSection({ onUnlock }) {
             animate={{ opacity: 1 }}
           >
             <motion.div
-              className="w-40 h-40 rounded-full border-2 border-[#A9C7EA]"
+              className="w-40 h-40 rounded-full border-2 border-[#D6A56D]"
               initial={{ scale: 0.2, opacity: 1 }}
               animate={{ scale: [0.2, 3, 6], opacity: [1, 0.6, 0] }}
               transition={{ duration: 1, ease: "easeOut" }}
