@@ -3,9 +3,22 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import * as THREE from "three";
-import { Sparkles, Gift, Clock } from "lucide-react";
-import { getCountdown, padZero, parseDate } from "@/lib/format";
+import { Sparkles, Gift } from "lucide-react";
+import { getCountdown, padZero } from "@/lib/format";
 import { coupleData, countdownGateData } from "@/lib/data-konten";
+
+function checkWebGL() {
+  if (typeof window === "undefined") return true;
+  try {
+    const canvas = document.createElement("canvas");
+    return !!(
+      window.WebGLRenderingContext &&
+      (canvas.getContext("webgl") || canvas.getContext("experimental-webgl"))
+    );
+  } catch {
+    return false;
+  }
+}
 
 export default function CountdownGateSection({ onTimeReached, onPreviewUnlock }) {
   const containerRef = useRef(null);
@@ -17,7 +30,7 @@ export default function CountdownGateSection({ onTimeReached, onPreviewUnlock })
     animId: null,
     boxGroup: null,
     lidGroup: null,
-    ribbonGroup: null,
+    bodyRibbonGroup: null,
     bowGroup: null,
     innerLight: null,
     innerSpotLight: null,
@@ -27,6 +40,7 @@ export default function CountdownGateSection({ onTimeReached, onPreviewUnlock })
   });
 
   const [timeLeft, setTimeLeft] = useState(null);
+  const [hasWebGL, setHasWebGL] = useState(true);
   const [mounted, setMounted] = useState(false);
   const [isOpening, setIsOpening] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -38,14 +52,15 @@ export default function CountdownGateSection({ onTimeReached, onPreviewUnlock })
   const raycasterRef = useRef(new THREE.Raycaster());
   const mouseCoordsRef = useRef(new THREE.Vector2(-999, -999));
 
-  // ─── 1. Live Countdown Timer ──────────────────────────────────────────────
+  // ─── 1. Live Countdown ────────────────────────────────────────────────────
   useEffect(() => {
     setMounted(true);
+    setHasWebGL(checkWebGL());
+
     const updateCountdown = () => {
       const cd = getCountdown(coupleData.birthday);
       setTimeLeft(cd);
       if (cd && cd.isPassed && !isOpeningRef.current) {
-        // Automatically start opening when time is reached
         handleOpenGift();
       }
     };
@@ -55,7 +70,7 @@ export default function CountdownGateSection({ onTimeReached, onPreviewUnlock })
     return () => clearInterval(timer);
   }, []);
 
-  // ─── 2. Trigger Audio on User Interaction ─────────────────────────────────
+  // ─── 2. Audio Trigger ─────────────────────────────────────────────────────
   const triggerAudio = () => {
     try {
       const audioEl = document.getElementById("bg-music-player");
@@ -75,185 +90,209 @@ export default function CountdownGateSection({ onTimeReached, onPreviewUnlock })
     openStartTimeRef.current = performance.now();
     triggerAudio();
 
-    // Trigger golden light burst overlay at 2.4s
+    // Trigger golden light burst overlay at 2.2s
     setTimeout(() => {
       setShowBurstOverlay(true);
-    }, 2300);
+    }, 2200);
 
-    // Transition to birthday page at 3.2s
+    // Transition to birthday page at 3.0s
     setTimeout(() => {
       if (onPreviewUnlock) onPreviewUnlock();
       else if (onTimeReached) onTimeReached();
-    }, 3200);
+    }, 3000);
   }, [onPreviewUnlock, onTimeReached]);
 
   // ─── 4. Three.js 3D Gift Box Scene ────────────────────────────────────────
   useEffect(() => {
+    if (!hasWebGL) return;
     const container = containerRef.current;
     const canvas = canvasRef.current;
     if (!container || !canvas) return;
 
-    let width = container.clientWidth;
-    let height = container.clientHeight;
+    let width = container.clientWidth || window.innerWidth || 800;
+    let height = container.clientHeight || window.innerHeight || 600;
 
     // SCENE
     const scene = new THREE.Scene();
 
-    // CAMERA
-    const camera = new THREE.PerspectiveCamera(42, width / height, 0.1, 100);
-    camera.position.set(0, 1.25, 5.4);
-    camera.lookAt(0, 0.05, 0);
+    // CAMERA - Positioned so 3D gift box is centered and clearly visible
+    const camera = new THREE.PerspectiveCamera(38, width / height, 0.1, 100);
+    camera.position.set(0, 0.4, 5.8);
+    camera.lookAt(0, -0.32, 0);
 
-    // RENDERER
-    const renderer = new THREE.WebGLRenderer({
-      canvas,
-      antialias: true,
-      alpha: true,
-      powerPreference: "high-performance",
-    });
+    // RENDERER with error handling
+    let renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({
+        canvas,
+        antialias: true,
+        alpha: true,
+        powerPreference: "high-performance",
+      });
+    } catch (err) {
+      console.warn("WebGL initialization failed:", err);
+      setHasWebGL(false);
+      return;
+    }
+
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.15;
+    renderer.toneMappingExposure = 1.25;
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-    // ─── MATERIALS (Luxury Maroon, Burgundy & Champagne Gold) ─────────────────
-    // Premium Deep Burgundy Wrapping Paper (#64152D / #801F3A sheen)
-    const burgundyPaperMat = new THREE.MeshPhysicalMaterial({
+    // ─── MATERIALS (Luxurious Deep Burgundy & Satin Champagne Gold) ───────────
+    // Body & Lid: Deep Burgundy / Red Wine with high specular sheen
+    const burgundyMat = new THREE.MeshStandardMaterial({
       color: 0x64152D,
-      roughness: 0.38,
-      metalness: 0.08,
-      clearcoat: 0.4,
-      clearcoatRoughness: 0.25,
-      sheen: 0.65,
-      sheenColor: new THREE.Color(0x801F3A),
+      roughness: 0.28,
+      metalness: 0.15,
     });
 
-    // Dark Velvet Interior Lining (#350B19)
-    const velvetInteriorMat = new THREE.MeshStandardMaterial({
+    // Dark Velvet Interior
+    const interiorMat = new THREE.MeshStandardMaterial({
       color: 0x350B19,
-      roughness: 0.85,
-      metalness: 0.02,
+      roughness: 0.7,
+      metalness: 0.05,
       side: THREE.BackSide,
     });
 
-    // Elegant Champagne-Gold Satin Ribbon (#D6A56D)
+    // Ribbon & Bow: Satin Champagne Gold with metallic reflection
     const goldRibbonMat = new THREE.MeshStandardMaterial({
       color: 0xD6A56D,
-      roughness: 0.22,
-      metalness: 0.52,
-      emissive: 0x241607,
+      roughness: 0.2,
+      metalness: 0.65,
+      emissive: 0x2A1A0A,
     });
 
-    // ─── 3D GIFT BOX GEOMETRY ─────────────────────────────────────────────────
+    // ─── GEOMETRY ─────────────────────────────────────────────────────────────
     const boxGroup = new THREE.Group();
-    const ribbonGroup = new THREE.Group();
+    boxGroup.position.set(0, -0.48, 0);
+    boxGroup.rotation.x = 0.32; // Tilt downward so top lid & bow are visible
 
-    // A. Base Box Body (2.1 x 1.6 x 2.1)
-    const boxW = 2.1;
-    const boxH = 1.6;
-    const boxD = 2.1;
-    const baseMesh = new THREE.Mesh(new THREE.BoxGeometry(boxW, boxH, boxD), burgundyPaperMat);
-    baseMesh.castShadow = true;
-    baseMesh.receiveShadow = true;
-    boxGroup.add(baseMesh);
+    // 1. CUBE BOX BODY
+    const bW = 1.6;
+    const bH = 1.25;
+    const bD = 1.6;
+    const baseBox = new THREE.Mesh(new THREE.BoxGeometry(bW, bH, bD), burgundyMat);
+    baseBox.castShadow = true;
+    baseBox.receiveShadow = true;
+    boxGroup.add(baseBox);
 
-    // Inner Velvet Cavity
-    const innerCavity = new THREE.Mesh(new THREE.BoxGeometry(boxW - 0.08, boxH - 0.08, boxD - 0.08), velvetInteriorMat);
+    // Inner cavity
+    const innerCavity = new THREE.Mesh(
+      new THREE.BoxGeometry(bW - 0.08, bH - 0.08, bD - 0.08),
+      interiorMat
+    );
     boxGroup.add(innerCavity);
 
-    // B. Base Ribbons (Champagne Gold Bands)
-    const baseRibbonV = new THREE.Mesh(new THREE.BoxGeometry(0.32, boxH + 0.015, boxD + 0.02), goldRibbonMat);
-    baseRibbonV.castShadow = true;
-    ribbonGroup.add(baseRibbonV);
+    // 2. BODY RIBBONS (Vertical & Horizontal wrapping the 4 sides)
+    const bodyRibbonGroup = new THREE.Group();
+    const ribbonW = 0.28;
 
-    const baseRibbonH = new THREE.Mesh(new THREE.BoxGeometry(boxW + 0.02, boxH + 0.015, 0.32), goldRibbonMat);
-    baseRibbonH.castShadow = true;
-    ribbonGroup.add(baseRibbonH);
+    const bRibbonV = new THREE.Mesh(
+      new THREE.BoxGeometry(ribbonW, bH + 0.015, bD + 0.02),
+      goldRibbonMat
+    );
+    bRibbonV.castShadow = true;
+    bodyRibbonGroup.add(bRibbonV);
 
-    boxGroup.add(ribbonGroup);
+    const bRibbonH = new THREE.Mesh(
+      new THREE.BoxGeometry(bW + 0.02, bH + 0.015, ribbonW),
+      goldRibbonMat
+    );
+    bRibbonH.castShadow = true;
+    bodyRibbonGroup.add(bRibbonH);
 
-    // C. Box Lid Group with realistic hinge pivot
+    boxGroup.add(bodyRibbonGroup);
+
+    // 3. SEPARATE MOVABLE LID
     const lidGroup = new THREE.Group();
-    lidGroup.position.set(0, boxH / 2, 0); // Sits right atop the base box
+    // Position pivot right atop the box body
+    lidGroup.position.set(0, bH / 2, 0);
 
-    const lidW = boxW + 0.12;
-    const lidH = 0.36;
-    const lidD = boxD + 0.12;
-    const lidMesh = new THREE.Mesh(new THREE.BoxGeometry(lidW, lidH, lidD), burgundyPaperMat);
-    lidMesh.position.y = lidH / 2;
-    lidMesh.castShadow = true;
-    lidMesh.receiveShadow = true;
-    lidGroup.add(lidMesh);
+    const lW = bW + 0.1;
+    const lH = 0.28;
+    const lD = bD + 0.1;
 
-    // Lid Ribbons
-    const lidRibbonGroup = new THREE.Group();
-    const lidRibbonV = new THREE.Mesh(new THREE.BoxGeometry(0.325, lidH + 0.02, lidD + 0.02), goldRibbonMat);
-    lidRibbonV.position.y = lidH / 2;
-    lidRibbonV.castShadow = true;
-    lidRibbonGroup.add(lidRibbonV);
+    const lidBox = new THREE.Mesh(new THREE.BoxGeometry(lW, lH, lD), burgundyMat);
+    lidBox.position.set(0, lH / 2, 0);
+    lidBox.castShadow = true;
+    lidBox.receiveShadow = true;
+    lidGroup.add(lidBox);
 
-    const lidRibbonH = new THREE.Mesh(new THREE.BoxGeometry(lidW + 0.02, lidH + 0.02, 0.325), goldRibbonMat);
-    lidRibbonH.position.y = lidH / 2;
-    lidRibbonH.castShadow = true;
-    lidRibbonGroup.add(lidRibbonH);
+    // Lid ribbons (cross on top and wrap around lid lips)
+    const lRibbonV = new THREE.Mesh(
+      new THREE.BoxGeometry(ribbonW + 0.005, lH + 0.02, lD + 0.02),
+      goldRibbonMat
+    );
+    lRibbonV.position.set(0, lH / 2, 0);
+    lRibbonV.castShadow = true;
+    lidGroup.add(lRibbonV);
 
-    // D. Realistic Multi-Loop Champagne-Gold Ribbon Bow
+    const lRibbonH = new THREE.Mesh(
+      new THREE.BoxGeometry(lW + 0.02, lH + 0.02, ribbonW + 0.005),
+      goldRibbonMat
+    );
+    lRibbonH.position.set(0, lH / 2, 0);
+    lRibbonH.castShadow = true;
+    lidGroup.add(lRibbonH);
+
+    // 4. REALISTIC SATIN RIBBON BOW ON TOP
     const bowGroup = new THREE.Group();
-    bowGroup.position.set(0, lidH + 0.02, 0);
+    bowGroup.position.set(0, lH + 0.01, 0);
 
-    // Center Knot
-    const knotMesh = new THREE.Mesh(new THREE.SphereGeometry(0.18, 24, 24), goldRibbonMat);
-    knotMesh.scale.set(1.15, 0.9, 1.15);
-    knotMesh.castShadow = true;
-    bowGroup.add(knotMesh);
+    // Center knot
+    const knot = new THREE.Mesh(new THREE.SphereGeometry(0.15, 20, 20), goldRibbonMat);
+    knot.scale.set(1.15, 0.85, 1.15);
+    knot.castShadow = true;
+    bowGroup.add(knot);
 
-    // 6 Curved Satin Loops around the center knot
-    const numLoops = 6;
-    for (let i = 0; i < numLoops; i++) {
-      const angle = (i * Math.PI * 2) / numLoops;
-      const loopGroup = new THREE.Group();
-      loopGroup.rotation.y = angle;
+    // 6 Ribbon Loops arranged radially
+    const loopCount = 6;
+    for (let i = 0; i < loopCount; i++) {
+      const loopPivot = new THREE.Group();
+      loopPivot.rotation.y = (i * Math.PI * 2) / loopCount;
 
-      const loopGeo = new THREE.TorusGeometry(0.36, 0.08, 16, 32, Math.PI * 1.55);
+      const loopGeo = new THREE.TorusGeometry(0.28, 0.07, 16, 32, Math.PI * 1.55);
       const loopMesh = new THREE.Mesh(loopGeo, goldRibbonMat);
       loopMesh.rotation.x = Math.PI / 2.3;
-      loopMesh.rotation.z = Math.PI / 4;
-      loopMesh.position.set(0.24, 0.18, 0);
-      loopMesh.scale.set(1.0, 0.85, 1.2);
+      loopMesh.rotation.z = Math.PI / 4.2;
+      loopMesh.position.set(0.2, 0.14, 0);
+      loopMesh.scale.set(1.0, 0.85, 1.25);
       loopMesh.castShadow = true;
 
-      loopGroup.add(loopMesh);
-      bowGroup.add(loopGroup);
+      loopPivot.add(loopMesh);
+      bowGroup.add(loopPivot);
     }
 
-    // 2 Flowing Ribbon Tails cascading off the lid edge
-    const tail1 = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.02, 0.75), goldRibbonMat);
-    tail1.position.set(0.35, 0.02, 0.35);
-    tail1.rotation.set(-0.35, 0.6, 0.2);
+    // 2 Flowing cascading ribbon tails
+    const tailGeo = new THREE.BoxGeometry(0.2, 0.02, 0.65);
+    const tail1 = new THREE.Mesh(tailGeo, goldRibbonMat);
+    tail1.position.set(0.3, 0.02, 0.3);
+    tail1.rotation.set(-0.35, 0.55, 0.15);
     tail1.castShadow = true;
     bowGroup.add(tail1);
 
-    const tail2 = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.02, 0.8), goldRibbonMat);
-    tail2.position.set(-0.35, 0.02, 0.4);
-    tail2.rotation.set(-0.4, -0.65, -0.25);
+    const tail2 = new THREE.Mesh(tailGeo, goldRibbonMat);
+    tail2.position.set(-0.3, 0.02, 0.32);
+    tail2.rotation.set(-0.38, -0.6, -0.2);
     tail2.castShadow = true;
     bowGroup.add(tail2);
 
-    lidRibbonGroup.add(bowGroup);
-    lidGroup.add(lidRibbonGroup);
+    lidGroup.add(bowGroup);
     boxGroup.add(lidGroup);
 
-    // Soft Contact Shadow Plane Underneath
-    const shadowGeo = new THREE.PlaneGeometry(5, 5);
+    // 5. CONTACT FLOOR SHADOW
+    const shadowGeo = new THREE.PlaneGeometry(4.2, 4.2);
     const shadowCanvas = document.createElement("canvas");
     shadowCanvas.width = 128;
     shadowCanvas.height = 128;
     const sCtx = shadowCanvas.getContext("2d");
-    const sGrad = sCtx.createRadialGradient(64, 64, 10, 64, 64, 60);
-    sGrad.addColorStop(0, "rgba(20, 3, 8, 0.75)");
-    sGrad.addColorStop(0.5, "rgba(35, 6, 15, 0.4)");
+    const sGrad = sCtx.createRadialGradient(64, 64, 10, 64, 64, 62);
+    sGrad.addColorStop(0, "rgba(20, 2, 7, 0.85)");
+    sGrad.addColorStop(0.5, "rgba(35, 5, 14, 0.45)");
     sGrad.addColorStop(1, "rgba(0, 0, 0, 0)");
     sCtx.fillStyle = sGrad;
     sCtx.fillRect(0, 0, 128, 128);
@@ -262,97 +301,76 @@ export default function CountdownGateSection({ onTimeReached, onPreviewUnlock })
     const shadowMat = new THREE.MeshBasicMaterial({
       map: shadowTex,
       transparent: true,
-      opacity: 0.85,
+      opacity: 0.9,
       depthWrite: false,
     });
     const shadowPlane = new THREE.Mesh(shadowGeo, shadowMat);
     shadowPlane.rotation.x = -Math.PI / 2;
-    shadowPlane.position.y = -boxH / 2 - 0.01;
+    shadowPlane.position.y = -bH / 2 - 0.01;
     boxGroup.add(shadowPlane);
-
-    // Raycast hit target for easy clicking
-    const hitBox = new THREE.Mesh(
-      new THREE.BoxGeometry(boxW + 0.4, boxH + lidH + 0.4, boxD + 0.4),
-      new THREE.MeshBasicMaterial({ visible: false })
-    );
-    hitBox.position.y = 0.15;
-    hitBox.userData = { isGiftBox: true };
-    boxGroup.add(hitBox);
 
     scene.add(boxGroup);
 
-    // ─── LIGHTING (Warm Champagne, Deep Velvet Maroon & Red Wine) ─────────────
-    // Key Warm Light from top-front-right
-    const keyLight = new THREE.DirectionalLight(0xFFE5C2, 2.1);
-    keyLight.position.set(3.5, 6, 4.5);
+    // ─── 6. LIGHTING ──────────────────────────────────────────────────────────
+    // Main Key Light (front-top-right)
+    const keyLight = new THREE.DirectionalLight(0xFFE5C2, 2.3);
+    keyLight.position.set(3.2, 5.5, 4.5);
     keyLight.castShadow = true;
-    keyLight.shadow.mapSize.width = 2048;
-    keyLight.shadow.mapSize.height = 2048;
-    keyLight.shadow.camera.near = 0.5;
-    keyLight.shadow.camera.far = 15;
-    keyLight.shadow.camera.left = -3;
-    keyLight.shadow.camera.right = 3;
-    keyLight.shadow.camera.top = 3;
-    keyLight.shadow.camera.bottom = -3;
+    keyLight.shadow.mapSize.width = 1024;
+    keyLight.shadow.mapSize.height = 1024;
     keyLight.shadow.bias = -0.0005;
     scene.add(keyLight);
 
-    // Red-Wine Rim Light from back-left for luxury edge highlights
-    const rimLight = new THREE.DirectionalLight(0x801F3A, 2.8);
-    rimLight.position.set(-4.5, 3.5, -4.0);
+    // Rim Light (back-left) in red wine to highlight box silhouette
+    const rimLight = new THREE.DirectionalLight(0x801F3A, 2.9);
+    rimLight.position.set(-4.2, 3.2, -3.8);
     scene.add(rimLight);
 
-    // Warm Gold Fill Light on lower ribbon
+    // Gold Accent Fill from bottom
     const goldFill = new THREE.PointLight(0xD6A56D, 1.4, 9);
-    goldFill.position.set(0, -1.2, 3.5);
+    goldFill.position.set(0, -1.2, 3.2);
     scene.add(goldFill);
 
-    // Velvet Maroon Ambient
-    const ambientLight = new THREE.AmbientLight(0x4A1021, 0.95);
+    // Ambient Warm Velvet
+    const ambientLight = new THREE.AmbientLight(0x4A1021, 1.05);
     scene.add(ambientLight);
 
-    // Hidden Internal Golden Burst Lights (escapes upon opening)
-    const innerLight = new THREE.PointLight(0xFFE0A3, 0, 14, 1.4);
-    innerLight.position.set(0, 0.3, 0);
+    // Internal Box Light (glowing gold escaping on open)
+    const innerLight = new THREE.PointLight(0xFFE2A3, 0, 15, 1.3);
+    innerLight.position.set(0, 0.25, 0);
     boxGroup.add(innerLight);
 
-    const innerSpotLight = new THREE.SpotLight(0xFFF2D0, 0, 18, Math.PI / 3.2, 0.35, 1.2);
-    innerSpotLight.position.set(0, 0.4, 0);
+    const innerSpotLight = new THREE.SpotLight(0xFFF0D0, 0, 20, Math.PI / 3.2, 0.35, 1.2);
+    innerSpotLight.position.set(0, 0.35, 0);
     innerSpotLight.target.position.set(0, 3.5, 0);
     boxGroup.add(innerSpotLight);
     boxGroup.add(innerSpotLight.target);
 
-    // ─── FLOATING GOLDEN DUST PARTICLES (Idle Atmosphere) ─────────────────────
-    const dustCount = 320;
+    // ─── 7. FLOATING GOLDEN DUST (Ambient 3D particles) ──────────────────────
+    const dustCount = 280;
     const dustGeo = new THREE.BufferGeometry();
     const dustPositions = new Float32Array(dustCount * 3);
-    const dustScales = new Float32Array(dustCount);
     const dustBase = [];
 
     for (let i = 0; i < dustCount; i++) {
-      const radius = 1.2 + Math.random() * 3.2;
+      const radius = 1.1 + Math.random() * 3.2;
       const theta = Math.random() * Math.PI * 2;
-      const y = -1.2 + Math.random() * 4.5;
-      const x = Math.sin(theta) * radius;
-      const z = Math.cos(theta) * radius;
-
-      dustPositions[i * 3] = x;
+      const y = -1.2 + Math.random() * 4.2;
+      dustPositions[i * 3] = Math.sin(theta) * radius;
       dustPositions[i * 3 + 1] = y;
-      dustPositions[i * 3 + 2] = z;
-      dustScales[i] = 0.035 + Math.random() * 0.06;
+      dustPositions[i * 3 + 2] = Math.cos(theta) * radius;
 
       dustBase.push({
         radius,
         theta,
         y,
-        speed: 0.003 + Math.random() * 0.007,
-        yVel: 0.002 + Math.random() * 0.004,
+        speed: 0.003 + Math.random() * 0.006,
+        yVel: 0.002 + Math.random() * 0.003,
       });
     }
-
     dustGeo.setAttribute("position", new THREE.BufferAttribute(dustPositions, 3));
 
-    // Particle texture (soft golden circle)
+    // Circle particle texture
     const pCanvas = document.createElement("canvas");
     pCanvas.width = 64;
     pCanvas.height = 64;
@@ -360,14 +378,14 @@ export default function CountdownGateSection({ onTimeReached, onPreviewUnlock })
     const pGrad = pCtx.createRadialGradient(32, 32, 0, 32, 32, 32);
     pGrad.addColorStop(0, "rgba(255, 245, 237, 1)");
     pGrad.addColorStop(0.35, "rgba(214, 165, 109, 0.85)");
-    pGrad.addColorStop(0.7, "rgba(168, 50, 80, 0.4)");
+    pGrad.addColorStop(0.7, "rgba(168, 50, 80, 0.35)");
     pGrad.addColorStop(1, "rgba(0, 0, 0, 0)");
     pCtx.fillStyle = pGrad;
     pCtx.fillRect(0, 0, 64, 64);
     const pTex = new THREE.CanvasTexture(pCanvas);
 
     const dustMat = new THREE.PointsMaterial({
-      size: 0.12,
+      size: 0.11,
       map: pTex,
       transparent: true,
       opacity: 0.85,
@@ -377,40 +395,35 @@ export default function CountdownGateSection({ onTimeReached, onPreviewUnlock })
     const dustPoints = new THREE.Points(dustGeo, dustMat);
     scene.add(dustPoints);
 
-    // ─── EXPLOSION / BURST PARTICLE SYSTEM (Active on Opening) ────────────────
-    const burstCount = 1200;
+    // ─── 8. BURST PARTICLES (Explosion upon opening) ─────────────────────────
+    const burstCount = 1000;
     const burstGeo = new THREE.BufferGeometry();
     const burstPositions = new Float32Array(burstCount * 3);
     const burstColors = new Float32Array(burstCount * 3);
     const burstVelocities = [];
 
-    const goldColor = new THREE.Color(0xD6A56D);
-    const crimsonColor = new THREE.Color(0xA83250);
-    const warmWhiteColor = new THREE.Color(0xFFF5ED);
+    const colGold = new THREE.Color(0xD6A56D);
+    const colBurgundy = new THREE.Color(0xA83250);
+    const colWarmWhite = new THREE.Color(0xFFF5ED);
 
     for (let i = 0; i < burstCount; i++) {
-      burstPositions[i * 3] = (Math.random() - 0.5) * 0.4;
-      burstPositions[i * 3 + 1] = 0.2 + (Math.random() - 0.5) * 0.3;
-      burstPositions[i * 3 + 2] = (Math.random() - 0.5) * 0.4;
+      burstPositions[i * 3] = (Math.random() - 0.5) * 0.3;
+      burstPositions[i * 3 + 1] = 0.2 + (Math.random() - 0.5) * 0.2;
+      burstPositions[i * 3 + 2] = (Math.random() - 0.5) * 0.3;
 
-      // Radial velocities fanning outward and upward
       const u = Math.random();
       const v = Math.random();
       const theta = u * 2.0 * Math.PI;
       const phi = Math.acos(2.0 * v - 1.0);
-      const speed = 1.8 + Math.random() * 4.5;
+      const speed = 1.8 + Math.random() * 4.2;
 
       const vx = Math.sin(phi) * Math.cos(theta) * speed;
-      const vy = Math.abs(Math.cos(phi)) * speed * 1.35 + 1.2; // Strong upward bias
+      const vy = Math.abs(Math.cos(phi)) * speed * 1.35 + 1.2;
       const vz = Math.sin(phi) * Math.sin(theta) * speed;
-      burstVelocities.push({ vx, vy, vz, rot: Math.random() * 10 });
+      burstVelocities.push({ vx, vy, vz });
 
-      // Color distribution: 65% Champagne Gold, 25% Crimson/Burgundy, 10% Soft Warm White
       const pick = Math.random();
-      let c = goldColor;
-      if (pick > 0.65 && pick < 0.9) c = crimsonColor;
-      else if (pick >= 0.9) c = warmWhiteColor;
-
+      const c = pick < 0.65 ? colGold : pick < 0.9 ? colBurgundy : colWarmWhite;
       burstColors[i * 3] = c.r;
       burstColors[i * 3 + 1] = c.g;
       burstColors[i * 3 + 2] = c.b;
@@ -420,7 +433,7 @@ export default function CountdownGateSection({ onTimeReached, onPreviewUnlock })
     burstGeo.setAttribute("color", new THREE.BufferAttribute(burstColors, 3));
 
     const burstMat = new THREE.PointsMaterial({
-      size: 0.16,
+      size: 0.15,
       map: pTex,
       vertexColors: true,
       transparent: true,
@@ -431,7 +444,7 @@ export default function CountdownGateSection({ onTimeReached, onPreviewUnlock })
     const burstPoints = new THREE.Points(burstGeo, burstMat);
     scene.add(burstPoints);
 
-    // Save refs for animation loop
+    // Save refs
     threeRef.current = {
       scene,
       camera,
@@ -439,19 +452,18 @@ export default function CountdownGateSection({ onTimeReached, onPreviewUnlock })
       animId: null,
       boxGroup,
       lidGroup,
-      ribbonGroup,
-      lidRibbonGroup,
+      bodyRibbonGroup,
       bowGroup,
+      goldRibbonMat,
       innerLight,
       innerSpotLight,
       dustPoints,
       dustBase,
       burstPoints,
       burstVelocities,
-      hitBox,
     };
 
-    // ─── 5. ANIMATION LOOP (Realistic Physics & Cinematic Timing) ────────────
+    // ─── 9. RENDER LOOP ───────────────────────────────────────────────────────
     let lastTime = performance.now();
 
     const animate = (currentTime) => {
@@ -459,79 +471,81 @@ export default function CountdownGateSection({ onTimeReached, onPreviewUnlock })
       lastTime = currentTime;
       const t = currentTime * 0.001;
 
-      // Mouse Parallax Lerping
+      // Mouse Parallax
       mousePosRef.current.x += (mousePosRef.current.targetX - mousePosRef.current.x) * 0.06;
       mousePosRef.current.y += (mousePosRef.current.targetY - mousePosRef.current.y) * 0.06;
 
-      // Animate Ambient Dust
+      // Ambient Dust Drift
       if (dustPoints && dustBase) {
         const dPos = dustPoints.geometry.attributes.position.array;
         for (let i = 0; i < dustCount; i++) {
           const item = dustBase[i];
           item.theta += item.speed;
           item.y += item.yVel;
-          if (item.y > 3.5) item.y = -1.2;
+          if (item.y > 3.2) item.y = -1.2;
 
           dPos[i * 3] = Math.sin(item.theta) * item.radius;
-          dPos[i * 3 + 1] = item.y + Math.sin(t * 1.5 + i) * 0.08;
+          dPos[i * 3 + 1] = item.y + Math.sin(t * 1.5 + i) * 0.06;
           dPos[i * 3 + 2] = Math.cos(item.theta) * item.radius;
         }
         dustPoints.geometry.attributes.position.needsUpdate = true;
       }
 
-      // STATE: IDLE (Gentle floating, breathing & mouse parallax)
+      // ── IDLE ANIMATION: Continuous gentle Y rotation + breathing float ──
       if (!isOpeningRef.current) {
-        boxGroup.position.y = Math.sin(t * 1.4) * 0.07;
-        boxGroup.rotation.y = Math.sin(t * 0.6) * 0.14 + mousePosRef.current.x * 0.45;
-        boxGroup.rotation.x = mousePosRef.current.y * 0.35 + 0.1;
+        // Continuous rotation on Y axis
+        boxGroup.rotation.y += 0.008;
+        // Subtle floating on Y
+        boxGroup.position.y = -0.48 + Math.sin(t * 1.5) * 0.05;
+        // Subtle mouse tilt
+        boxGroup.rotation.x = 0.32 + mousePosRef.current.y * 0.22;
+        boxGroup.rotation.z = -mousePosRef.current.x * 0.12;
 
-        // Raycasting for cursor & hover
+        // Raycasting for interactive hover
         raycasterRef.current.setFromCamera(mouseCoordsRef.current, camera);
-        const intersects = raycasterRef.current.intersectObject(hitBox);
+        const intersects = raycasterRef.current.intersectObjects(boxGroup.children, true);
         if (intersects.length > 0) {
           setIsHovered(true);
-          canvas.style.cursor = "pointer";
+          if (canvas) canvas.style.cursor = "pointer";
           boxGroup.scale.lerp(new THREE.Vector3(1.03, 1.03, 1.03), 0.1);
         } else {
           setIsHovered(false);
-          canvas.style.cursor = "default";
+          if (canvas) canvas.style.cursor = "default";
           boxGroup.scale.lerp(new THREE.Vector3(1, 1, 1), 0.1);
         }
       } else {
-        // STATE: OPENING SEQUENCE (Elapsed Time in seconds)
+        // ── OPENING ANIMATION: Realistic Physics Sequence ──
         const elapsed = (currentTime - openStartTimeRef.current) / 1000;
 
-        // 1. Ribbon releases & dissolves naturally (0.0s - 0.7s)
+        // 1. Ribbon releases & moves downward (0.0s - 0.7s)
         const ribbonProgress = Math.min(Math.max(elapsed / 0.7, 0), 1);
-        const ribbonScale = 1 + ribbonProgress * 0.22;
-        ribbonGroup.scale.set(ribbonScale, 1.0, ribbonScale);
-        goldRibbonMat.opacity = Math.max(1 - ribbonProgress * 1.5, 0);
+        bodyRibbonGroup.position.y = -ribbonProgress * 0.65;
+        goldRibbonMat.opacity = Math.max(1 - ribbonProgress * 1.4, 0);
         goldRibbonMat.transparent = true;
 
-        // 2. Lid rotates upward realistically like a luxury box (0.4s - 2.0s)
-        if (elapsed > 0.4) {
-          const lidT = Math.min((elapsed - 0.4) / 1.6, 1);
-          // Cubic ease-out
+        // 2. Lid lifts upward and rotates 3D backward (0.3s - 1.8s)
+        if (elapsed > 0.3) {
+          const lidT = Math.min((elapsed - 0.3) / 1.5, 1);
           const easeLid = 1 - Math.pow(1 - lidT, 3);
 
-          lidGroup.position.y = boxH / 2 + easeLid * 1.65;
-          lidGroup.position.z = -easeLid * 0.95;
-          lidGroup.rotation.x = -easeLid * 1.85; // Tilts backwards past 105 degrees
-          lidGroup.rotation.z = Math.sin(easeLid * Math.PI) * 0.12;
+          lidGroup.position.y = bH / 2 + easeLid * 1.6;
+          lidGroup.position.z = -easeLid * 0.9;
+          lidGroup.rotation.x = -easeLid * 1.95; // Realistically tilts backward
+          lidGroup.rotation.z = Math.sin(easeLid * Math.PI) * 0.15;
         }
 
-        // 3. Warm golden light escapes from inside (0.5s - 2.8s)
-        if (elapsed > 0.5) {
-          const lightT = Math.min((elapsed - 0.5) / 1.8, 1);
-          innerLight.intensity = lightT * 28;
-          innerSpotLight.intensity = lightT * 35;
+        // 3. Warm golden light bursts from within (0.4s - 2.6s)
+        if (elapsed > 0.4) {
+          const lightT = Math.min((elapsed - 0.4) / 1.6, 1);
+          innerLight.intensity = lightT * 26;
+          innerSpotLight.intensity = lightT * 32;
         }
 
-        // 4. Particle eruption spreads outward (0.7s - 3.2s)
-        if (elapsed > 0.7) {
-          burstMat.opacity = Math.min((elapsed - 0.7) * 2.5, 1);
+        // 4. Glowing particles erupt and spread across the screen (0.6s - 3.0s)
+        if (elapsed > 0.6) {
+          burstMat.opacity = Math.min((elapsed - 0.6) * 2.5, 1);
           const bPos = burstPoints.geometry.attributes.position.array;
-          const dtBurst = dt * 1.2;
+          const dtBurst = dt * 1.25;
 
           for (let i = 0; i < burstCount; i++) {
             const vel = burstVelocities[i];
@@ -539,23 +553,21 @@ export default function CountdownGateSection({ onTimeReached, onPreviewUnlock })
             bPos[i * 3 + 1] += vel.vy * dtBurst;
             bPos[i * 3 + 2] += vel.vz * dtBurst;
 
-            // Upward lift + swirling drag
-            vel.vy -= 0.6 * dtBurst;
+            vel.vy -= 0.5 * dtBurst;
             vel.vx *= 0.985;
             vel.vz *= 0.985;
           }
           burstPoints.geometry.attributes.position.needsUpdate = true;
         }
 
-        // 5. Camera smoothly zooms into glowing interior (1.3s - 3.2s)
-        if (elapsed > 1.3) {
-          const zoomT = Math.min((elapsed - 1.3) / 1.8, 1);
-          // Ease in-out
+        // 5. Camera zooms in toward the glowing interior (1.2s - 2.8s)
+        if (elapsed > 1.2) {
+          const zoomT = Math.min((elapsed - 1.2) / 1.6, 1);
           const easeZoom = zoomT < 0.5 ? 2 * zoomT * zoomT : -1 + (4 - 2 * zoomT) * zoomT;
 
-          camera.position.z = 5.4 - easeZoom * 4.3; // Zooms from 5.4 to 1.1
-          camera.position.y = 1.25 - easeZoom * 0.85; // Lowers toward interior
-          camera.lookAt(0, 0.2, 0);
+          camera.position.z = 5.8 - easeZoom * 4.6; // Zooms from 5.8 to 1.2
+          camera.position.y = 0.45 - easeZoom * 0.55;
+          camera.lookAt(0, -0.15, 0);
         }
       }
 
@@ -565,14 +577,15 @@ export default function CountdownGateSection({ onTimeReached, onPreviewUnlock })
 
     threeRef.current.animId = requestAnimationFrame(animate);
 
-    // ─── 6. Event Handlers ───────────────────────────────────────────────────
+    // ─── 10. RESIZE & POINTER EVENTS ──────────────────────────────────────────
     const handleResize = () => {
       if (!container || !renderer || !camera) return;
-      width = container.clientWidth;
-      height = container.clientHeight;
-      camera.aspect = width / height;
+      const w = container.clientWidth || window.innerWidth;
+      const h = container.clientHeight || window.innerHeight;
+      if (w === 0 || h === 0) return;
+      camera.aspect = w / h;
       camera.updateProjectionMatrix();
-      renderer.setSize(width, height);
+      renderer.setSize(w, h);
     };
 
     const handlePointerMove = (e) => {
@@ -586,10 +599,10 @@ export default function CountdownGateSection({ onTimeReached, onPreviewUnlock })
       mousePosRef.current.targetY = -normY;
     };
 
-    const handleCanvasClick = (e) => {
+    const handleCanvasClick = () => {
       if (isOpeningRef.current) return;
       raycasterRef.current.setFromCamera(mouseCoordsRef.current, camera);
-      const intersects = raycasterRef.current.intersectObject(hitBox);
+      const intersects = raycasterRef.current.intersectObjects(boxGroup.children, true);
       if (intersects.length > 0) {
         handleOpenGift();
       }
@@ -614,72 +627,86 @@ export default function CountdownGateSection({ onTimeReached, onPreviewUnlock })
         }
       });
     };
-  }, [handleOpenGift]);
-
-  if (!mounted) return null;
+  }, [hasWebGL, handleOpenGift]);
 
   return (
     <div
       ref={containerRef}
       className="fixed inset-0 z-40 flex flex-col items-center justify-between overflow-hidden select-none"
       style={{
-        background: "radial-gradient(ellipse at 50% 48%, #4A1021 0%, #350B19 45%, #24050E 80%, #150207 100%)",
+        background: "radial-gradient(ellipse at 50% 50%, #4A1021 0%, #350B19 45%, #24050E 80%, #150207 100%)",
       }}
     >
-      {/* ── Cinematic Ambient Light Rays (Red Wine & Champagne Gold) ── */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-35">
+      {/* ── Soft Red Wine & Champagne Ambient Light Rays ── */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-30 z-0">
         <div
           className="absolute -top-40 left-1/4 w-[600px] h-[900px] rotate-[-22deg] blur-3xl"
           style={{
-            background: "linear-gradient(180deg, rgba(214, 165, 109, 0.18) 0%, rgba(128, 31, 58, 0.28) 60%, transparent 100%)",
+            background: "linear-gradient(180deg, rgba(214, 165, 109, 0.2) 0%, rgba(128, 31, 58, 0.3) 60%, transparent 100%)",
           }}
         />
         <div
           className="absolute -top-40 right-1/4 w-[600px] h-[900px] rotate-[22deg] blur-3xl"
           style={{
-            background: "linear-gradient(180deg, rgba(168, 50, 80, 0.22) 0%, rgba(74, 16, 33, 0.35) 60%, transparent 100%)",
+            background: "linear-gradient(180deg, rgba(168, 50, 80, 0.25) 0%, rgba(74, 16, 33, 0.35) 60%, transparent 100%)",
           }}
         />
       </div>
 
-      {/* ── Soft Velvet Vignette Overlay ── */}
+      {/* ── Velvet Vignette Overlay (Non-blocking) ── */}
       <div
-        className="absolute inset-0 pointer-events-none z-10"
+        className="absolute inset-0 pointer-events-none z-0"
         style={{
-          boxShadow: "inset 0 0 120px rgba(21, 2, 7, 0.9), inset 0 0 60px rgba(36, 5, 14, 0.7)",
+          boxShadow: "inset 0 0 100px rgba(21, 2, 7, 0.85), inset 0 0 50px rgba(36, 5, 14, 0.6)",
         }}
       />
 
       {/* ── 3D WebGL Canvas ── */}
-      <canvas
-        ref={canvasRef}
-        className="absolute inset-0 w-full h-full block z-15"
-      />
+      {hasWebGL ? (
+        <canvas
+          ref={canvasRef}
+          className="absolute inset-0 w-full h-full block z-10"
+        />
+      ) : (
+        /* Fallback if WebGL unavailable */
+        <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-auto">
+          <div
+            onClick={handleOpenGift}
+            className="w-48 h-48 rounded-3xl bg-[#64152D] border-4 border-[#D6A56D] flex flex-col items-center justify-center shadow-2xl cursor-pointer hover:scale-105 transition-transform"
+          >
+            <Gift size={64} className="text-[#D6A56D] animate-bounce mb-2" />
+            <span className="text-xs font-bold text-[#FFF5ED] uppercase tracking-wider">
+              Buka Kado
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* ── Top Header & Live Countdown ── */}
       <motion.div
         initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        className="relative z-20 pt-8 sm:pt-10 px-4 text-center max-w-2xl mx-auto pointer-events-none"
+        className="relative z-20 pt-4 sm:pt-6 px-4 text-center max-w-xl mx-auto pointer-events-none"
       >
         {/* Luxury Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-3 backdrop-blur-md"
+        <div
+          className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full mb-2 backdrop-blur-md"
           style={{
-            background: "rgba(53, 11, 25, 0.75)",
+            background: "rgba(53, 11, 25, 0.8)",
             border: "1px solid rgba(214, 165, 109, 0.35)",
             boxShadow: "0 4px 20px rgba(0,0,0,0.4)",
           }}
         >
-          <Sparkles size={14} className="text-[#D6A56D]" />
-          <span className="text-[11px] sm:text-xs font-mono font-bold tracking-[0.22em] text-[#D6A56D] uppercase">
+          <Sparkles size={13} className="text-[#D6A56D]" />
+          <span className="text-[10px] sm:text-[11px] font-mono font-bold tracking-[0.22em] text-[#D6A56D] uppercase">
             {countdownGateData.badge || "COUNTDOWN TO YOUR SPECIAL DAY ✨"}
           </span>
         </div>
 
         {/* Title */}
         <h1
-          className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#FFF5ED] tracking-wide mb-1"
+          className="text-xl sm:text-2xl md:text-3xl font-extrabold text-[#FFF5ED] tracking-wide mb-1"
           style={{
             fontFamily: "'Playfair Display', Georgia, serif",
             textShadow: "0 2px 25px rgba(0,0,0,0.8)",
@@ -690,13 +717,13 @@ export default function CountdownGateSection({ onTimeReached, onPreviewUnlock })
             : "A Special Surprise For You"}
         </h1>
 
-        <p className="text-xs sm:text-sm text-[#FFF5ED]/70 max-w-md mx-auto mb-5 font-light tracking-wide">
+        <p className="text-[11px] sm:text-xs text-[#FFF5ED]/70 max-w-sm mx-auto mb-3 font-light tracking-wide">
           Sesuatu yang sangat indah telah disiapkan khusus untukmu di hari ulang tahunmu.
         </p>
 
         {/* Countdown Cards Grid (Days, Hours, Minutes, Seconds) */}
         {timeLeft && !timeLeft.isPassed && (
-          <div className="flex items-center justify-center gap-2.5 sm:gap-4 pointer-events-auto">
+          <div className="flex items-center justify-center gap-2 sm:gap-3 pointer-events-auto">
             {[
               { label: "Hari", value: timeLeft.days },
               { label: "Jam", value: timeLeft.hours },
@@ -705,17 +732,17 @@ export default function CountdownGateSection({ onTimeReached, onPreviewUnlock })
             ].map((unit) => (
               <div
                 key={unit.label}
-                className="flex flex-col items-center justify-center px-3 sm:px-4 py-2 sm:py-2.5 min-w-[64px] sm:min-w-[76px] rounded-2xl backdrop-blur-md shadow-xl transition-transform hover:scale-105"
+                className="flex flex-col items-center justify-center px-2.5 sm:px-3.5 py-1 sm:py-1.5 min-w-[56px] sm:min-w-[68px] rounded-xl backdrop-blur-md shadow-xl"
                 style={{
-                  background: "rgba(53, 11, 25, 0.72)",
-                  border: "1px solid rgba(214, 165, 109, 0.28)",
+                  background: "rgba(53, 11, 25, 0.75)",
+                  border: "1px solid rgba(214, 165, 109, 0.3)",
                   boxShadow: "0 8px 25px rgba(21, 2, 7, 0.5)",
                 }}
               >
-                <span className="text-xl sm:text-2xl md:text-3xl font-extrabold text-[#D6A56D] tabular-nums tracking-tight">
+                <span className="text-lg sm:text-xl font-extrabold text-[#D6A56D] tabular-nums tracking-tight">
                   {padZero(unit.value)}
                 </span>
-                <span className="text-[9px] sm:text-[10px] font-mono tracking-widest text-[#FFF5ED]/65 uppercase mt-0.5">
+                <span className="text-[8px] sm:text-[9px] font-mono tracking-widest text-[#FFF5ED]/65 uppercase">
                   {unit.label}
                 </span>
               </div>
@@ -729,7 +756,7 @@ export default function CountdownGateSection({ onTimeReached, onPreviewUnlock })
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.3 }}
-        className="relative z-20 pb-10 sm:pb-12 px-4 text-center pointer-events-auto flex flex-col items-center gap-3"
+        className="relative z-20 pb-5 sm:pb-7 px-4 text-center pointer-events-auto flex flex-col items-center gap-2"
       >
         {/* Main Action Button */}
         <motion.button
@@ -737,35 +764,35 @@ export default function CountdownGateSection({ onTimeReached, onPreviewUnlock })
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           disabled={isOpening}
-          className="group relative inline-flex items-center gap-2.5 px-7 sm:px-9 py-3.5 sm:py-4 rounded-full font-bold text-xs sm:text-sm tracking-[0.2em] uppercase transition-all shadow-2xl cursor-pointer"
+          className="group relative inline-flex items-center gap-2 px-6 sm:px-8 py-2.5 sm:py-3 rounded-full font-bold text-xs tracking-[0.2em] uppercase transition-all shadow-2xl cursor-pointer"
           style={{
             background: "linear-gradient(135deg, #801F3A 0%, #64152D 50%, #4A1021 100%)",
             color: "#FFF5ED",
-            border: "1px solid rgba(214, 165, 109, 0.55)",
+            border: "1px solid rgba(214, 165, 109, 0.6)",
             boxShadow: "0 10px 40px rgba(128, 31, 58, 0.45), 0 0 25px rgba(214, 165, 109, 0.25)",
           }}
         >
-          <Gift size={18} className="text-[#D6A56D] group-hover:rotate-12 transition-transform" />
+          <Gift size={16} className="text-[#D6A56D] group-hover:rotate-12 transition-transform" />
           <span className="font-semibold text-[#FFF5ED]">
             {isOpening ? "Membuka Kado..." : "Buka Kado Sekarang"}
           </span>
-          <Sparkles size={16} className="text-[#D6A56D] animate-pulse" />
+          <Sparkles size={15} className="text-[#D6A56D] animate-pulse" />
         </motion.button>
 
         {/* Subtle Hint */}
-        <p className="text-[11px] sm:text-xs font-mono tracking-wider text-[#D6A56D]/80 uppercase">
-          {isHovered ? "Klik untuk membuka kejutan ✨" : "Sentuh atau klik kado 3D untuk membuka kejutan"}
+        <p className="text-[10px] sm:text-[11px] font-mono tracking-wider text-[#D6A56D]/85 uppercase">
+          {isHovered ? "Klik untuk membuka kado 3D ✨" : "Sentuh atau klik kado 3D untuk membuka kejutan"}
         </p>
       </motion.div>
 
-      {/* ── Golden Cinematic Light Burst Overlay (Appears on Reveal) ── */}
+      {/* ── Golden Cinematic Light Burst Overlay (On Reveal) ── */}
       <AnimatePresence>
         {showBurstOverlay && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.9, ease: "easeInOut" }}
+            transition={{ duration: 0.8, ease: "easeInOut" }}
             className="fixed inset-0 z-50 pointer-events-none flex items-center justify-center"
             style={{
               background: "radial-gradient(circle at 50% 50%, rgba(255, 245, 237, 1) 0%, rgba(214, 165, 109, 0.95) 45%, rgba(128, 31, 58, 0.98) 100%)",

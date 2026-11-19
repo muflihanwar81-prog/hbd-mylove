@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
 import LoadingScreen from "@/components/LoadingScreen";
 import SecretCodeSection from "@/components/SecretCodeSection";
@@ -24,6 +24,17 @@ export default function Home() {
   const [previewUnlocked, setPreviewUnlocked] = useState(false);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [musicTrigger, setMusicTrigger] = useState(false);
+
+  // Check URL params for direct inspection/testing
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("stage") === "countdown" || params.get("test") === "countdown") {
+        setIsLoading(false);
+        setIsUnlocked(true);
+      }
+    }
+  }, []);
 
   const handleLoadingComplete = () => setIsLoading(false);
 
