@@ -2,282 +2,96 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Play, Pause, SkipBack, SkipForward, Volume2, Sparkles, ArrowDown } from "lucide-react";
-import { openingData, musicData, coupleData } from "@/lib/data-konten";
+import { openingData, coupleData } from "@/lib/data-konten";
 
 export default function OpeningSection() {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const progressInterval = useRef(null);
-
-  // Sync with audio element
-  useEffect(() => {
-    const audioEl = document.getElementById("bg-music-player");
-    if (!audioEl) return;
-
-    const handlePlay = () => setIsPlaying(true);
-    const handlePause = () => setIsPlaying(false);
-    const handleTimeUpdate = () => {
-      setCurrentTime(audioEl.currentTime);
-      if (audioEl.duration && !isNaN(audioEl.duration)) {
-        setDuration(audioEl.duration);
-      }
-    };
-
-    audioEl.addEventListener("play", handlePlay);
-    audioEl.addEventListener("pause", handlePause);
-    audioEl.addEventListener("timeupdate", handleTimeUpdate);
-
-    // Initial check
-    if (!audioEl.paused) {
-      setIsPlaying(true);
-    }
-
-    return () => {
-      audioEl.removeEventListener("play", handlePlay);
-      audioEl.removeEventListener("pause", handlePause);
-      audioEl.removeEventListener("timeupdate", handleTimeUpdate);
-    };
-  }, []);
-
-  const togglePlay = () => {
-    const audioEl = document.getElementById("bg-music-player");
-    if (!audioEl) return;
-
-    if (isPlaying) {
-      audioEl.pause();
-    } else {
-      audioEl.play().catch((err) => console.log("Play error:", err));
-    }
-  };
-
-  const handleSeek = (e) => {
-    const audioEl = document.getElementById("bg-music-player");
-    if (!audioEl || !duration) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const pos = (e.clientX - rect.left) / rect.width;
-    audioEl.currentTime = pos * duration;
-  };
-
-  const formatTime = (secs) => {
-    if (isNaN(secs) || secs === 0) return "0:00";
-    const m = Math.floor(secs / 60);
-    const s = Math.floor(secs % 60);
-    return `${m}:${s < 10 ? "0" : ""}${s}`;
-  };
-
-  const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
-
   const scrollTo = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
-    <section id="home" className="relative min-h-screen flex flex-col justify-between px-4 sm:px-6 lg:px-12 pt-28 pb-12 overflow-hidden">
-      {/* Background Red Wine / Maroon Soft Glows */}
-      <div className="absolute top-1/4 -left-32 w-96 h-96 rounded-full bg-[#4A1021]/50 blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/4 -right-32 w-96 h-96 rounded-full bg-[#350B19]/70 blur-3xl pointer-events-none" />
+    <section
+      id="home"
+      className="relative w-full h-screen flex flex-col items-center justify-center overflow-hidden"
+    >
+      {/* ── Full-Screen Background Photo ── */}
+      <div className="absolute inset-0 z-0">
+        <img
+          src={openingData.polaroidPhoto || "/images/couple-main.svg"}
+          alt="Us"
+          className="w-full h-full object-cover"
+          style={{ objectPosition: "center 30%" }}
+        />
 
-      {/* Main Two-Column Content (Left: Music Card, Right: Text & Actions) */}
-      <div className="relative z-10 max-w-6xl mx-auto w-full my-auto flex flex-col md:flex-row items-center justify-between gap-10 lg:gap-14">
-        
-        {/* LEFT COLUMN: Spotify-style Music Player Card */}
-        <motion.div
-          initial={{ opacity: 0, x: -40 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8 }}
-          className="w-full md:w-5/12 lg:w-4/12 flex justify-center shrink-0"
-        >
-          <div
-            className="w-full max-w-[280px] sm:max-w-[320px] rounded-3xl p-4 sm:p-5 shadow-2xl transition-all duration-300 group hover:shadow-rose-950/40"
-            style={{
-              background: "rgba(53, 11, 25, 0.82)",
-              backdropFilter: "blur(24px)",
-              WebkitBackdropFilter: "blur(24px)",
-              border: "1px solid rgba(214, 165, 109, 0.28)",
-              boxShadow: "0 20px 50px rgba(18, 2, 7, 0.6), inset 0 1px 0 rgba(255, 245, 237, 0.15)",
-            }}
-          >
-            {/* Album Art Image */}
-            <div className="relative aspect-[4/5] w-full rounded-2xl overflow-hidden bg-[#24050E] shadow-inner mb-4">
-              <img
-                src={openingData.polaroidPhoto || "/images/couple-main.svg"}
-                alt="Album Cover"
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-              />
-              {/* Subtle gradient vignette over album art */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent pointer-events-none" />
-            </div>
+        {/* Dark cinematic overlay */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(to bottom, rgba(21,2,7,0.45) 0%, rgba(21,2,7,0.25) 35%, rgba(21,2,7,0.35) 65%, rgba(21,2,7,0.75) 100%)",
+          }}
+        />
 
-            {/* Song Title & Artist */}
-            <div className="mb-3">
-              <h3 className="text-[#FFF5ED] font-bold text-base sm:text-lg truncate tracking-tight">
-                {musicData.title || "Teman Hidup"}
-              </h3>
-              <p className="text-xs sm:text-sm text-[#D6A56D] font-semibold uppercase tracking-wider mt-0.5 truncate">
-                {musicData.artist || "TULUS"}
-              </p>
-            </div>
-
-            {/* Timeline Progress Bar */}
-            <div className="space-y-1.5 mb-4">
-              <div
-                onClick={handleSeek}
-                className="relative h-1.5 w-full bg-white/15 rounded-full overflow-hidden cursor-pointer group/bar"
-              >
-                <div
-                  className="h-full rounded-full transition-all duration-150"
-                  style={{
-                    width: `${progressPercent}%`,
-                    background: "linear-gradient(90deg, #D6A56D 0%, #FFF5ED 100%)",
-                  }}
-                />
-              </div>
-              <div className="flex justify-between text-[11px] text-[#D6A56D]/80 font-mono">
-                <span>{formatTime(currentTime)}</span>
-                <span>{duration > 0 ? formatTime(duration) : "3:58"}</span>
-              </div>
-            </div>
-
-            {/* Playback Controls Row */}
-            <div className="flex items-center justify-between px-2">
-              <button
-                onClick={() => {
-                  const audioEl = document.getElementById("bg-music-player");
-                  if (audioEl) audioEl.currentTime = 0;
-                }}
-                className="text-[#D6A56D]/80 hover:text-[#FFF5ED] transition-colors cursor-pointer p-1.5"
-                title="Restart"
-              >
-                <SkipBack size={18} />
-              </button>
-
-              {/* Main Play/Pause Circle Button */}
-              <button
-                onClick={togglePlay}
-                className="w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 cursor-pointer shadow-lg hover:scale-105 active:scale-95"
-                style={{
-                  background: isPlaying
-                    ? "linear-gradient(135deg, #D6A56D, #FFF5ED)"
-                    : "linear-gradient(135deg, #D6A56D, #E5BE8E)",
-                  color: "#350B19",
-                  boxShadow: "0 0 25px rgba(214, 165, 109, 0.45)",
-                }}
-                aria-label={isPlaying ? "Pause" : "Play"}
-              >
-                {isPlaying ? <Pause size={20} fill="#350B19" /> : <Play size={20} fill="#350B19" className="ml-0.5" />}
-              </button>
-
-              {/* Next / Wave Animation */}
-              <div className="flex items-center gap-1 p-1.5">
-                {isPlaying ? (
-                  <div className="flex items-end gap-0.5 h-4">
-                    <span className="w-1 bg-[#D6A56D] rounded-full animate-pulse" style={{ height: "60%" }} />
-                    <span className="w-1 bg-[#FFF5ED] rounded-full animate-pulse" style={{ height: "100%", animationDelay: "0.2s" }} />
-                    <span className="w-1 bg-[#D6A56D] rounded-full animate-pulse" style={{ height: "40%", animationDelay: "0.4s" }} />
-                  </div>
-                ) : (
-                  <Volume2 size={18} className="text-[#D6A56D]/50" />
-                )}
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* RIGHT COLUMN: Typography, Description & Action Buttons */}
-        <motion.div
-          initial={{ opacity: 0, x: 40 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="w-full md:w-7/12 lg:w-8/12 text-center md:text-left flex flex-col items-center md:items-start"
-        >
-          {/* Eyebrow / Small Upper Tagline */}
-          <p className="text-xs sm:text-sm font-semibold tracking-widest text-[#D6A56D] uppercase mb-4 opacity-90">
-            {openingData.badge || "A MESSAGE CARRIED IN ON THE TIDE, FOR YOU"}
-          </p>
-
-          {/* Big Headline */}
-          <h1 className="mb-4">
-            <span
-              className="block text-4xl sm:text-6xl lg:text-7xl font-bold text-[#FFF5ED] tracking-tight leading-tight font-heading"
-              style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
-            >
-              {openingData.greeting || "Happy Birthday,"}
-            </span>
-            <span
-              className="block text-3xl sm:text-5xl lg:text-6xl font-normal italic gradient-text-wine leading-tight mt-1"
-              style={{
-                fontFamily: "'Playfair Display', Georgia, serif",
-                textShadow: "0 0 35px rgba(214, 165, 109, 0.4)",
-              }}
-            >
-              {openingData.nameGreeting || "My Favorite Person"}
-            </span>
-          </h1>
-
-          {/* Description Paragraph */}
-          <p className="text-sm sm:text-base lg:text-lg text-[#FFF5ED]/85 font-light leading-relaxed max-w-xl mb-8">
-            {openingData.subGreeting ||
-              "Somewhere past the breakers, ada a letter yang udah lama waiting for this day. Scroll down, the tide is coming in, dan ternyata dia bawa something special just for you."}
-          </p>
-
-          {/* Action Buttons Row */}
-          <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 w-full sm:w-auto">
-            {/* Primary Filled Pill Button in Red Wine / Burgundy */}
-            <motion.button
-              onClick={() => scrollTo("memories")}
-              whileHover={{ scale: 1.04, boxShadow: "0 10px 35px rgba(128, 31, 58, 0.55)" }}
-              whileTap={{ scale: 0.96 }}
-              className="w-full sm:w-auto px-7 py-3.5 rounded-full font-bold text-sm sm:text-base flex items-center justify-center gap-2 cursor-pointer shadow-xl transition-all"
-              style={{
-                background: "linear-gradient(135deg, #801F3A 0%, #64152D 50%, #4A1021 100%)",
-                color: "#FFF5ED",
-                border: "1px solid rgba(214, 165, 109, 0.55)",
-              }}
-            >
-              <span>{openingData.buttonPrimary || "Begin the Descent ↓"}</span>
-            </motion.button>
-
-            {/* Secondary Outline Pill Button */}
-            <motion.button
-              onClick={() => scrollTo("letter")}
-              whileHover={{ scale: 1.04, background: "rgba(53, 11, 25, 0.85)" }}
-              whileTap={{ scale: 0.96 }}
-              className="w-full sm:w-auto px-7 py-3.5 rounded-full font-semibold text-sm sm:text-base flex items-center justify-center gap-2 cursor-pointer transition-all"
-              style={{
-                background: "rgba(53, 11, 25, 0.6)",
-                color: "#FFF5ED",
-                border: "1px solid rgba(214, 165, 109, 0.4)",
-                backdropFilter: "blur(12px)",
-              }}
-            >
-              <span>{openingData.buttonSecondary || "Jump Straight to the Letter"}</span>
-            </motion.button>
-          </div>
-        </motion.div>
+        {/* Soft warm vignette */}
+        <div
+          className="absolute inset-0"
+          style={{
+            boxShadow:
+              "inset 0 0 180px rgba(21,2,7,0.6), inset 0 0 80px rgba(53,11,25,0.3)",
+          }}
+        />
       </div>
 
-      {/* BOTTOM: Animated Scroll to Dive In Indicator */}
+      {/* ── Centered Text ── */}
+      <div className="relative z-10 flex flex-col items-center justify-center text-center px-4">
+        {/* HAPPY BIRTHDAY — large elegant serif */}
+        <motion.h1
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+          className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-wide text-white leading-none"
+          style={{
+            fontFamily: "'Playfair Display', Georgia, serif",
+            textShadow: "0 4px 30px rgba(0,0,0,0.6), 0 1px 5px rgba(0,0,0,0.4)",
+          }}
+        >
+          HAPPY BIRTHDAY
+        </motion.h1>
+
+        {/* to my favorite person — script/italic subtitle */}
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          className="text-lg sm:text-2xl md:text-3xl italic font-light mt-3 sm:mt-5"
+          style={{
+            fontFamily: "'Playfair Display', Georgia, serif",
+            color: "rgba(230, 210, 230, 0.9)",
+            textShadow: "0 2px 20px rgba(0,0,0,0.5)",
+          }}
+        >
+          to my favorite person
+        </motion.p>
+      </div>
+
+      {/* ── Scroll to Explore — bottom center ── */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1, duration: 0.8 }}
-        className="relative z-10 flex flex-col items-center justify-center mt-8 cursor-pointer select-none"
+        transition={{ delay: 1.4, duration: 0.8 }}
         onClick={() => scrollTo("memories")}
+        className="absolute bottom-8 sm:bottom-12 z-10 flex flex-col items-center cursor-pointer select-none group"
       >
-        {/* Mouse Capsule Icon with bouncing dot */}
-        <div
-          className="w-6 h-10 rounded-full border-2 border-[#D6A56D]/60 flex justify-center pt-2 p-1"
-        >
+        {/* Mouse scroll icon */}
+        <div className="w-5 h-8 rounded-full border-2 border-white/50 flex justify-center pt-1.5 group-hover:border-white/80 transition-colors">
           <motion.div
-            animate={{ y: [0, 12, 0], opacity: [1, 0.3, 1] }}
+            animate={{ y: [0, 10, 0], opacity: [1, 0.2, 1] }}
             transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-            className="w-1.5 h-2 bg-[#D6A56D] rounded-full"
+            className="w-1 h-1.5 bg-white/80 rounded-full"
           />
         </div>
-        <p className="text-[10px] sm:text-xs font-semibold tracking-widest text-[#D6A56D]/80 uppercase mt-2">
-          {openingData.scrollText || "SCROLL TO DIVE IN"}
+        <p className="text-[9px] sm:text-[10px] font-medium tracking-[0.3em] text-white/60 uppercase mt-2 group-hover:text-white/90 transition-colors">
+          Scroll to Explore
         </p>
       </motion.div>
     </section>
