@@ -8,91 +8,67 @@ export default function OpeningSection() {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const imageSrc = openingData.polaroidPhoto || "/images/couple-surface.jpg";
+
   return (
     <section
       id="home"
-      className="relative w-full h-screen flex flex-col items-center justify-center overflow-hidden select-none"
+      className="relative w-full h-screen flex flex-col items-center justify-center overflow-hidden select-none bg-[#120207]"
     >
-      {/* ── Full-Screen Background Photo ── */}
-      <div className="absolute inset-0 z-0">
+      {/* ── Ambient Blurred Background (Cinematic Fill for All Aspect Ratios) ── */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         <img
-          src={openingData.polaroidPhoto || "/images/couple-main.svg"}
-          alt="Couple Background"
-          className="w-full h-full object-cover"
-          style={{ objectPosition: "center 35%" }}
+          src={imageSrc}
+          alt=""
+          aria-hidden="true"
+          className="w-full h-full object-cover blur-3xl opacity-35 scale-125"
         />
-
-        {/* Soft Warm Ambient Glow */}
+        {/* Deep wine dark backdrop gradient */}
         <div
-          className="absolute inset-0 pointer-events-none opacity-40"
+          className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse at 50% 50%, rgba(168, 50, 80, 0.25) 0%, rgba(74, 16, 33, 0.4) 60%, transparent 80%)",
+              "radial-gradient(ellipse at 50% 50%, rgba(74, 16, 33, 0.3) 0%, rgba(36, 5, 14, 0.6) 60%, rgba(18, 2, 7, 0.95) 100%)",
           }}
         />
+      </div>
 
-        {/* Dark Cinematic Gradient Overlay */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background:
-              "linear-gradient(to bottom, rgba(18, 2, 7, 0.5) 0%, rgba(18, 2, 7, 0.25) 35%, rgba(18, 2, 7, 0.35) 65%, rgba(18, 2, 7, 0.8) 100%)",
-          }}
+      {/* ── Main Full-Screen Hero Photo Composition ── */}
+      <motion.div
+        initial={{ opacity: 0, scale: 1.04 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+        className="relative z-10 w-full h-full flex items-center justify-center"
+      >
+        <img
+          src={imageSrc}
+          alt="Happy Birthday to my favorite person"
+          className="w-full h-full object-contain sm:object-cover"
+          style={{ objectPosition: "center center" }}
         />
 
-        {/* Warm Cinematic Vignette */}
+        {/* Soft Vignette Overlay around edges */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
             boxShadow:
-              "inset 0 0 160px rgba(18, 2, 7, 0.75), inset 0 0 70px rgba(53, 11, 25, 0.35)",
+              "inset 0 0 120px rgba(18, 2, 7, 0.65), inset 0 0 60px rgba(53, 11, 25, 0.3)",
           }}
         />
-      </div>
 
-      {/* ── Centered Aesthetic Romantic Typography ── */}
-      <div className="relative z-10 flex flex-col items-center justify-center text-center px-4 max-w-5xl mx-auto">
-        {/* HAPPY BIRTHDAY — Elegant Bold Serif */}
-        <motion.h1
-          initial={{ opacity: 0, y: 30, filter: "blur(8px)" }}
-          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-          className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold tracking-[0.06em] text-white leading-tight uppercase"
-          style={{
-            fontFamily: "'Playfair Display', Georgia, serif",
-            textShadow:
-              "0 4px 35px rgba(0, 0, 0, 0.7), 0 2px 10px rgba(0, 0, 0, 0.5)",
-          }}
-        >
-          HAPPY BIRTHDAY
-        </motion.h1>
+        {/* Accessible Heading for Screen Readers */}
+        <h1 className="sr-only">HAPPY BIRTHDAY to my favorite person</h1>
+      </motion.div>
 
-        {/* to my favorite person — Delicate Handwritten / Script Font in Soft Lavender */}
-        <motion.p
-          initial={{ opacity: 0, y: 20, filter: "blur(6px)" }}
-          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-          transition={{ duration: 1, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
-          className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium tracking-wide mt-2 sm:mt-4 capitalize"
-          style={{
-            fontFamily: "'Dancing Script', cursive",
-            color: "#E2D4F0",
-            textShadow:
-              "0 2px 25px rgba(226, 212, 240, 0.4), 0 2px 15px rgba(0, 0, 0, 0.7)",
-          }}
-        >
-          to my favorite person
-        </motion.p>
-      </div>
-
-      {/* ── Scroll to Explore — Bottom Center ── */}
+      {/* ── Bottom Animated Scroll Indicator ── */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.3, duration: 0.8 }}
+        transition={{ delay: 1.2, duration: 0.8 }}
         onClick={() => scrollTo("memories")}
-        className="absolute bottom-7 sm:bottom-10 z-10 flex flex-col items-center cursor-pointer select-none group"
+        className="absolute bottom-6 sm:bottom-10 z-20 flex flex-col items-center cursor-pointer select-none group"
       >
-        {/* Animated Mouse Capsule Indicator */}
+        {/* Animated Mouse Capsule */}
         <div className="w-5 h-8 rounded-full border border-white/40 group-hover:border-white/80 transition-colors flex justify-center pt-1.5 backdrop-blur-[2px]">
           <motion.div
             animate={{ y: [0, 9, 0], opacity: [1, 0.25, 1] }}
@@ -102,7 +78,7 @@ export default function OpeningSection() {
         </div>
 
         {/* Label */}
-        <p className="text-[9px] sm:text-[10px] font-mono tracking-[0.25em] text-white/60 group-hover:text-white/90 uppercase mt-2.5 transition-colors">
+        <p className="text-[9px] sm:text-[10px] font-mono tracking-[0.28em] text-white/60 group-hover:text-white/95 uppercase mt-2.5 transition-colors">
           Scroll to Explore
         </p>
       </motion.div>

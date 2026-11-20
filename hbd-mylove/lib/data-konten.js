@@ -42,7 +42,7 @@ export const openingData = {
   buttonPrimary: "Begin the Descent ↓",
   buttonSecondary: "Jump Straight to the Letter",
   scrollText: "SCROLL TO DIVE IN",
-  polaroidPhoto: "/images/couple-main.svg",
+  polaroidPhoto: "/images/couple-surface.jpg",
   polaroidCaption: "Forever My Favorite ✨",
 };
 
@@ -89,7 +89,7 @@ export const letterData = {
   ],
   closing: "With love, always.",
   signature: "💙",
-  polaroidPhoto: "/images/couple-main.svg",
+  polaroidPhoto: "/images/couple-surface.jpg",
   polaroidCaption: "You & Me ♡",
 };
 
