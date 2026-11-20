@@ -1,209 +1,239 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Mail, Star, Heart, Sparkles } from "lucide-react";
-import TypewriterText from "@/components/TypewriterText";
-import { letterData } from "@/lib/data-konten";
+import { motion } from "framer-motion";
 
 export default function LetterSection() {
-  const [isOpen, setIsOpen] = useState(true);
-
   return (
-    <section id="letter" className="relative min-h-screen px-4 py-24 flex flex-col items-center justify-center section-wine overflow-hidden">
-      {/* Decorative Red Wine / Rose Corner Flowers */}
-      <div className="absolute top-8 right-8 w-64 h-64 opacity-20 pointer-events-none">
-        <svg viewBox="0 0 200 200" fill="none">
-          <circle cx="120" cy="60" r="32" fill="#D92B6B" />
-          <circle cx="80" cy="80" r="28" fill="#E27D9B" />
-          <circle cx="150" cy="95" r="26" fill="#8F123C" />
-          <circle cx="110" cy="115" r="30" fill="#D92B6B" />
-          <circle cx="65" cy="125" r="22" fill="#F7C2CF" />
-          <path d="M120 40 Q135 60 120 80 Q105 60 120 40" fill="#FFF5F7" opacity="0.6" />
-        </svg>
-      </div>
+    <section
+      id="letter"
+      className="relative min-h-screen w-full flex items-center justify-center px-4 py-16 md:py-24 overflow-hidden select-none"
+      style={{
+        background: "#0c245d",
+      }}
+    >
+      {/* ── 1. Corner Decoration: White Rose Line-Art (Bottom Left) ── */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        whileInView={{ opacity: 0.95, scale: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1.2, delay: 0.2 }}
+        className="absolute bottom-0 left-0 pointer-events-none z-10 w-44 sm:w-64 md:w-80 lg:w-96 select-none"
+      >
+        <img
+          src="/images/letter-roses-bottom-left.png"
+          alt=""
+          aria-hidden="true"
+          className="w-full h-auto object-contain"
+        />
+      </motion.div>
 
-      {/* Decorative Corner Accent in Bottom Left Corner */}
-      <div className="absolute bottom-8 left-8 w-60 h-60 pointer-events-none opacity-20">
-        <svg viewBox="0 0 200 200" fill="none">
-          <circle cx="100" cy="100" r="45" fill="#FFF5F7" />
-          <path d="M70 100 C70 70, 130 70, 130 100 C130 130, 70 130, 70 100" fill="#F7C2CF" opacity="0.8" />
-          <circle cx="100" cy="100" r="14" fill="#E27D9B" />
-          <path d="M60 125 Q40 145 35 170 Q60 165 75 140 Z" fill="#D92B6B" opacity="0.6" />
-          <path d="M140 125 Q160 145 165 170 Q140 165 125 140 Z" fill="#D92B6B" opacity="0.6" />
-        </svg>
-      </div>
+      {/* ── 2. Corner Decoration: Blue Lilies (Bottom Right) ── */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+        whileInView={{ opacity: 1, scale: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1.2, delay: 0.3 }}
+        className="absolute bottom-0 right-0 pointer-events-none z-30 w-36 sm:w-52 md:w-64 lg:w-72 select-none"
+      >
+        <img
+          src="/images/letter-flowers-bottom-right.png"
+          alt=""
+          aria-hidden="true"
+          className="w-full h-auto object-contain"
+        />
+      </motion.div>
 
-      <div className="max-w-4xl w-full mx-auto relative z-10">
-        {/* Section Header */}
-        <div className="text-center mb-10">
+      {/* ── Main Composition Container (1:1 Reference Layout) ── */}
+      <div className="relative z-20 w-full max-w-6xl mx-auto flex flex-col lg:flex-row items-center justify-center gap-10 lg:gap-6 px-2 sm:px-6">
+
+        {/* ── LEFT COLUMN: Two Polaroid Photos + Blue Button + Stars ── */}
+        <div className="relative shrink-0 flex flex-col items-center justify-center w-full max-w-xs sm:max-w-sm lg:w-[320px] lg:self-start lg:pt-6">
+
+          {/* Top Polaroid (Photo 1) - Tilted Counter-Clockwise */}
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: -30, rotate: -15, scale: 0.9 }}
+            whileInView={{ opacity: 1, y: 0, rotate: -7, scale: 1 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs md:text-sm font-semibold mb-3 tracking-widest uppercase"
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            whileHover={{ rotate: -2, scale: 1.04 }}
+            className="relative z-20 bg-white p-2.5 sm:p-3 pb-8 sm:pb-10 shadow-2xl rounded-sm transition-transform duration-300 w-44 sm:w-52"
             style={{
-              background: "rgba(53, 11, 25, 0.8)",
-              border: "1px solid rgba(214, 165, 109, 0.35)",
-              color: "#D6A56D",
+              boxShadow:
+                "0 20px 40px rgba(0, 0, 0, 0.5), 0 6px 16px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(0, 0, 0, 0.05)",
             }}
           >
-            <Mail size={16} />
-            <span>Digital Love Letter</span>
-          </motion.div>
-
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-4xl md:text-6xl font-bold tracking-tight text-[#FFF5ED] mb-2"
-            style={{ fontFamily: "'Dancing Script', cursive" }}
-          >
-            {letterData.title}
-          </motion.h2>
-
-          <motion.p
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="text-sm md:text-base text-[#D6A56D]/85"
-          >
-            {letterData.subtitle}
-          </motion.p>
-        </div>
-
-        {/* Letter Container with Stacked Paper Effect and Side Polaroid */}
-        <div className="relative flex flex-col md:flex-row items-center justify-center gap-8">
-          
-          {/* Polaroid Photo on the Left */}
-          <motion.div
-            initial={{ opacity: 0, x: -40, rotate: -8 }}
-            whileInView={{ opacity: 1, x: 0, rotate: -4 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            whileHover={{ rotate: 0, scale: 1.05 }}
-            className="polaroid shrink-0 cursor-pointer shadow-2xl transition-all duration-300 w-48 sm:w-56 md:w-52 md:-mr-6 z-20 self-center md:self-start md:mt-16"
-          >
-            <div className="aspect-[4/3] w-full rounded overflow-hidden bg-[#24050E]">
+            <div className="aspect-square w-full overflow-hidden bg-neutral-900 rounded-[1px]">
               <img
-                src={letterData.polaroidPhoto || "/images/couple-main.svg"}
-                alt="Love memory"
+                src="/images/letter-photo-1.jpg"
+                alt="Us moment 1"
                 className="w-full h-full object-cover"
               />
             </div>
-            <p
-              className="text-center mt-3 text-xs md:text-sm text-[#350B19] font-semibold"
-              style={{ fontFamily: "'Dancing Script', cursive", fontSize: "16px" }}
-            >
-              {letterData.polaroidCaption || "You & Me ♡"}
-            </p>
           </motion.div>
 
-          {/* Stacked Paper Container */}
-          <div className="relative w-full max-w-2xl flex-1">
-            {/* Sheet 3 (Bottom) */}
-            <div
-              className="absolute -bottom-3 left-4 right-4 h-full rounded-3xl"
-              style={{
-                background: "rgba(255, 245, 237, 0.4)",
-                transform: "rotate(2deg)",
-                filter: "blur(1px)",
-              }}
-            />
-            {/* Sheet 2 (Middle) */}
-            <div
-              className="absolute -bottom-1.5 left-2 right-2 h-full rounded-3xl"
-              style={{
-                background: "rgba(255, 245, 237, 0.7)",
-                transform: "rotate(-1deg)",
-              }}
-            />
+          {/* Bottom Polaroid (Photo 2) - Tilted Clockwise */}
+          <motion.div
+            initial={{ opacity: 0, y: 30, rotate: 12, scale: 0.9 }}
+            whileInView={{ opacity: 1, y: 0, rotate: 5, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.9, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            whileHover={{ rotate: 1, scale: 1.04 }}
+            className="relative z-10 bg-white p-2.5 sm:p-3 pb-8 sm:pb-10 shadow-2xl rounded-sm transition-transform duration-300 w-44 sm:w-52 -mt-10 sm:-mt-12 ml-14 sm:ml-20"
+            style={{
+              boxShadow:
+                "0 22px 45px rgba(0, 0, 0, 0.55), 0 8px 20px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(0, 0, 0, 0.05)",
+            }}
+          >
+            <div className="aspect-square w-full overflow-hidden bg-neutral-900 rounded-[1px]">
+              <img
+                src="/images/letter-photo-2.jpg"
+                alt="Us moment 2"
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </motion.div>
 
-            {/* Main Letter Paper (Top) with unfolding animation */}
-            <motion.div
-              initial={{ opacity: 0, y: 30, scale: 0.96 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          {/* Blue Button Ornament (On Left of Bottom Polaroid) */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            className="absolute left-2 sm:left-4 top-[58%] -translate-y-1/2 z-30 w-10 sm:w-12 h-10 sm:h-12 pointer-events-none drop-shadow-lg"
+          >
+            <img
+              src="/images/letter-blue-button.png"
+              alt=""
+              aria-hidden="true"
+              className="w-full h-full object-contain"
+            />
+          </motion.div>
+
+          {/* Sparkling Stars Cluster (To the Right of Bottom Polaroid) */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+            className="absolute right-0 sm:right-2 top-[54%] z-25 flex flex-col items-center gap-1.5 pointer-events-none"
+          >
+            <span className="text-white text-xs sm:text-sm drop-shadow-[0_0_8px_rgba(255,255,255,0.9)] animate-pulse">
+              ✦
+            </span>
+            <span className="text-white/90 text-sm sm:text-base drop-shadow-[0_0_8px_rgba(255,255,255,0.9)] ml-2">
+              ★
+            </span>
+            <span className="text-white/80 text-[10px] sm:text-xs drop-shadow-[0_0_6px_rgba(255,255,255,0.8)] -ml-1">
+              ✦
+            </span>
+            <span className="text-white/90 text-xs sm:text-sm drop-shadow-[0_0_8px_rgba(255,255,255,0.9)] ml-1">
+              ★
+            </span>
+            <span className="text-white/70 text-[11px] drop-shadow-[0_0_6px_rgba(255,255,255,0.8)]">
+              ✦
+            </span>
+          </motion.div>
+        </div>
+
+        {/* ── RIGHT COLUMN: Stacked Paper Letter Sheets ── */}
+        <div className="relative flex-1 w-full max-w-2xl lg:max-w-3xl">
+
+          {/* Top-Left Blue Flower Overlap Accent */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.85, y: -20 }}
+            whileInView={{ opacity: 1, scale: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1, delay: 0.4 }}
+            className="absolute -top-10 sm:-top-16 -left-6 sm:-left-12 z-35 w-32 sm:w-44 md:w-52 pointer-events-none select-none drop-shadow-xl"
+          >
+            <img
+              src="/images/letter-flowers-top-left.png"
+              alt=""
+              aria-hidden="true"
+              className="w-full h-auto object-contain"
+            />
+          </motion.div>
+
+          {/* Layer 3: Deepest Background Paper Sheet (Slightly Angled) */}
+          <div
+            className="absolute -bottom-3 -right-2 sm:-right-4 left-3 top-4 rounded-sm bg-[#EEF2F7] pointer-events-none"
+            style={{
+              transform: "rotate(1.8deg)",
+              boxShadow: "0 15px 35px rgba(0, 0, 0, 0.25)",
+            }}
+          />
+
+          {/* Layer 2: Middle Paper Sheet (Slightly Angled Opposite) */}
+          <div
+            className="absolute -bottom-1.5 -left-1 sm:-left-2 right-1 top-2 rounded-sm bg-[#F8FAFC] pointer-events-none"
+            style={{
+              transform: "rotate(-0.8deg)",
+              boxShadow: "0 18px 40px rgba(0, 0, 0, 0.28)",
+            }}
+          />
+
+          {/* Layer 1: Main Top Paper Sheet (The Letter) */}
+          <motion.div
+            initial={{ opacity: 0, y: 35, rotate: -4, scale: 0.95 }}
+            whileInView={{ opacity: 1, y: 0, rotate: -1.6, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+            className="relative z-20 bg-white rounded-sm px-6 sm:px-12 md:px-16 py-10 sm:py-14 md:py-16 transition-shadow duration-300"
+            style={{
+              boxShadow:
+                "0 25px 60px rgba(0, 0, 0, 0.4), 0 10px 25px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.04)",
+            }}
+          >
+            {/* Letter Title: "A letter for you" in Signature Elegant Calligraphy */}
+            <motion.h2
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="relative p-6 sm:p-10 md:p-12 rounded-3xl shadow-2xl paper-texture overflow-hidden"
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-center text-[#11244A] tracking-normal mb-2 sm:mb-3 font-normal"
               style={{
-                background: "#FFF8F2",
-                color: "#350B19",
-                boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(214, 165, 109, 0.35)",
+                fontFamily: "'Alex Brush', 'Dancing Script', cursive",
+                textShadow: "0 2px 8px rgba(17, 36, 74, 0.15)",
               }}
             >
-              {/* Top corner floral accent inside paper */}
-              <div className="absolute top-0 right-0 w-32 h-32 opacity-15 pointer-events-none">
-                <svg viewBox="0 0 100 100" fill="none">
-                  <circle cx="80" cy="20" r="25" fill="#D6A56D" />
-                  <circle cx="60" cy="40" r="20" fill="#801F3A" />
-                  <circle cx="90" cy="50" r="15" fill="#64152D" />
-                </svg>
-              </div>
+              A letter for you
+            </motion.h2>
 
-              {/* Decorative Wax Seal stamp in top-right */}
-              <div
-                className="absolute top-5 right-5 w-12 h-12 rounded-full flex items-center justify-center -rotate-12 shadow-sm"
-                style={{
-                  border: "2px dashed rgba(214, 165, 109, 0.6)",
-                  background: "rgba(128, 31, 58, 0.15)",
-                }}
+            {/* Subtitle / Salutation: "happy birthday, love 🤍" */}
+            <motion.p
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.45 }}
+              className="text-center text-xs sm:text-sm md:text-base font-normal text-[#4A5568] tracking-wide mb-6 sm:mb-8"
+              style={{
+                fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+              }}
+            >
+              happy birthday, love 🤍
+            </motion.p>
+
+            {/* Letter Content: Centered, Delicate, Charcoal Gray */}
+            <div className="space-y-4 sm:space-y-6 text-center text-[#2D3748] text-xs sm:text-sm md:text-[15px] lg:text-base leading-relaxed sm:leading-loose font-normal max-w-xl mx-auto">
+              <motion.p
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.7, delay: 0.55 }}
               >
-                <Sparkles size={18} className="text-[#801F3A]" />
-              </div>
+                today is all about you and the happiness you bring into other people&apos;s lives. i hope your day is filled with genuine smiles, peaceful moments, and everything that makes your heart feel light. thank you for being someone so comforting, loving, and special to me.
+              </motion.p>
 
-              {/* Salutation / Opening */}
-              <h3
-                className="text-2xl md:text-3xl font-bold mb-6 text-[#350B19]"
-                style={{ fontFamily: "'Dancing Script', cursive" }}
+              <motion.p
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.7, delay: 0.7 }}
               >
-                <TypewriterText text={letterData.opening} speed={45} delay={300} />
-              </h3>
-
-              {/* Letter Paragraphs */}
-              <div className="space-y-4 text-sm sm:text-base md:text-lg leading-relaxed text-[#4A1021] font-normal">
-                {letterData.paragraphs.map((p, idx) => (
-                  <motion.p
-                    key={idx}
-                    initial={{ opacity: 0, y: 15 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6, delay: 0.2 + idx * 0.12 }}
-                  >
-                    {p}
-                  </motion.p>
-                ))}
-              </div>
-
-              {/* Closing & Signature */}
-              <div
-                className="mt-8 pt-6 flex flex-col items-end"
-                style={{ borderTop: "1px solid rgba(214, 165, 109, 0.25)" }}
-              >
-                <p
-                  className="italic text-base md:text-lg text-[#64152D]"
-                  style={{ fontFamily: "'Dancing Script', cursive" }}
-                >
-                  {letterData.closing}
-                </p>
-                <p
-                  className="font-bold text-2xl md:text-3xl mt-1 text-[#801F3A]"
-                  style={{ fontFamily: "'Dancing Script', cursive" }}
-                >
-                  {letterData.signature}
-                </p>
-              </div>
-
-              {/* Bottom corner accent inside paper */}
-              <div className="absolute -bottom-6 -left-6 w-24 h-24 opacity-15 pointer-events-none">
-                <svg viewBox="0 0 100 100" fill="none">
-                  <circle cx="50" cy="50" r="30" fill="#D6A56D" />
-                </svg>
-              </div>
-            </motion.div>
-          </div>
+                i&apos;m really grateful for your existence and for all the little moments we share together. no matter what happens, i&apos;ll always be cheering for you and wishing the best for you. enjoy your day, honey. you deserve all the love in the world
+              </motion.p>
+            </div>
+          </motion.div>
         </div>
       </div>
     </section>
