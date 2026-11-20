@@ -8,67 +8,82 @@ export default function OpeningSection() {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const imageSrc = openingData.polaroidPhoto || "/images/couple-surface.jpg";
+  const imageSrc = openingData.polaroidPhoto || "/images/couple-main.jpg";
 
   return (
     <section
       id="home"
       className="relative w-full h-screen flex flex-col items-center justify-center overflow-hidden select-none bg-[#120207]"
     >
-      {/* ── Ambient Blurred Background (Cinematic Fill for All Aspect Ratios) ── */}
-      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+      {/* ── Background Photo (User's Photo - Fullscreen 100vh) ── */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
         <img
           src={imageSrc}
-          alt=""
-          aria-hidden="true"
-          className="w-full h-full object-cover blur-3xl opacity-35 scale-125"
-        />
-        {/* Deep wine dark backdrop gradient */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(ellipse at 50% 50%, rgba(74, 16, 33, 0.3) 0%, rgba(36, 5, 14, 0.6) 60%, rgba(18, 2, 7, 0.95) 100%)",
-          }}
-        />
-      </div>
-
-      {/* ── Main Full-Screen Hero Photo Composition ── */}
-      <motion.div
-        initial={{ opacity: 0, scale: 1.04 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
-        className="relative z-10 w-full h-full flex items-center justify-center"
-      >
-        <img
-          src={imageSrc}
-          alt="Happy Birthday to my favorite person"
-          className="w-full h-full object-contain sm:object-cover"
+          alt="Couple Background"
+          className="w-full h-full object-cover"
           style={{ objectPosition: "center center" }}
         />
 
-        {/* Soft Vignette Overlay around edges */}
+        {/* Cinematic Dark Overlay for Crisp Contrast */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(to bottom, rgba(18, 2, 7, 0.45) 0%, rgba(18, 2, 7, 0.25) 30%, rgba(18, 2, 7, 0.35) 70%, rgba(18, 2, 7, 0.75) 100%)",
+          }}
+        />
+
+        {/* Warm Cinematic Edge Vignette */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
             boxShadow:
-              "inset 0 0 120px rgba(18, 2, 7, 0.65), inset 0 0 60px rgba(53, 11, 25, 0.3)",
+              "inset 0 0 160px rgba(18, 2, 7, 0.7), inset 0 0 70px rgba(36, 5, 14, 0.4)",
           }}
         />
+      </div>
 
-        {/* Accessible Heading for Screen Readers */}
-        <h1 className="sr-only">HAPPY BIRTHDAY to my favorite person</h1>
-      </motion.div>
+      {/* ── Center Typography (Exact Match to Reference: Pure White Text) ── */}
+      <div className="relative z-10 flex flex-col items-center justify-center text-center px-4 max-w-5xl mx-auto pointer-events-none">
+        {/* HAPPY BIRTHDAY — Elegant High-Contrast Serif */}
+        <motion.h1
+          initial={{ opacity: 0, y: 25, filter: "blur(6px)" }}
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+          className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold tracking-[0.08em] text-white leading-none uppercase"
+          style={{
+            fontFamily: "'Playfair Display', Georgia, serif",
+            textShadow:
+              "0 4px 30px rgba(0, 0, 0, 0.8), 0 2px 10px rgba(0, 0, 0, 0.6)",
+          }}
+        >
+          HAPPY BIRTHDAY
+        </motion.h1>
 
-      {/* ── Bottom Animated Scroll Indicator ── */}
+        {/* to my favorite person — Delicate Flowing Script Font in Pure White */}
+        <motion.p
+          initial={{ opacity: 0, y: 15, filter: "blur(4px)" }}
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          transition={{ duration: 1, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-normal text-white -mt-2 sm:-mt-4 md:-mt-6 tracking-normal"
+          style={{
+            fontFamily: "'Alex Brush', 'Dancing Script', cursive",
+            textShadow:
+              "0 2px 20px rgba(0, 0, 0, 0.8), 0 1px 6px rgba(0, 0, 0, 0.5)",
+          }}
+        >
+          to my favorite person
+        </motion.p>
+      </div>
+
+      {/* ── Scroll to Explore — Bottom Center ── */}
       <motion.div
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.2, duration: 0.8 }}
         onClick={() => scrollTo("memories")}
-        className="absolute bottom-6 sm:bottom-10 z-20 flex flex-col items-center cursor-pointer select-none group"
+        className="absolute bottom-6 sm:bottom-10 z-20 flex flex-col items-center cursor-pointer select-none group pointer-events-auto"
       >
-        {/* Animated Mouse Capsule */}
         <div className="w-5 h-8 rounded-full border border-white/40 group-hover:border-white/80 transition-colors flex justify-center pt-1.5 backdrop-blur-[2px]">
           <motion.div
             animate={{ y: [0, 9, 0], opacity: [1, 0.25, 1] }}
@@ -76,8 +91,6 @@ export default function OpeningSection() {
             className="w-1 h-1.5 bg-white/80 rounded-full"
           />
         </div>
-
-        {/* Label */}
         <p className="text-[9px] sm:text-[10px] font-mono tracking-[0.28em] text-white/60 group-hover:text-white/95 uppercase mt-2.5 transition-colors">
           Scroll to Explore
         </p>
