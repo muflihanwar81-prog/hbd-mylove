@@ -61,7 +61,7 @@ export default function Navigation() {
           className="cursor-pointer select-none"
         >
           <span
-            className="text-xl sm:text-2xl font-bold tracking-tight text-white hover:text-[#D6A56D] transition-colors"
+            className="text-xl sm:text-2xl font-bold tracking-tight text-white hover:text-white/80 transition-colors"
             style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
           >
             For You
@@ -72,16 +72,13 @@ export default function Navigation() {
         <nav className="hidden md:flex items-center gap-7 lg:gap-9 text-xs sm:text-sm tracking-widest uppercase font-medium">
           {navLinks.map((item) => {
             const isActive = activeSection === item.id;
-            const isLetter = item.id === "letter";
             return (
               <button
                 key={item.id}
                 onClick={() => scrollTo(item.id)}
                 className={`transition-colors cursor-pointer select-none ${
                   isActive
-                    ? "text-[#D6A56D] font-bold"
-                    : isLetter
-                    ? "text-[#D6A56D]/90 hover:text-[#F3E5AB] font-semibold"
+                    ? "text-white font-bold underline underline-offset-4"
                     : "text-white/75 hover:text-white"
                 }`}
               >
@@ -116,11 +113,7 @@ export default function Navigation() {
               <button
                 key={item.id}
                 onClick={() => scrollTo(item.id)}
-                className={`py-1 text-sm uppercase tracking-widest font-medium transition-colors cursor-pointer ${
-                  item.id === "letter"
-                    ? "text-[#D6A56D] font-bold"
-                    : "text-white/80 hover:text-white"
-                }`}
+                className={`py-1 text-sm uppercase tracking-widest font-medium transition-colors cursor-pointer text-white/80 hover:text-white`}
               >
                 {item.label}
               </button>
