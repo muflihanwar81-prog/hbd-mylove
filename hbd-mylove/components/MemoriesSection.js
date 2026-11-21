@@ -729,25 +729,6 @@ export default function MemoriesSection({ onPhotoClick }) {
         className="absolute inset-0 w-full h-full block z-0"
       />
 
-      {/* ── Top-Right Header Pill (Exact Reference: GALLERY | LIST) ── */}
-      <div className="absolute top-6 right-6 md:top-8 md:right-8 z-20 pointer-events-auto">
-        <div
-          className="flex items-center rounded-full p-1 shadow-lg"
-          style={{
-            background: "rgba(20, 24, 34, 0.85)",
-            border: "1px solid rgba(255, 255, 255, 0.18)",
-            backdropFilter: "blur(12px)",
-          }}
-        >
-          <span className="px-4 py-1.5 rounded-full text-[11px] font-mono font-bold tracking-widest text-[#111521] bg-white uppercase">
-            GALLERY
-          </span>
-          <span className="px-4 py-1.5 text-[11px] font-mono tracking-widest text-neutral-400 uppercase">
-            LIST
-          </span>
-        </div>
-      </div>
-
       {/* ── Bottom-Center Display (Exact Reference Typography) ── */}
       <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 pointer-events-none text-center">
         <p className="text-[10px] md:text-[11px] font-mono tracking-[0.28em] text-neutral-400 uppercase mb-1">
