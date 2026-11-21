@@ -11,6 +11,7 @@ import GallerySection from "@/components/GallerySection";
 import LetterSection from "@/components/LetterSection";
 import WishesSection from "@/components/WishesSection";
 import FinaleSection from "@/components/FinaleSection";
+import Navigation from "@/components/Navigation";
 import MusicPlayer from "@/components/MusicPlayer";
 import FloatingHearts from "@/components/FloatingHearts";
 import SparkleStars from "@/components/SparkleStars";
@@ -99,6 +100,7 @@ export default function Home() {
       {/* Stage 3: Full Birthday Page (Cinematic Reveal) */}
       {isMainSiteActive && (
         <div className="relative z-10 animate-fade-in transition-opacity duration-1000">
+          <Navigation />
           <OpeningSection />
           <MemoriesSection onPhotoClick={setSelectedPhoto} />
           <GallerySection onPhotoClick={setSelectedPhoto} />
