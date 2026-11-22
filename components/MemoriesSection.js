@@ -883,21 +883,9 @@ export default function MemoriesSection({ onPhotoClick }) {
         className="absolute inset-0 w-full h-full block z-0"
       />
 
-      {/* ── Bottom-Center Display (Responsive Luxury Typography) ── */}
-      <div className="absolute bottom-24 sm:bottom-28 md:bottom-10 left-1/2 -translate-x-1/2 z-20 pointer-events-none text-center w-[92%] max-w-xl px-2">
-        <p className="text-[10px] md:text-[11px] font-mono tracking-[0.28em] text-[#B08A52] uppercase mb-1 drop-shadow-md font-semibold">
-          YOU ARE WALKING PAST
-        </p>
+      {/* ── Bottom-Center Display: 1 text "memory" ── */}
+      <div className="absolute bottom-24 sm:bottom-28 md:bottom-10 left-1/2 -translate-x-1/2 z-20 pointer-events-auto text-center w-[92%] max-w-xl px-2">
         <h2
-          className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-extrabold text-[#FFF5E8] tracking-wider uppercase mb-1.5 md:mb-2 line-clamp-2 md:line-clamp-none"
-          style={{
-            fontFamily: "'Playfair Display', Georgia, serif",
-            textShadow: "0 2px 25px rgba(38, 4, 13, 0.98), 0 0 12px rgba(0,0,0,0.9)",
-          }}
-        >
-          {activeArtwork?.caption || memoriesData.title || "UNLISTED PAINTINGS"}
-        </h2>
-        <button
           onClick={() => {
             if (activeArtwork) {
               modalOpenRef.current = true;
@@ -905,11 +893,14 @@ export default function MemoriesSection({ onPhotoClick }) {
               if (onPhotoClick) onPhotoClick(activeArtwork);
             }
           }}
-          className="pointer-events-auto inline-flex items-center gap-2 text-[10px] md:text-[11px] font-mono tracking-[0.22em] text-[#FFF5E8]/90 hover:text-[#B08A52] uppercase transition-all border-b border-[#B08A52]/40 hover:border-[#B08A52] hover:shadow-[0_0_12px_rgba(176,138,82,0.3)] pb-0.5"
+          className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-widest uppercase cursor-pointer hover:opacity-80 transition-opacity select-none"
+          style={{
+            fontFamily: "'Playfair Display', Georgia, serif",
+            textShadow: "0 2px 25px rgba(0, 0, 0, 0.95), 0 0 15px rgba(255, 255, 255, 0.2)",
+          }}
         >
-          <span>ENTER THE COLLECTION</span>
-          <span>→</span>
-        </button>
+          memory
+        </h2>
       </div>
 
       {/* ── Bottom Navigation & Instructions (Responsive across Mobile, Tablet, Desktop) ── */}
