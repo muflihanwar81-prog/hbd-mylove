@@ -316,16 +316,15 @@ export default function LetterSection() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.75, delay: 0.7, ease: easeSoft }}
               >
-                today is all about you and the happiness you bring into other people&apos;s lives. i hope your day is filled with genuine smiles, peaceful moments, and everything that makes your heart feel light. thank you for being someone so comforting, loving, and special to me.
-              </motion.p>
+                Selamat ulang tahun sayang. Hari ini adalah hari spesial karena seseorang yang begitu berarti lahir ke dunia. Aku berharap di umurmu yang ke 19 ini kamu selalu diberikan kebahagiaan, kesehatan, dan segala hal baik yang selama ini kamu impikan segera terwujud satu persatu. 
+                
+                Aku mungkin nggak selalu bisa memberikan hal-hal yang sempurna, tapi aku ingin kamu tahu kalau kehadiranmu adalah salah satu hal terindah yang pernah aku punya. Terima kasih sudah hadir, sudah menjadi dirimu sendiri, dan sudah memberikan banyak warna dalam hari-hariku.
 
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.75, delay: 0.9, ease: easeSoft }}
-              >
-                i&apos;m really grateful for your existence and for all the little moments we share together. no matter what happens, i&apos;ll always be cheering for you and wishing the best for you. enjoy your day, honey. you deserve all the love in the world
+                Kalau suatu hari nanti kamu merasa lelah, merasa kurang, atau dunia terasa terlalu berat, ingatlah kalau kamu sangat berharga. Kamu pantas dicintai, dihargai, dan mendapatkan semua kebahagiaan yang ada di dunia ini.
+
+                Aku berharap bisa terus melihat senyummu, mendengar cerita-ceritamu, menemani hari-harimu, dan merayakan lebih banyak ulang tahun bersamamu.
+                
+                Jangan pernah merasa sendirian, ya. Aku akan selalu berharap yang terbaik untukmu
               </motion.p>
             </div>
 
