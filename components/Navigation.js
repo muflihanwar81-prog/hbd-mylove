@@ -13,13 +13,14 @@ export default function Navigation() {
     { id: "home", label: "Home" },
     { id: "letter", label: "Open Letter" },
     { id: "memories", label: "Our Story" },
+    { id: "game", label: "Mini Game" },
   ];
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 40);
 
-      const sections = ["home", "letter", "memories"];
+      const sections = ["home", "letter", "memories", "game"];
       for (let i = sections.length - 1; i >= 0; i--) {
         const el = document.getElementById(sections[i]);
         if (el) {

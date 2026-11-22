@@ -8,6 +8,7 @@ import CountdownGateSection from "@/components/CountdownGateSection";
 import OpeningSection from "@/components/OpeningSection";
 import MemoriesSection from "@/components/MemoriesSection";
 import LetterSection from "@/components/LetterSection";
+import CatchMyHeartsSection from "@/components/CatchMyHeartsSection";
 import Navigation from "@/components/Navigation";
 import MusicPlayer from "@/components/MusicPlayer";
 import FloatingHearts from "@/components/FloatingHearts";
@@ -97,6 +98,7 @@ export default function Home() {
           <OpeningSection />
           <LetterSection />
           <MemoriesSection onPhotoClick={setSelectedPhoto} />
+          <CatchMyHeartsSection />
         </div>
       )}
 
