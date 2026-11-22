@@ -123,7 +123,7 @@ export default function OpeningSection() {
               }}
             >
               <Info size={16} />
-              <span>Our Story</span>
+              <span>Gallery</span>
             </motion.button>
 
             {/* 3. Surprise (Dark Background Gift Icon Button) */}
