@@ -28,8 +28,7 @@ export default function OpeningSection() {
           transition={{ duration: 1.6, ease: "easeOut" }}
           src={imageSrc}
           alt="Our Story Cinematic Background"
-          className="w-full h-full object-cover"
-          style={{ objectPosition: "center 35%" }}
+          className="w-full h-full object-cover object-[center_20%] md:object-[25%_25%]"
         />
 
         {/* Cinematic Translucent Dark Overlay */}
