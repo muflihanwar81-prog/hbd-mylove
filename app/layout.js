@@ -5,7 +5,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="id" className="scroll-smooth" suppressHydrationWarning>
       <head>
-        <title>A Letter For You 💙</title>
+        <title>Happy birthday Novria</title>
         <meta name="description" content="A romantic birthday surprise for someone special" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
