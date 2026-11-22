@@ -18,9 +18,9 @@ export default function OpeningSection() {
   return (
     <section
       id="home"
-      className="relative w-full min-h-[calc(100vh-70px)] mt-[70px] overflow-hidden select-none bg-[#080808] flex items-center"
+      className="relative w-full min-h-screen overflow-hidden select-none bg-[#080808] flex items-center"
     >
-      {/* ── Layer 1: Fullscreen Background Photo below Header (Cover, Center Position) ── */}
+      {/* ── Layer 1: Fullscreen Background Photo (Cover, Center Position) ── */}
       <div
         className="absolute inset-0 w-full h-full z-0 pointer-events-none"
         style={{
@@ -31,45 +31,44 @@ export default function OpeningSection() {
         }}
       />
 
-      {/* ── Layer 2: Overlay Gradasi Hitam Terpisah Kiri & Kanan (Tengah Tetap Terang Untuk Wajah) ── */}
-      {/* Gradasi Kiri: Hitam transparan ~55% di sisi kiri, memudar menuju tengah */}
+      {/* ── Layer 2: Overlay Gradasi Hitam Terpisah Kiri & Kanan (Tengah Tetap Terang & Wajah Utuh) ── */}
       <div
         className="hidden md:block absolute inset-0 w-full h-full pointer-events-none z-10"
         style={{
           background:
-            "linear-gradient(90deg, rgba(8,8,8,0.58) 0%, rgba(8,8,8,0.38) 22%, rgba(8,8,8,0.12) 38%, transparent 55%)",
+            "linear-gradient(to right, rgba(0,0,0,0.90) 0%, rgba(0,0,0,0.55) 20%, transparent 42%, transparent 58%, rgba(0,0,0,0.55) 80%, rgba(0,0,0,0.95) 100%)",
         }}
       />
 
-      {/* Gradasi Kanan: Hitam ~85% di sisi kanan, memudar menuju tengah */}
+      {/* Vignette atas halus agar menu navigasi transparan tetap terbaca jelas */}
       <div
-        className="hidden md:block absolute inset-0 w-full h-full pointer-events-none z-10"
+        className="absolute inset-x-0 top-0 h-32 pointer-events-none z-10"
         style={{
           background:
-            "linear-gradient(270deg, rgba(8,8,8,0.88) 0%, rgba(8,8,8,0.72) 26%, rgba(8,8,8,0.25) 45%, transparent 62%)",
+            "linear-gradient(180deg, rgba(0,0,0,0.70) 0%, rgba(0,0,0,0.25) 55%, transparent 100%)",
         }}
       />
 
-      {/* Gradasi Bawah: Opacity ringan agar tampilan lebih cinematic */}
+      {/* Gradasi Bawah: Opacity ringan agar transisi ke section berikutnya seamless */}
       <div
         className="absolute inset-x-0 bottom-0 h-28 md:h-36 pointer-events-none z-10"
         style={{
           background:
-            "linear-gradient(0deg, rgba(8,8,8,0.75) 0%, rgba(8,8,8,0.25) 45%, transparent 100%)",
+            "linear-gradient(0deg, rgba(8,8,8,0.85) 0%, rgba(8,8,8,0.25) 50%, transparent 100%)",
         }}
       />
 
-      {/* Mobile Gradient: Wajah atas tetap terlihat, bagian bawah kontras untuk teks */}
+      {/* Mobile Gradient: Wajah atas terlihat, bagian bawah kontras untuk teks */}
       <div
         className="md:hidden absolute inset-0 w-full h-full pointer-events-none z-10"
         style={{
           background:
-            "linear-gradient(180deg, rgba(8,8,8,0.10) 0%, rgba(8,8,8,0.30) 25%, rgba(8,8,8,0.78) 55%, rgba(8,8,8,0.96) 85%)",
+            "linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.15) 25%, rgba(0,0,0,0.78) 55%, rgba(0,0,0,0.98) 90%)",
         }}
       />
 
       {/* ── Layer 4: Content Container (Dua Kolom Berjauhan, Sisakan Tengah Kosong) ── */}
-      <div className="relative z-20 w-full min-h-[calc(100vh-70px)] max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-14 py-10 md:py-14 flex items-center justify-between">
+      <div className="relative z-20 w-full min-h-screen max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-14 pt-24 sm:pt-28 pb-12 sm:pb-16 flex items-center justify-between">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
