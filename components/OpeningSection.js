@@ -18,49 +18,48 @@ export default function OpeningSection() {
   return (
     <section
       id="home"
-      className="relative w-full min-h-screen overflow-hidden select-none bg-black flex items-center justify-end"
+      className="relative w-screen min-h-screen overflow-hidden select-none flex items-center justify-end"
     >
-      {/* ── 1. Full Background Photo (100vw x 100vh, Cover, Natural Focus on Faces) ── */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
-        <motion.img
-          initial={{ scale: 1.05, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 1.4, ease: "easeOut" }}
-          src={imageSrc}
-          alt="Home Hero Background"
-          className="w-full h-full object-cover object-[15%_25%] sm:object-[18%_30%] md:object-[12%_35%]"
-        />
+      {/* ── Layer 1: True Fullscreen Background Photo (100vw x 100vh, Cover, Zero Fixed Box, Zero Borders) ── */}
+      <div
+        className="absolute inset-0 w-full h-full z-0 pointer-events-none"
+        style={{
+          backgroundImage: `url(${imageSrc})`,
+          backgroundSize: "cover",
+          backgroundPosition: "15% 30%",
+          backgroundRepeat: "no-repeat",
+        }}
+      />
 
-        {/* ── 2. Transparent Black Gradient Overlay ── */}
-        {/* Desktop 270deg Gradient: Sisi Kanan 90% -> Tengah 40-75% -> Sisi Kiri 10% (Sesuai Spesifikasi) */}
-        <div
-          className="hidden md:block absolute inset-0 pointer-events-none z-10 backdrop-blur-[1px]"
-          style={{
-            background:
-              "linear-gradient(270deg, rgba(0,0,0,0.90) 0%, rgba(0,0,0,0.75) 35%, rgba(0,0,0,0.40) 65%, rgba(0,0,0,0.10) 100%)",
-          }}
-        />
+      {/* ── Layer 2: Transparent Black Gradient Overlay (Exact 270deg Gradient Formula) ── */}
+      {/* Desktop 270deg Gradient: Right 92% -> 78% -> 40% -> Left 8% (Foto Kiri Tetap Terang & Jelas) */}
+      <div
+        className="hidden md:block absolute inset-0 w-full h-full pointer-events-none z-10"
+        style={{
+          background:
+            "linear-gradient(270deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.78) 35%, rgba(0,0,0,0.40) 65%, rgba(0,0,0,0.08) 100%)",
+        }}
+      />
 
-        {/* Mobile Gradient: Top photo remains natural, bottom overlay provides high contrast for text */}
-        <div
-          className="md:hidden absolute inset-0 pointer-events-none z-10 backdrop-blur-[1px]"
-          style={{
-            background:
-              "linear-gradient(180deg, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.30) 30%, rgba(0,0,0,0.75) 60%, rgba(0,0,0,0.95) 90%)",
-          }}
-        />
+      {/* Mobile Gradient: Top photo clear & bright, bottom overlay ensures high text contrast */}
+      <div
+        className="md:hidden absolute inset-0 w-full h-full pointer-events-none z-10"
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.25) 30%, rgba(0,0,0,0.75) 60%, rgba(0,0,0,0.94) 90%)",
+        }}
+      />
 
-        {/* Seamless bottom fade into next section */}
-        <div className="absolute inset-x-0 bottom-0 h-24 md:h-32 bg-gradient-to-t from-black to-transparent pointer-events-none z-10" />
-      </div>
+      {/* Seamless bottom fade into next section */}
+      <div className="absolute inset-x-0 bottom-0 h-24 md:h-32 bg-gradient-to-t from-black to-transparent pointer-events-none z-10" />
 
-      {/* ── 3. Content Container (Right-Aligned, Text Content with High Contrast) ── */}
+      {/* ── Layer 4: Content Layer (Right-Aligned, 40% width on Desktop, Above Overlays) ── */}
       <div className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-8 lg:px-14 pt-28 sm:pt-32 pb-16 sm:pb-20 flex justify-center md:justify-end">
         <motion.div
           initial={{ opacity: 0, x: 35 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 1, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-          className="w-full max-w-lg md:max-w-xl lg:max-w-xl flex flex-col items-start text-left mt-auto md:mt-0"
+          className="w-full md:w-[42%] lg:w-[40%] flex flex-col items-start text-left mt-auto md:mt-0"
         >
           {/* Badge: UNTUK ORANG FAVORITKU */}
           <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#151515]/90 border border-[#C5A46D]/60 backdrop-blur-md mb-3 sm:mb-4 shadow-sm">
