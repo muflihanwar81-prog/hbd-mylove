@@ -227,7 +227,7 @@ Kamu pantas mendapatkan kebahagiaan, cinta, dan semua hal indah yang ada di duni
 
 Terima kasih sudah menjadi dirimu sendiri. Terima kasih sudah hadir dan memberikan banyak warna dalam hidupku.
 
-Oh iya, masih ada satu kejutan lagi untukmu. Jangan berhenti sampai di sini, ya. Coba keluar sebentar dan lihat ke depan rumah. Karena ada hadiah kecil yang sudah menunggumu.*;
+Oh iya, masih ada satu kejutan lagi untukmu. Jangan berhenti sampai di sini, ya. Coba keluar sebentar dan lihat ke depan rumah. Karena ada hadiah kecil yang sudah menunggumu.*`;
 
   // Update bucket helper
   const updateBucketX = (val) => {
