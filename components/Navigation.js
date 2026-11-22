@@ -49,7 +49,7 @@ export default function Navigation() {
       transition={{ duration: 0.6, ease: "easeOut" }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-[#4A0714]/70 backdrop-blur-md py-3.5 sm:py-4 shadow-sm border-b border-white/10"
+          ? "bg-[#26040D]/90 backdrop-blur-md py-3.5 sm:py-4 shadow-lg border-b border-[#B08A52]/20"
           : "bg-transparent py-5 sm:py-6"
       }`}
     >
@@ -64,8 +64,8 @@ export default function Navigation() {
                 onClick={() => scrollTo(item.id)}
                 className={`transition-colors cursor-pointer select-none ${
                   isActive
-                    ? "text-white font-bold underline underline-offset-4 decoration-[#B08A52]"
-                    : "text-white/80 hover:text-white"
+                    ? "text-[#FFF5E8] font-bold underline underline-offset-4 decoration-[#B08A52]"
+                    : "text-[#FFF5E8]/75 hover:text-[#B08A52]"
                 }`}
               >
                 {item.label}
@@ -78,7 +78,7 @@ export default function Navigation() {
         <div className="md:hidden flex items-center justify-end w-full">
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="p-2 text-white hover:text-white/80 cursor-pointer rounded-lg bg-white/10 backdrop-blur-sm border border-white/15"
+            className="p-2 text-[#FFF5E8] hover:text-[#B08A52] cursor-pointer rounded-lg bg-[#3B0715]/40 border border-[#B08A52]/25"
             aria-label="Toggle navigation"
           >
             {isOpen ? <X size={20} /> : <Menu size={20} />}
@@ -93,13 +93,13 @@ export default function Navigation() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-[#4A0714]/95 backdrop-blur-xl px-6 py-5 flex flex-col gap-4 text-center border-t border-white/10 shadow-2xl"
+            className="md:hidden bg-[#26040D]/95 backdrop-blur-xl px-6 py-5 flex flex-col gap-4 text-center border-t border-[#B08A52]/20 shadow-2xl"
           >
             {navLinks.map((item) => (
               <button
                 key={item.id}
                 onClick={() => scrollTo(item.id)}
-                className={`py-2 text-xs sm:text-sm uppercase tracking-widest font-medium transition-colors cursor-pointer text-white/85 hover:text-white active:text-white`}
+                className={`py-2 text-xs sm:text-sm uppercase tracking-widest font-medium transition-colors cursor-pointer text-[#FFF5E8]/85 hover:text-[#B08A52] active:text-[#B08A52]`}
               >
                 {item.label}
               </button>
