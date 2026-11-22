@@ -18,69 +18,49 @@ export default function OpeningSection() {
   return (
     <section
       id="home"
-      className="relative w-full min-h-screen overflow-hidden select-none bg-[#080808] flex items-center"
+      className="relative w-full min-h-screen overflow-hidden select-none bg-black flex items-center justify-end"
     >
-      {/* ── Soft Ambient Lighting (Gold Ambient Glow & Charcoal Depth) ── */}
-      <div
-        className="absolute inset-0 pointer-events-none z-0"
-        style={{
-          background:
-            "radial-gradient(ellipse at 75% 35%, rgba(197, 164, 109, 0.08) 0%, transparent 60%), radial-gradient(ellipse at 25% 60%, rgba(32, 32, 32, 0.5) 0%, transparent 70%)",
-        }}
-      />
+      {/* ── 1. Full Background Photo (100vw x 100vh, Cover, Natural Focus on Faces) ── */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        <motion.img
+          initial={{ scale: 1.05, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 1.4, ease: "easeOut" }}
+          src={imageSrc}
+          alt="Home Hero Background"
+          className="w-full h-full object-cover object-[15%_25%] sm:object-[18%_30%] md:object-[12%_35%]"
+        />
 
-      {/* ── Background Photo Layer (Enlarged below header, Left ~52-54%, Contained so full body & face are clear) ── */}
-      <div className="absolute top-20 sm:top-24 bottom-0 left-0 w-full md:w-[52%] lg:w-[54%] flex items-end md:items-center justify-center md:justify-start px-2 sm:px-4 md:pl-8 lg:pl-14 pb-2 md:pb-0 z-0 pointer-events-none overflow-hidden">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.2, ease: "easeOut" }}
-          className="relative w-full h-[calc(100vh-95px)] max-h-[880px] flex items-center justify-center md:justify-start"
-        >
-          <img
-            src={imageSrc}
-            alt="Home Hero Photo"
-            className="w-auto h-full max-w-full object-contain filter drop-shadow-[0_20px_45px_rgba(0,0,0,0.95)]"
-            style={{
-              objectPosition: "center bottom md:left bottom",
-            }}
-          />
-        </motion.div>
+        {/* ── 2. Transparent Black Gradient Overlay ── */}
+        {/* Desktop 270deg Gradient: Sisi Kanan 90% -> Tengah 40-75% -> Sisi Kiri 10% (Sesuai Spesifikasi) */}
+        <div
+          className="hidden md:block absolute inset-0 pointer-events-none z-10 backdrop-blur-[1px]"
+          style={{
+            background:
+              "linear-gradient(270deg, rgba(0,0,0,0.90) 0%, rgba(0,0,0,0.75) 35%, rgba(0,0,0,0.40) 65%, rgba(0,0,0,0.10) 100%)",
+          }}
+        />
+
+        {/* Mobile Gradient: Top photo remains natural, bottom overlay provides high contrast for text */}
+        <div
+          className="md:hidden absolute inset-0 pointer-events-none z-10 backdrop-blur-[1px]"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.30) 30%, rgba(0,0,0,0.75) 60%, rgba(0,0,0,0.95) 90%)",
+          }}
+        />
+
+        {/* Seamless bottom fade into next section */}
+        <div className="absolute inset-x-0 bottom-0 h-24 md:h-32 bg-gradient-to-t from-black to-transparent pointer-events-none z-10" />
       </div>
 
-      {/* ── Horizontal Black Gradient: linear-gradient(270deg, #080808 0%, rgba(8,8,8,0.95) 40%, rgba(8,8,8,0.65) 70%, transparent 100%) ── */}
-      {/* Desktop Gradient: Exact User Formula */}
-      <div
-        className="hidden md:block absolute inset-0 pointer-events-none z-5"
-        style={{
-          background:
-            "linear-gradient(270deg, #080808 0%, rgba(8, 8, 8, 0.95) 40%, rgba(8, 8, 8, 0.65) 70%, transparent 100%)",
-        }}
-      />
-
-      {/* Mobile Gradient: Top photo clear, bottom overlay ensures text readability */}
-      <div
-        className="md:hidden absolute inset-0 pointer-events-none z-5"
-        style={{
-          background:
-            "linear-gradient(180deg, transparent 0%, rgba(8, 8, 8, 0.25) 25%, rgba(8, 8, 8, 0.88) 55%, #080808 85%)",
-        }}
-      />
-
-      {/* Subtle bottom fade to blend smoothly with next section */}
-      <div className="absolute inset-x-0 bottom-0 h-24 md:h-32 bg-gradient-to-t from-[#080808] to-transparent pointer-events-none z-5" />
-
-      {/* ── Content Container (Split Hero: Left Photo space, Right 45-50% for Text) ── */}
-      <div className="relative z-10 w-full min-h-screen max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 pt-28 sm:pt-32 pb-16 sm:pb-20 flex flex-col md:flex-row items-center justify-between">
-        {/* Left Column Spacer (50-52% width on desktop to let enlarged photo shine unobstructed) */}
-        <div className="hidden md:block md:w-[50%] lg:w-[52%] pointer-events-none" />
-
-        {/* Right Column (48-50% width: Elegant Black Birthday Content Area) */}
+      {/* ── 3. Content Container (Right-Aligned, Text Content with High Contrast) ── */}
+      <div className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-8 lg:px-14 pt-28 sm:pt-32 pb-16 sm:pb-20 flex justify-center md:justify-end">
         <motion.div
           initial={{ opacity: 0, x: 35 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 1, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-          className="w-full md:w-[50%] lg:w-[48%] flex flex-col items-start text-left mt-auto md:mt-0"
+          className="w-full max-w-lg md:max-w-xl lg:max-w-xl flex flex-col items-start text-left mt-auto md:mt-0"
         >
           {/* Badge: UNTUK ORANG FAVORITKU */}
           <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#151515]/90 border border-[#C5A46D]/60 backdrop-blur-md mb-3 sm:mb-4 shadow-sm">
@@ -124,26 +104,26 @@ export default function OpeningSection() {
 
           {/* ── Action Buttons ── */}
           <div className="flex flex-wrap items-center gap-3 sm:gap-4 w-full">
-            {/* Primary Button: BUKA SURATNYA (Warm Ivory background, Deep Black text) */}
+            {/* Primary Button: BUKA SURATNYA (Cream background, Black text) */}
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => scrollTo("letter")}
-              className="flex items-center justify-center gap-2 px-5 sm:px-7 py-3 sm:py-3.5 rounded-full font-bold text-xs sm:text-sm tracking-wider uppercase transition-all shadow-xl cursor-pointer bg-[#FFF5E8] hover:bg-[#F2E6D5] text-[#080808]"
+              className="flex items-center justify-center gap-2 px-5 sm:px-7 py-3 sm:py-3.5 rounded-full font-bold text-xs sm:text-sm tracking-wider uppercase transition-all shadow-xl cursor-pointer bg-[#FFF5E8] hover:bg-[#F2E6D5] text-black"
               style={{
-                boxShadow: "0 6px 25px rgba(255, 245, 232, 0.2)",
+                boxShadow: "0 6px 25px rgba(255, 245, 232, 0.25)",
               }}
             >
-              <Play size={15} className="fill-[#080808] text-[#080808]" />
+              <Play size={15} className="fill-black text-black" />
               <span>BUKA SURATNYA</span>
             </motion.button>
 
-            {/* Secondary Button: GALLERY (Soft Black background, Antique Gold border, Warm Ivory text) */}
+            {/* Secondary Button: GALLERY (Black transparent background, Antique Gold border, Warm Ivory text) */}
             <motion.button
-              whileHover={{ scale: 1.05, backgroundColor: "#202020" }}
+              whileHover={{ scale: 1.05, backgroundColor: "rgba(0, 0, 0, 0.85)" }}
               whileTap={{ scale: 0.95 }}
               onClick={() => scrollTo("memories")}
-              className="flex items-center justify-center gap-2 px-4.5 sm:px-6 py-3 sm:py-3.5 rounded-full font-semibold text-xs sm:text-sm tracking-wider uppercase text-[#FFF5E8] transition-all backdrop-blur-md cursor-pointer bg-[#151515] border border-[#C5A46D] shadow-lg hover:border-[#FFF5E8]"
+              className="flex items-center justify-center gap-2 px-4.5 sm:px-6 py-3 sm:py-3.5 rounded-full font-semibold text-xs sm:text-sm tracking-wider uppercase text-[#FFF5E8] transition-all backdrop-blur-md cursor-pointer bg-black/60 border border-[#C5A46D] shadow-lg hover:border-[#FFF5E8]"
             >
               <Info size={15} className="text-[#C5A46D]" />
               <span>GALLERY</span>
@@ -154,7 +134,7 @@ export default function OpeningSection() {
               whileHover={{ scale: 1.1, rotate: 6 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => setShowSurpriseModal(true)}
-              className="w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all cursor-pointer backdrop-blur-md bg-[#151515] border border-[#C5A46D] hover:border-[#FFF5E8] text-[#C5A46D] shadow-md hover:bg-[#202020]"
+              className="w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all cursor-pointer backdrop-blur-md bg-black/60 border border-[#C5A46D] hover:border-[#FFF5E8] text-[#C5A46D] shadow-md hover:bg-black/80"
               title="Surprise Box"
               aria-label="Surprise Box"
             >
