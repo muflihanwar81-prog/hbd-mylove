@@ -18,51 +18,66 @@ export default function OpeningSection() {
   return (
     <section
       id="home"
-      className="relative w-screen min-h-screen overflow-hidden select-none flex items-center justify-end"
+      className="relative w-full min-h-[calc(100vh-70px)] mt-[70px] overflow-hidden select-none bg-[#080808] flex items-center"
     >
-      {/* ── Layer 1: True Fullscreen Background Photo (100vw x 100vh, Cover, Zero Fixed Box, Zero Borders) ── */}
+      {/* ── Layer 1: Fullscreen Background Photo below Header (Cover, Center Position) ── */}
       <div
         className="absolute inset-0 w-full h-full z-0 pointer-events-none"
         style={{
           backgroundImage: `url(${imageSrc})`,
           backgroundSize: "cover",
-          backgroundPosition: "center 25%",
+          backgroundPosition: "center center",
           backgroundRepeat: "no-repeat",
         }}
       />
 
-      {/* ── Layer 2: Transparent Black Gradient Overlay (Exact 270deg Gradient Formula) ── */}
-      {/* Desktop 270deg Gradient: Right 92% -> 78% -> 40% -> Left 8% (Foto Kiri Tetap Terang & Jelas) */}
+      {/* ── Layer 2: Overlay Gradasi Hitam Terpisah Kiri & Kanan (Tengah Tetap Terang Untuk Wajah) ── */}
+      {/* Gradasi Kiri: Hitam transparan ~55% di sisi kiri, memudar menuju tengah */}
       <div
         className="hidden md:block absolute inset-0 w-full h-full pointer-events-none z-10"
         style={{
           background:
-            "linear-gradient(270deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.78) 35%, rgba(0,0,0,0.40) 65%, rgba(0,0,0,0.08) 100%)",
+            "linear-gradient(90deg, rgba(8,8,8,0.58) 0%, rgba(8,8,8,0.38) 22%, rgba(8,8,8,0.12) 38%, transparent 55%)",
         }}
       />
 
-      {/* Mobile Gradient: Top photo clear & bright, bottom overlay ensures high text contrast */}
+      {/* Gradasi Kanan: Hitam ~85% di sisi kanan, memudar menuju tengah */}
+      <div
+        className="hidden md:block absolute inset-0 w-full h-full pointer-events-none z-10"
+        style={{
+          background:
+            "linear-gradient(270deg, rgba(8,8,8,0.88) 0%, rgba(8,8,8,0.72) 26%, rgba(8,8,8,0.25) 45%, transparent 62%)",
+        }}
+      />
+
+      {/* Gradasi Bawah: Opacity ringan agar tampilan lebih cinematic */}
+      <div
+        className="absolute inset-x-0 bottom-0 h-28 md:h-36 pointer-events-none z-10"
+        style={{
+          background:
+            "linear-gradient(0deg, rgba(8,8,8,0.75) 0%, rgba(8,8,8,0.25) 45%, transparent 100%)",
+        }}
+      />
+
+      {/* Mobile Gradient: Wajah atas tetap terlihat, bagian bawah kontras untuk teks */}
       <div
         className="md:hidden absolute inset-0 w-full h-full pointer-events-none z-10"
         style={{
           background:
-            "linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.25) 30%, rgba(0,0,0,0.75) 60%, rgba(0,0,0,0.94) 90%)",
+            "linear-gradient(180deg, rgba(8,8,8,0.10) 0%, rgba(8,8,8,0.30) 25%, rgba(8,8,8,0.78) 55%, rgba(8,8,8,0.96) 85%)",
         }}
       />
 
-      {/* Seamless bottom fade into next section */}
-      <div className="absolute inset-x-0 bottom-0 h-24 md:h-32 bg-gradient-to-t from-black to-transparent pointer-events-none z-10" />
-
-      {/* ── Layer 4: Content Container (Two-Column Text Grid, Vertically Centered) ── */}
-      <div className="relative z-20 w-full min-h-screen max-w-7xl mx-auto px-5 sm:px-8 lg:px-14 pt-28 sm:pt-32 pb-16 sm:pb-20 flex items-center justify-center">
+      {/* ── Layer 4: Content Container (Dua Kolom Berjauhan, Sisakan Tengah Kosong) ── */}
+      <div className="relative z-20 w-full min-h-[calc(100vh-70px)] max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-14 py-10 md:py-14 flex items-center justify-between">
         <motion.div
-          initial={{ opacity: 0, y: 25 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-          className="w-full grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 lg:gap-16 items-center my-auto"
+          className="w-full flex flex-col md:flex-row items-center justify-between gap-10 md:gap-6 my-auto"
         >
-          {/* ── KOLOM KIRI: Label, Angka 19, Judul Happy Birthday, Teks Kecil Hari yang Ditunggu-tunggu ── */}
-          <div className="flex flex-col items-start text-left">
+          {/* ── KOLOM KIRI (Sekitar 30% Lebar Layar, Digeser Lebih Dekat ke Kiri) ── */}
+          <div className="w-full md:w-[34%] lg:w-[30%] flex flex-col items-start text-left">
             {/* Label: UNTUK ORANG FAVORITKU */}
             <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/60 border border-[#C5A46D]/60 backdrop-blur-md mb-3 sm:mb-4 shadow-sm">
               <Sparkles size={13} className="text-[#C5A46D]" />
@@ -71,9 +86,9 @@ export default function OpeningSection() {
               </span>
             </div>
 
-            {/* Teks kecil: HARI YANG DITUNGGU-TUNGGU */}
+            {/* Teks kecil: HARI YANG DITUNGGU TUNGGU */}
             <p className="text-[11px] sm:text-xs md:text-sm font-mono tracking-[0.25em] text-[#C5A46D] uppercase mb-1.5 sm:mb-2 font-semibold">
-              HARI YANG DITUNGGU-TUNGGU
+              HARI YANG DITUNGGU TUNGGU
             </p>
 
             {/* Angka 19 dengan ukuran besar */}
@@ -99,35 +114,38 @@ export default function OpeningSection() {
             </h2>
           </div>
 
-          {/* ── KOLOM KANAN: Ucapan Selamat Ulang Tahun & Tombol Aksi ── */}
-          <div className="flex flex-col items-start text-left md:pl-4 lg:pl-6">
-            {/* Ucapan selamat ulang tahun */}
-            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-[#F2E6D5] font-normal leading-relaxed mb-6 sm:mb-8 max-w-lg drop-shadow-[0_2px_10px_rgba(0,0,0,0.95)]">
+          {/* ── AREA TENGAH TERBUKA (Bebas dari teks agar wajah orang di tengah terlihat jelas) ── */}
+          <div className="hidden md:block md:w-[26%] lg:w-[34%] pointer-events-none" />
+
+          {/* ── KOLOM KANAN (Sekitar 30% Lebar Layar, Digeser Lebih Dekat ke Kanan) ── */}
+          <div className="w-full md:w-[36%] lg:w-[30%] flex flex-col items-start text-left">
+            {/* Ucapan selamat ulang tahun (Warna Sekunder: #E8DCCB) */}
+            <p className="text-sm sm:text-base md:text-lg text-[#E8DCCB] font-normal leading-relaxed mb-6 sm:mb-8 max-w-md drop-shadow-[0_2px_10px_rgba(0,0,0,0.95)]">
               Selamat ulang tahun sayang, Semoga panjang umur sehat selalu, selalu dalam lindungan Allah SWT, dan dimudahkan rezekinya, aminn
             </p>
 
             {/* Tombol: BUKA SURATNYA, GALLERY, dan Tombol Hadiah */}
             <div className="flex flex-wrap items-center gap-3 sm:gap-4 w-full">
-              {/* Primary Button: BUKA SURATNYA */}
+              {/* Primary Button: BUKA SURATNYA (Cream #FFF5E8 dengan teks hitam #080808) */}
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => scrollTo("letter")}
-                className="flex items-center justify-center gap-2 px-5 sm:px-7 py-3 sm:py-3.5 rounded-full font-bold text-xs sm:text-sm tracking-wider uppercase transition-all shadow-xl cursor-pointer bg-[#FFF5E8] hover:bg-[#F2E6D5] text-black"
+                className="flex items-center justify-center gap-2 px-5 sm:px-7 py-3 sm:py-3.5 rounded-full font-bold text-xs sm:text-sm tracking-wider uppercase transition-all shadow-xl cursor-pointer bg-[#FFF5E8] hover:bg-[#E8DCCB] text-[#080808]"
                 style={{
                   boxShadow: "0 6px 25px rgba(255, 245, 232, 0.25)",
                 }}
               >
-                <Play size={15} className="fill-black text-black" />
+                <Play size={15} className="fill-[#080808] text-[#080808]" />
                 <span>BUKA SURATNYA</span>
               </motion.button>
 
-              {/* Secondary Button: GALLERY */}
+              {/* Secondary Button: GALLERY (Transparan hitam dengan border gold) */}
               <motion.button
-                whileHover={{ scale: 1.05, backgroundColor: "rgba(0, 0, 0, 0.85)" }}
+                whileHover={{ scale: 1.05, backgroundColor: "rgba(0, 0, 0, 0.75)" }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => scrollTo("memories")}
-                className="flex items-center justify-center gap-2 px-4.5 sm:px-6 py-3 sm:py-3.5 rounded-full font-semibold text-xs sm:text-sm tracking-wider uppercase text-[#FFF5E8] transition-all backdrop-blur-md cursor-pointer bg-black/60 border border-[#C5A46D] shadow-lg hover:border-[#FFF5E8]"
+                className="flex items-center justify-center gap-2 px-4.5 sm:px-6 py-3 sm:py-3.5 rounded-full font-semibold text-xs sm:text-sm tracking-wider uppercase text-[#FFF5E8] transition-all backdrop-blur-md cursor-pointer bg-black/50 border border-[#C5A46D] shadow-lg hover:border-[#FFF5E8]"
               >
                 <Info size={15} className="text-[#C5A46D]" />
                 <span>GALLERY</span>
@@ -138,7 +156,7 @@ export default function OpeningSection() {
                 whileHover={{ scale: 1.1, rotate: 6 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => setShowSurpriseModal(true)}
-                className="w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all cursor-pointer backdrop-blur-md bg-black/60 border border-[#C5A46D] hover:border-[#FFF5E8] text-[#C5A46D] shadow-md hover:bg-black/80"
+                className="w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all cursor-pointer backdrop-blur-md bg-black/50 border border-[#C5A46D] hover:border-[#FFF5E8] text-[#C5A46D] shadow-md hover:bg-black/75"
                 title="Surprise Box"
                 aria-label="Surprise Box"
               >
