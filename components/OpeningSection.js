@@ -23,26 +23,22 @@ export default function OpeningSection() {
       {/* ── 1. Full-Screen Cinematic Backdrop Photo ── */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         <motion.img
-          initial={{ scale: 1.08, opacity: 0 }}
+          initial={{ scale: 1.05, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 1.6, ease: "easeOut" }}
+          transition={{ duration: 1.4, ease: "easeOut" }}
           src={imageSrc}
-          alt="Our Story Cinematic Background"
-          className="w-full h-full object-cover object-[center_20%] md:object-[25%_25%]"
+          alt="Home Hero Background"
+          className="w-full h-full object-cover object-[center_15%] sm:object-[20%_20%] md:object-[18%_20%]"
         />
 
-        {/* Cinematic Translucent Dark Overlay */}
-        <div className="absolute inset-0 bg-[#26040D]/50 pointer-events-none" />
+        {/* Right Dark Gradient: Only on the right side to ensure text readability, leaving the left photo completely clear */}
+        <div className="absolute inset-0 bg-gradient-to-l from-[#26040D]/95 via-[#26040D]/70 md:via-[#26040D]/60 to-transparent pointer-events-none md:w-3/5 md:left-auto" />
 
-        {/* Multi-Directional Film Gradients (Dark burgundy from Left, Right, Top and Bottom) */}
-        {/* Left Dark Gradient */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#26040D]/90 via-[#26040D]/40 to-transparent pointer-events-none md:w-3/5" />
-        {/* Right Dark Gradient (Darker on Right side where information sits) */}
-        <div className="absolute inset-0 bg-gradient-to-l from-[#26040D]/95 via-[#26040D]/75 to-transparent pointer-events-none md:w-3/4 md:left-auto" />
-        {/* Top Gradient for Header contrast */}
-        <div className="absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-[#26040D]/90 via-[#26040D]/40 to-transparent pointer-events-none" />
+        {/* Mobile-only subtle bottom gradient for text readability */}
+        <div className="md:hidden absolute inset-0 bg-gradient-to-t from-[#26040D]/90 via-[#26040D]/30 to-transparent pointer-events-none" />
+
         {/* Bottom Fade to blend seamlessly with next section */}
-        <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[#4A0714] via-[#350710]/80 to-transparent pointer-events-none" />
+        <div className="absolute inset-x-0 bottom-0 h-32 md:h-40 bg-gradient-to-t from-[#26040D] via-[#26040D]/60 to-transparent pointer-events-none" />
       </div>
 
       {/* ── 2. Information & Story Content Area (Right-Aligned / Cinematic Movie Hero) ── */}
