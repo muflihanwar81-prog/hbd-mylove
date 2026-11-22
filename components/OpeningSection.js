@@ -96,11 +96,11 @@ export default function OpeningSection() {
 
           {/* ── 3. Three Interactive Buttons ── */}
           <div className="flex flex-wrap items-center gap-3 sm:gap-4 w-full">
-            {/* 1. Buka Cerita (White Clean Button with Play Icon) */}
+            {/* 1. Buka Surat (White Clean Button with Play Icon) */}
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => scrollTo("memories")}
+              onClick={() => scrollTo("letter")}
               className="flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3.5 rounded-full font-bold text-xs sm:text-sm tracking-wider uppercase transition-all shadow-xl cursor-pointer bg-white text-[#080B12] hover:bg-white/90"
               style={{
                 boxShadow: "0 6px 25px rgba(255, 255, 255, 0.25)",
@@ -110,11 +110,11 @@ export default function OpeningSection() {
               <span>Buka Suratnya</span>
             </motion.button>
 
-            {/* 2. Selengkapnya (Dark Charcoal Button with Info Icon) */}
+            {/* 2. Our Story (Dark Charcoal Button with Info Icon) */}
             <motion.button
               whileHover={{ scale: 1.05, backgroundColor: "rgba(255, 255, 255, 0.18)" }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => setShowStoryModal(true)}
+              onClick={() => scrollTo("memories")}
               className="flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 rounded-full font-semibold text-xs sm:text-sm tracking-wider uppercase text-white transition-all backdrop-blur-md cursor-pointer"
               style={{
                 background: "rgba(28, 32, 45, 0.8)",
@@ -123,7 +123,7 @@ export default function OpeningSection() {
               }}
             >
               <Info size={16} />
-              <span>Gallery</span>
+              <span>Our Story</span>
             </motion.button>
 
             {/* 3. Surprise (Dark Background Gift Icon Button) */}

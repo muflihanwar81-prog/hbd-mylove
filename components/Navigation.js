@@ -11,17 +11,16 @@ export default function Navigation() {
 
   const navLinks = [
     { id: "home", label: "Home" },
-    { id: "memories", label: "Our Story" },
-    { id: "gallery", label: "Gallery" },
-    { id: "wishes", label: "About Us" },
     { id: "letter", label: "Open Letter" },
+    { id: "memories", label: "Our Story" },
+    { id: "wishes", label: "About Us" },
   ];
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 40);
 
-      const sections = ["home", "memories", "gallery", "wishes", "letter"];
+      const sections = ["home", "letter", "memories", "wishes"];
       for (let i = sections.length - 1; i >= 0; i--) {
         const el = document.getElementById(sections[i]);
         if (el) {

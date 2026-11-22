@@ -7,7 +7,6 @@ import SecretCodeSection from "@/components/SecretCodeSection";
 import CountdownGateSection from "@/components/CountdownGateSection";
 import OpeningSection from "@/components/OpeningSection";
 import MemoriesSection from "@/components/MemoriesSection";
-import GallerySection from "@/components/GallerySection";
 import LetterSection from "@/components/LetterSection";
 import WishesSection from "@/components/WishesSection";
 import FinaleSection from "@/components/FinaleSection";
@@ -102,9 +101,8 @@ export default function Home() {
         <div className="relative z-10 animate-fade-in transition-opacity duration-1000">
           <Navigation />
           <OpeningSection />
-          <MemoriesSection onPhotoClick={setSelectedPhoto} />
-          <GallerySection onPhotoClick={setSelectedPhoto} />
           <LetterSection />
+          <MemoriesSection onPhotoClick={setSelectedPhoto} />
           <WishesSection />
           <FinaleSection onRestart={handleRestart} />
         </div>
