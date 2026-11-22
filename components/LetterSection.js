@@ -3,13 +3,17 @@
 import { motion } from "framer-motion";
 import { letterData } from "@/lib/data-konten";
 
+/* ── Smooth Easing Curves ── */
+const easeSoft = [0.22, 1, 0.36, 1];
+const easePop = [0.34, 1.56, 0.64, 1];
+
 /* ── Custom Polaroid Frame with White Inner Area ── */
 function PolaroidFrame({ photo, alt = "Memory", className = "", style = {} }) {
   return (
     <div className={`relative select-none ${className}`} style={style}>
-      {/* 1. Inner Photo Window (Inner frame is pure white background) */}
+      {/* 1. Inner Photo Window (Inner frame is pure ivory/white background) */}
       <div
-        className="absolute bg-white overflow-hidden shadow-inner flex items-center justify-center"
+        className="absolute bg-[#FFF9F0] overflow-hidden shadow-inner flex items-center justify-center"
         style={{
           left: "17.5%",
           top: "13.5%",
@@ -23,14 +27,14 @@ function PolaroidFrame({ photo, alt = "Memory", className = "", style = {} }) {
           <img
             src={photo}
             alt={alt}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
           />
         ) : (
-          <div className="w-full h-full bg-white" />
+          <div className="w-full h-full bg-[#FFF9F0]" />
         )}
       </div>
 
-      {/* 2. Vintage Polaroid Frame Overlay with wax seal & stars */}
+      {/* 2. Vintage Maroon Polaroid Frame Overlay */}
       <img
         src="/images/letter-stickers/polaroid-frame-cutout.png"
         alt="Vintage Polaroid Frame"
@@ -47,18 +51,34 @@ export default function LetterSection() {
   return (
     <section
       id="letter"
-      className="relative min-h-screen w-full flex items-center justify-center px-4 py-16 sm:py-20 md:py-28 overflow-hidden select-none"
+      className="relative min-h-screen w-full flex items-center justify-center px-4 py-20 sm:py-24 md:py-28 overflow-hidden select-none"
       style={{
-        background: "#0c245d", // Solid Deep Navy Blue matching reference
+        backgroundColor: "#4A0714", // Deep romantic maroon
+        backgroundImage: "radial-gradient(circle at 50% 30%, #641526 0%, #4A0714 65%, #350710 100%)",
       }}
     >
-      {/* ── Background Sticker: Snoopy Holding Roses (Bottom-Left) ── */}
+      {/* ── Background Subtle Scrapbook Ambience ── */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.85, x: -30 }}
-        whileInView={{ opacity: 1, scale: 1, x: 0 }}
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
-        transition={{ duration: 1, delay: 0.2 }}
-        className="absolute bottom-2 left-2 sm:bottom-6 sm:left-6 z-20 w-36 sm:w-48 md:w-56 lg:w-64 pointer-events-none select-none drop-shadow-2xl"
+        transition={{ duration: 0.8, ease: easeSoft }}
+        className="absolute inset-0 pointer-events-none z-0"
+      >
+        {/* Soft textured vignettes */}
+        <div className="absolute top-0 left-0 w-96 h-96 bg-[#641526]/40 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#350710]/60 rounded-full blur-3xl pointer-events-none" />
+      </motion.div>
+
+      {/* ── 5. SNOOPY DENGAN BUKET BUNGA (Kiri Bawah) ── */}
+      <motion.div
+        initial={{ opacity: 0, x: -70, y: 70 }}
+        whileInView={{ opacity: 1, x: 0, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.9, delay: 0.4, ease: easeSoft }}
+        whileHover={{ scale: 1.06, rotate: 3, transition: { duration: 0.25 } }}
+        className="absolute bottom-2 left-2 sm:bottom-6 sm:left-6 z-25 w-32 sm:w-44 md:w-52 lg:w-60 pointer-events-auto select-none drop-shadow-2xl cursor-pointer"
+        title="Snoopy with red roses"
       >
         <img
           src="/images/letter-stickers/snoopy-flowers.png"
@@ -67,13 +87,15 @@ export default function LetterSection() {
         />
       </motion.div>
 
-      {/* ── Background Sticker: Cute Chibi Spiderman (Bottom-Right) ── */}
+      {/* ── 9. SPIDER-MAN (Kanan Bawah Dekat Kue) ── */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.85, y: 30 }}
-        whileInView={{ opacity: 1, scale: 1, y: 0 }}
+        initial={{ opacity: 0, y: 70, scale: 0.8 }}
+        whileInView={{ opacity: 1, y: 0, scale: 1 }}
         viewport={{ once: true }}
-        transition={{ duration: 1, delay: 0.3 }}
-        className="absolute bottom-3 right-3 sm:bottom-6 sm:right-8 z-30 w-32 sm:w-44 md:w-52 lg:w-60 pointer-events-none select-none drop-shadow-2xl"
+        transition={{ duration: 0.9, delay: 0.85, ease: easePop }}
+        whileHover={{ scale: 1.08, rotate: -4, transition: { duration: 0.25 } }}
+        className="absolute bottom-3 right-3 sm:bottom-6 sm:right-6 md:right-10 z-35 w-28 sm:w-36 md:w-44 lg:w-52 pointer-events-auto select-none drop-shadow-2xl cursor-pointer"
+        title="Cute Spiderman"
       >
         <img
           src="/images/letter-stickers/spiderman.png"
@@ -82,60 +104,80 @@ export default function LetterSection() {
         />
       </motion.div>
 
-      {/* ── Main Composition: Polaroids on Left + Stacked Letter on Right ── */}
-      <div className="relative z-20 w-full max-w-6xl mx-auto flex flex-col lg:flex-row items-center justify-center gap-10 lg:gap-8 px-2 sm:px-6">
+      {/* ── Main Composition Container ── */}
+      <div className="relative z-20 w-full max-w-6xl mx-auto flex flex-col lg:flex-row items-center justify-center gap-12 lg:gap-8 px-2 sm:px-6">
 
-        {/* ── LEFT COLUMN: Two Vintage Polaroid Frames + Vinyl + Stars ── */}
-        <div className="relative shrink-0 flex flex-col items-center justify-center w-full max-w-xs sm:max-w-sm lg:w-[350px] lg:self-start lg:pt-6">
+        {/* ── LEFT COLUMN: Vinyl + Stacked Polaroid Frames + Wax Seal + Stars ── */}
+        <div className="relative shrink-0 flex flex-col items-center justify-center w-full max-w-xs sm:max-w-sm lg:w-[350px] lg:self-start lg:pt-8">
 
-          {/* Vinyl Record Peeking Behind Top Polaroid */}
+          {/* ── 1. VINYL RECORD (Kiri Atas, Sedikit Miring) ── */}
           <motion.div
-            initial={{ opacity: 0, rotate: -30, scale: 0.8 }}
-            whileInView={{ opacity: 1, rotate: 0, scale: 1 }}
+            initial={{ opacity: 0, x: -80, rotate: -45 }}
+            whileInView={{ opacity: 1, x: 0, rotate: -12 }}
             viewport={{ once: true }}
-            transition={{ duration: 1.2, delay: 0.1 }}
-            className="absolute -top-10 sm:-top-14 -left-6 sm:-left-10 z-0 w-36 sm:w-44 md:w-48 pointer-events-none select-none drop-shadow-2xl"
+            transition={{ duration: 0.9, delay: 0.2, ease: easeSoft }}
+            whileHover={{ scale: 1.05, rotate: -5, transition: { duration: 0.3 } }}
+            className="absolute -top-12 sm:-top-16 -left-6 sm:-left-12 z-0 w-36 sm:w-44 md:w-50 pointer-events-auto select-none drop-shadow-2xl cursor-pointer"
+            title="Romantic Vinyl Record"
           >
-            <motion.img
-              animate={{ rotate: 360 }}
-              transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+            <img
               src="/images/letter-stickers/vinyl-record.png"
               alt="Vinyl Record"
               className="w-full h-auto"
             />
           </motion.div>
 
+          {/* ── 2. BINGKAI FOTO BERTUMPUK (Slide dari Kiri Bawah dengan Rotate) ── */}
           {/* Top Polaroid (Photo 1) */}
           <motion.div
-            initial={{ opacity: 0, y: -30, rotate: -12, scale: 0.9 }}
-            whileInView={{ opacity: 1, y: 0, rotate: -6, scale: 1 }}
+            initial={{ opacity: 0, x: -60, y: 50, rotate: -15 }}
+            whileInView={{ opacity: 1, x: 0, y: 0, rotate: -6 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            whileHover={{ rotate: -2, scale: 1.03 }}
-            className="relative z-20 transition-transform duration-300 w-48 sm:w-56 md:w-60"
+            transition={{ duration: 0.9, delay: 0.35, ease: easeSoft }}
+            whileHover={{ scale: 1.03, rotate: -2, zIndex: 30, transition: { duration: 0.25 } }}
+            className="relative z-20 transition-shadow duration-300 w-48 sm:w-56 md:w-60 cursor-pointer"
           >
             <PolaroidFrame photo={photo1} alt="Memory 1" />
           </motion.div>
 
           {/* Bottom Polaroid (Photo 2) */}
           <motion.div
-            initial={{ opacity: 0, y: 30, rotate: 12, scale: 0.9 }}
-            whileInView={{ opacity: 1, y: 0, rotate: 6, scale: 1 }}
+            initial={{ opacity: 0, x: -50, y: 60, rotate: 18 }}
+            whileInView={{ opacity: 1, x: 0, y: 0, rotate: 6 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.9, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            whileHover={{ rotate: 2, scale: 1.03 }}
-            className="relative z-10 transition-transform duration-300 w-48 sm:w-56 md:w-60 -mt-16 sm:-mt-20 ml-16 sm:ml-24"
+            transition={{ duration: 0.9, delay: 0.45, ease: easeSoft }}
+            whileHover={{ scale: 1.03, rotate: 2, zIndex: 30, transition: { duration: 0.25 } }}
+            className="relative z-10 transition-shadow duration-300 w-48 sm:w-56 md:w-60 -mt-16 sm:-mt-20 ml-16 sm:ml-24 cursor-pointer"
           >
             <PolaroidFrame photo={photo2} alt="Memory 2" />
+
+            {/* ── 4. WAX SEAL DI SUDUT BINGKAI FOTO (Zoom In dengan Efek Pop) ── */}
+            <motion.div
+              initial={{ scale: 0, opacity: 0, rotate: -25 }}
+              whileInView={{ scale: 1, opacity: 1, rotate: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: 0.75, ease: easePop }}
+              whileHover={{ scale: 1.15, rotate: 8, transition: { duration: 0.2 } }}
+              className="absolute -bottom-3 -left-4 z-40 w-14 sm:w-16 pointer-events-auto select-none drop-shadow-xl cursor-pointer"
+              title="Wax Seal with Rose Stamp"
+            >
+              <img
+                src="/images/letter-stickers/wax-seal.png"
+                alt="Wax Seal"
+                className="w-full h-auto"
+              />
+            </motion.div>
           </motion.div>
 
-          {/* Embroidered Red Stars Patch (Near bottom polaroid) */}
+          {/* ── 3. BINTANG MERAH DI SEKITAR BINGKAI FOTO (Pop-up Menggunakan Scale) ── */}
           <motion.div
-            initial={{ opacity: 0, scale: 0 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            initial={{ scale: 0, opacity: 0 }}
+            whileInView={{ scale: 1, opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="absolute left-1 sm:left-2 top-[62%] -translate-y-1/2 z-30 w-16 sm:w-20 md:w-24 pointer-events-none drop-shadow-xl select-none"
+            transition={{ duration: 0.65, delay: 0.65, ease: easePop }}
+            whileHover={{ scale: 1.15, rotate: 10, transition: { duration: 0.2 } }}
+            className="absolute left-0 sm:left-2 top-[60%] -translate-y-1/2 z-30 w-16 sm:w-20 md:w-24 pointer-events-auto drop-shadow-xl select-none cursor-pointer"
+            title="Red Embroidered Stars"
           >
             <img
               src="/images/letter-stickers/red-stars.png"
@@ -145,126 +187,140 @@ export default function LetterSection() {
           </motion.div>
         </div>
 
-        {/* ── RIGHT COLUMN: Stacked Paper Letter Sheets ── */}
+        {/* ── RIGHT COLUMN: Stacked Paper Letter Sheets + Accents ── */}
         <div className="relative flex-1 w-full max-w-2xl lg:max-w-3xl">
 
-          {/* Sticker: Cute Cat with Rose Bouquet (Top-Left of Paper) */}
+          {/* ── 6. HELLO KITTY DENGAN BUKET (Di Atas Surat Bagian Kiri) ── */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.8, y: -20 }}
-            whileInView={{ opacity: 1, scale: 1, y: 0 }}
+            initial={{ opacity: 0, y: -50, scale: 0.8 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.9, delay: 0.35 }}
-            className="absolute -top-12 sm:-top-16 -left-6 sm:-left-10 z-35 w-28 sm:w-36 md:w-44 pointer-events-none select-none drop-shadow-2xl"
+            transition={{ duration: 0.85, delay: 0.5, ease: easeSoft }}
+            whileHover={{ scale: 1.08, rotate: -4, transition: { duration: 0.2 } }}
+            className="absolute -top-12 sm:-top-16 -left-4 sm:-left-8 z-35 w-28 sm:w-36 md:w-44 pointer-events-auto select-none drop-shadow-2xl cursor-pointer"
+            title="Hello Kitty with Bouquet"
           >
             <img
               src="/images/letter-stickers/cat-flowers.png"
-              alt="Cute Cat with Roses"
+              alt="Hello Kitty with Flowers"
               className="w-full h-auto"
             />
           </motion.div>
 
-          {/* Sticker: Pixel Cat on Cake (Top-Right of Paper) */}
+          {/* ── 7. HELLO KITTY DI ATAS KUE (Di Kanan Atas) ── */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.8, y: -20, rotate: 10 }}
-            whileInView={{ opacity: 1, scale: 1, y: 0, rotate: 6 }}
+            initial={{ opacity: 0, y: -50, x: 30, scale: 0.8, rotate: 15 }}
+            whileInView={{ opacity: 1, y: 0, x: 0, rotate: 6 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.9, delay: 0.45 }}
-            className="absolute -top-14 sm:-top-18 -right-4 sm:-right-8 z-35 w-24 sm:w-32 md:w-36 pointer-events-none select-none drop-shadow-2xl"
+            transition={{ duration: 0.85, delay: 0.6, ease: easeSoft }}
+            whileHover={{ scale: 1.08, rotate: 12, transition: { duration: 0.2 } }}
+            className="absolute -top-14 sm:-top-18 -right-3 sm:-right-7 z-35 w-24 sm:w-32 md:w-38 pointer-events-auto select-none drop-shadow-2xl cursor-pointer"
+            title="Hello Kitty on Birthday Cake"
           >
             <img
               src="/images/letter-stickers/pixel-cat-cake.png"
-              alt="Pixel Cat Birthday"
+              alt="Hello Kitty Birthday Cake"
               className="w-full h-auto"
             />
           </motion.div>
 
-          {/* Layer 3: Deepest Background Paper Sheet */}
+          {/* Layer 3: Deepest Background Paper Sheet (Dark Ivory / Burgundy Shadow) */}
           <div
-            className="absolute -bottom-3 -right-2 sm:-right-4 left-3 top-4 rounded-[2px] bg-[#EEF2F7] pointer-events-none"
+            className="absolute -bottom-3 -right-2 sm:-right-4 left-3 top-4 rounded-[2px] pointer-events-none"
             style={{
+              backgroundColor: "#EBDAC5",
               transform: "rotate(1.8deg)",
-              boxShadow: "0 15px 35px rgba(0, 0, 0, 0.25)",
+              boxShadow: "0 15px 35px rgba(53, 7, 16, 0.45)",
             }}
           />
 
-          {/* Layer 2: Middle Paper Sheet */}
+          {/* Layer 2: Middle Paper Sheet (Warm Ivory) */}
           <div
-            className="absolute -bottom-1.5 -left-1 sm:-left-2 right-1 top-2 rounded-[2px] bg-[#F8FAFC] pointer-events-none"
+            className="absolute -bottom-1.5 -left-1 sm:-left-2 right-1 top-2 rounded-[2px] pointer-events-none"
             style={{
+              backgroundColor: "#F7EEDF",
               transform: "rotate(-0.8deg)",
-              boxShadow: "0 18px 40px rgba(0, 0, 0, 0.28)",
+              boxShadow: "0 18px 40px rgba(53, 7, 16, 0.5)",
             }}
           />
 
-          {/* Layer 1: Main Top Paper Sheet (The Letter) */}
+          {/* ── Layer 1: Main Top Paper Sheet (Slide Up + Fade In) ── */}
           <motion.div
-            initial={{ opacity: 0, y: 35, rotate: -4, scale: 0.95 }}
-            whileInView={{ opacity: 1, y: 0, rotate: -1.6, scale: 1 }}
+            initial={{ opacity: 0, y: 60, rotate: -3, scale: 0.96 }}
+            whileInView={{ opacity: 1, y: 0, rotate: -1.4, scale: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-            className="relative z-20 bg-white rounded-[2px] px-6 sm:px-12 md:px-16 py-10 sm:py-14 md:py-16 transition-shadow duration-300"
+            transition={{ duration: 0.9, delay: 0.3, ease: easeSoft }}
+            className="relative z-20 rounded-[2px] px-6 sm:px-12 md:px-16 py-10 sm:py-14 md:py-16 transition-shadow duration-300 border border-[#E9A0AA]/25"
             style={{
+              backgroundColor: "#FFF9F0", // Ivory Paper
               boxShadow:
-                "0 25px 60px rgba(0, 0, 0, 0.4), 0 10px 25px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.04)",
+                "0 25px 60px rgba(53, 7, 16, 0.6), 0 10px 25px rgba(53, 7, 16, 0.35), 0 0 0 1px rgba(233, 160, 170, 0.15)",
             }}
           >
-            {/* Letter Title: "A letter for you" in Signature Elegant Calligraphy */}
+            {/* Judul Surat: Fade In dengan Sedikit Zoom */}
             <motion.h2
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-center text-[#11244A] tracking-normal mb-2 sm:mb-3 font-normal"
+              transition={{ duration: 0.8, delay: 0.5, ease: easeSoft }}
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-center tracking-normal mb-2 sm:mb-3 font-normal"
               style={{
                 fontFamily: "'Alex Brush', 'Dancing Script', cursive",
-                textShadow: "0 2px 8px rgba(17, 36, 74, 0.15)",
+                color: "#521321", // Deep burgundy text
+                textShadow: "0 2px 6px rgba(82, 19, 33, 0.12)",
               }}
             >
               A letter for you
             </motion.h2>
 
-            {/* Subtitle / Salutation: "happy birthday, love 🤍" */}
+            {/* Subjudul: Salutation */}
             <motion.p
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.45 }}
-              className="text-center text-xs sm:text-sm md:text-base font-normal text-[#4A5568] tracking-wide mb-6 sm:mb-8"
+              transition={{ duration: 0.8, delay: 0.6, ease: easeSoft }}
+              className="text-center text-xs sm:text-sm md:text-base font-medium tracking-wide mb-6 sm:mb-8"
               style={{
                 fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+                color: "#E9A0AA", // Pink accent
               }}
             >
               happy birthday, love 🤍
             </motion.p>
 
-            {/* Letter Content: Centered, Delicate, Charcoal Gray */}
-            <div className="space-y-4 sm:space-y-6 text-center text-[#2D3748] text-xs sm:text-sm md:text-[15px] lg:text-base leading-relaxed sm:leading-loose font-normal max-w-xl mx-auto">
+            {/* Isi Surat: Muncul Bertahap per Paragraf */}
+            <div
+              className="space-y-4 sm:space-y-6 text-center text-xs sm:text-sm md:text-[15px] lg:text-base leading-relaxed sm:leading-loose font-normal max-w-xl mx-auto"
+              style={{ color: "#521321" }}
+            >
               <motion.p
-                initial={{ opacity: 0, y: 15 }}
+                initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.7, delay: 0.55 }}
+                transition={{ duration: 0.75, delay: 0.7, ease: easeSoft }}
               >
                 today is all about you and the happiness you bring into other people&apos;s lives. i hope your day is filled with genuine smiles, peaceful moments, and everything that makes your heart feel light. thank you for being someone so comforting, loving, and special to me.
               </motion.p>
 
               <motion.p
-                initial={{ opacity: 0, y: 15 }}
+                initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.7, delay: 0.7 }}
+                transition={{ duration: 0.75, delay: 0.9, ease: easeSoft }}
               >
                 i&apos;m really grateful for your existence and for all the little moments we share together. no matter what happens, i&apos;ll always be cheering for you and wishing the best for you. enjoy your day, honey. you deserve all the love in the world
               </motion.p>
             </div>
 
-            {/* Sticker: Watercolor Birthday Cake (Bottom-Right of Paper) */}
+            {/* ── 8. KUE ULANG TAHUN (Di Kanan Bawah Surat) ── */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
-              whileInView={{ opacity: 1, scale: 1, rotate: 3 }}
+              initial={{ opacity: 0, x: 40, y: 40, scale: 0.8 }}
+              whileInView={{ opacity: 1, x: 0, y: 0, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.8 }}
-              className="absolute -bottom-8 sm:-bottom-12 -right-4 sm:-right-8 z-30 w-24 sm:w-32 md:w-36 pointer-events-none select-none drop-shadow-xl"
+              transition={{ duration: 0.85, delay: 0.7, ease: easeSoft }}
+              whileHover={{ scale: 1.08, rotate: 4, transition: { duration: 0.2 } }}
+              className="absolute -bottom-8 sm:-bottom-12 -right-4 sm:-right-8 z-30 w-24 sm:w-32 md:w-38 pointer-events-auto select-none drop-shadow-xl cursor-pointer"
+              title="Watercolor Birthday Cake"
             >
               <img
                 src="/images/letter-stickers/birthday-cake.png"
