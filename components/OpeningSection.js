@@ -183,49 +183,6 @@ export default function OpeningSection() {
           </div>
         )}
       </AnimatePresence>
-
-      {/* ── Modal: Surprise Gift ── */}
-      <AnimatePresence>
-        {showSurpriseModal && (
-          <div
-            onClick={() => setShowSurpriseModal(false)}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md"
-          >
-            <motion.div
-              initial={{ scale: 0.85, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.85, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-md bg-gradient-to-b from-[#141A2E] to-[#0A0D17] border border-white/20 p-8 rounded-3xl shadow-2xl text-center text-white"
-            >
-              <button
-                onClick={() => setShowSurpriseModal(false)}
-                className="absolute top-4 right-4 p-2 text-white/60 hover:text-white"
-              >
-                <X size={20} />
-              </button>
-              <div className="w-16 h-16 mx-auto rounded-full bg-white/10 flex items-center justify-center text-white mb-4">
-                <Heart size={32} className="fill-white" />
-              </div>
-              <h3 className="text-2xl font-bold text-white mb-2">
-                A Surprise For You ✨
-              </h3>
-              <p className="text-sm text-white/80 leading-relaxed mb-6">
-                Terima kasih sudah menjadi bagian terindah dalam hidupku. Surat cinta spesial dan kumpulan memori kita menantimu di bawah.
-              </p>
-              <button
-                onClick={() => {
-                  setShowSurpriseModal(false);
-                  scrollTo("letter");
-                }}
-                className="w-full py-3 rounded-full font-bold text-xs uppercase tracking-wider text-[#0A0D14] bg-white hover:bg-white/90 hover:scale-102 transition-transform cursor-pointer"
-              >
-                Baca Surat Spesial Sekarang →
-              </button>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
     </section>
   );
 }
