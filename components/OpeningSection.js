@@ -58,13 +58,13 @@ export default function OpeningSection() {
           <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-md bg-white/10 border border-white/20 backdrop-blur-md mb-4 shadow-sm">
             <Sparkles size={13} className="text-white" />
             <span className="text-[11px] sm:text-xs font-mono font-bold tracking-[0.22em] text-white uppercase">
-              FOR MY FAVORITE PERSON
+              Untuk orang favoritku
             </span>
           </div>
 
           {/* Small Meta Info: A SPECIAL DAY • MADE WITH LOVE */}
           <p className="text-xs sm:text-sm font-mono tracking-[0.25em] text-white/70 uppercase mb-2">
-            A SPECIAL DAY • MADE WITH LOVE
+            HARI YANG DITUNGGU TUNGGU
           </p>
 
           {/* Big Cinematic Movie Title: OUR STORY */}
@@ -75,7 +75,7 @@ export default function OpeningSection() {
               textShadow: "0 4px 30px rgba(0, 0, 0, 0.9), 0 2px 10px rgba(0, 0, 0, 0.7)",
             }}
           >
-            OUR STORY
+            19
           </h1>
 
           {/* Subtitle: EVERY MOMENT WITH YOU */}
@@ -86,12 +86,12 @@ export default function OpeningSection() {
               textShadow: "0 2px 20px rgba(0, 0, 0, 0.8)",
             }}
           >
-            EVERY MOMENT WITH YOU
+            HAPPY BIRTHDAY
           </h2>
 
           {/* Romantic & Personal Story Description */}
           <p className="text-sm sm:text-base md:text-lg text-white/85 font-normal leading-relaxed mb-8 max-w-lg">
-            Di antara jutaan cerita di dunia, kisah kita adalah yang paling indah. Setiap tawa, setiap tatapan, dan setiap langkah bersamamu adalah adegan terbaik dalam hidupku. Selamat hari spesial untuk sosok terfavorit di hatiku.
+            Selamat ulang tahun sayang, Semoga panjang umur sehat selalu, selalu dalam lindungan Allah SWT, dan dimudahkan rezekinya, aminn 
           </p>
 
           {/* ── 3. Three Interactive Buttons ── */}
@@ -107,7 +107,7 @@ export default function OpeningSection() {
               }}
             >
               <Play size={16} className="fill-[#080B12] text-[#080B12]" />
-              <span>Buka Cerita</span>
+              <span>Buka Suratnya</span>
             </motion.button>
 
             {/* 2. Selengkapnya (Dark Charcoal Button with Info Icon) */}
@@ -123,7 +123,7 @@ export default function OpeningSection() {
               }}
             >
               <Info size={16} />
-              <span>Selengkapnya</span>
+              <span>Gallery</span>
             </motion.button>
 
             {/* 3. Surprise (Dark Background Gift Icon Button) */}
