@@ -403,57 +403,57 @@ With love, always. ♡`;
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.5 }}
-            className="relative z-20 w-full max-w-lg mx-auto text-center"
+            className="relative z-20 w-full max-w-lg mx-auto text-center px-1"
           >
             {/* Pixel Art Decorative Sprites Floating Around Intro Card */}
             {/* Floating Pixel Hearts */}
             <motion.div
               animate={{ y: [-4, 4, -4] }}
               transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -top-10 -left-6 z-30 pointer-events-none"
+              className="absolute -top-8 -left-2 sm:-left-6 z-30 pointer-events-none"
             >
-              <PixelHeart size={36} color="#FF4D6D" />
+              <PixelHeart size={32} color="#FF4D6D" />
             </motion.div>
 
             {/* Pixel Flower */}
             <motion.div
               animate={{ rotate: [-6, 6, -6] }}
               transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -top-10 -right-6 z-30 pointer-events-none"
+              className="absolute -top-8 -right-2 sm:-right-6 z-30 pointer-events-none"
             >
-              <PixelFlower size={40} />
+              <PixelFlower size={34} />
             </motion.div>
 
             {/* Pixel Envelope */}
             <motion.div
               animate={{ y: [4, -4, 4] }}
               transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -bottom-8 -left-6 z-30 pointer-events-none"
+              className="absolute -bottom-6 -left-2 sm:-left-6 z-30 pointer-events-none"
             >
-              <PixelEnvelope size={56} isOpen={false} />
+              <PixelEnvelope size={48} isOpen={false} />
             </motion.div>
 
             {/* Pixel Gift Box */}
             <motion.div
               animate={{ rotate: [5, -5, 5] }}
               transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -bottom-8 -right-6 z-30 pointer-events-none"
+              className="absolute -bottom-6 -right-2 sm:-right-6 z-30 pointer-events-none"
             >
-              <PixelGiftBox size={40} />
+              <PixelGiftBox size={34} />
             </motion.div>
 
             {/* Retro 8-Bit Ivory Card Container */}
             <div
-              className="relative z-20 rounded-none px-6 sm:px-10 py-10 sm:py-14 text-center border-4 border-[#1A0307]"
+              className="relative z-20 rounded-none px-4 sm:px-10 py-8 sm:py-14 text-center border-4 border-[#1A0307]"
               style={{
                 backgroundColor: "#FFF9F0",
-                boxShadow: "8px 8px 0px #1A0307, 0 20px 40px rgba(0,0,0,0.5)",
+                boxShadow: "6px 6px 0px #1A0307, 0 20px 40px rgba(0,0,0,0.5)",
               }}
             >
               {/* Category Badge */}
-              <div className="inline-block px-3 py-1 bg-[#641526] text-[#FFF9F0] border-2 border-[#1A0307] mb-6">
+              <div className="inline-block px-2.5 sm:px-3 py-1 bg-[#641526] text-[#FFF9F0] border-2 border-[#1A0307] mb-4 sm:mb-6">
                 <span
-                  className="text-[10px] tracking-widest uppercase font-bold"
+                  className="text-[9px] sm:text-[10px] tracking-widest uppercase font-bold"
                   style={{ fontFamily: "'Press Start 2P', monospace" }}
                 >
                   ★ 8-BIT RETRO GAME ★
@@ -462,7 +462,7 @@ With love, always. ♡`;
 
               {/* Title: A Little Game for You ♡ */}
               <h2
-                className="text-lg sm:text-2xl text-[#521321] leading-relaxed mb-6"
+                className="text-sm sm:text-xl md:text-2xl text-[#521321] leading-relaxed mb-4 sm:mb-6"
                 style={{
                   fontFamily: "'Press Start 2P', monospace",
                   textShadow: "2px 2px 0px #E9A0AA",
@@ -473,7 +473,7 @@ With love, always. ♡`;
 
               {/* Description */}
               <p
-                className="text-xs sm:text-sm leading-relaxed mb-8 max-w-sm mx-auto text-[#641526]"
+                className="text-[11px] sm:text-xs md:text-sm leading-relaxed mb-6 sm:mb-8 max-w-sm mx-auto text-[#641526]"
                 style={{
                   fontFamily: "'Press Start 2P', monospace",
                   lineHeight: "1.8",
@@ -489,7 +489,7 @@ With love, always. ♡`;
                   setHearts([]);
                   setGameState("playing");
                 }}
-                className="w-full sm:w-auto px-8 py-4 bg-[#8B2635] hover:bg-[#A83250] text-[#FFF9F0] border-4 border-[#1A0307] font-bold text-xs sm:text-sm uppercase tracking-wider transition-all cursor-pointer shadow-[4px_4px_0px_#1A0307] active:translate-x-1 active:translate-y-1 active:shadow-none inline-flex items-center justify-center gap-3"
+                className="w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 bg-[#8B2635] hover:bg-[#A83250] text-[#FFF9F0] border-4 border-[#1A0307] font-bold text-[11px] sm:text-xs md:text-sm uppercase tracking-wider transition-all cursor-pointer shadow-[4px_4px_0px_#1A0307] active:translate-x-1 active:translate-y-1 active:shadow-none inline-flex items-center justify-center gap-2.5"
                 style={{ fontFamily: "'Press Start 2P', monospace" }}
               >
                 <PixelHeart size={16} color="#FFF9F0" outline="#1A0307" />
@@ -642,24 +642,24 @@ With love, always. ♡`;
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
             transition={{ duration: 0.5 }}
-            className="relative z-20 w-full max-w-md mx-auto text-center"
+            className="relative z-20 w-full max-w-md mx-auto text-center px-1"
           >
             {/* Victory Pixel Card */}
             <div
-              className="relative z-20 rounded-none px-6 sm:px-10 py-10 sm:py-14 text-center border-4 border-[#1A0307]"
+              className="relative z-20 rounded-none px-4 sm:px-10 py-8 sm:py-14 text-center border-4 border-[#1A0307]"
               style={{
                 backgroundColor: "#FFF9F0",
-                boxShadow: "8px 8px 0px #1A0307, 0 20px 40px rgba(0,0,0,0.6)",
+                boxShadow: "6px 6px 0px #1A0307, 0 20px 40px rgba(0,0,0,0.6)",
               }}
             >
               {/* Victory Big Pixel Heart Icon */}
-              <div className="flex justify-center mb-6">
-                <PixelHeart size={64} color="#FF4D6D" outline="#1A0307" className="animate-bounce" />
+              <div className="flex justify-center mb-5 sm:mb-6">
+                <PixelHeart size={54} color="#FF4D6D" outline="#1A0307" className="animate-bounce" />
               </div>
 
               {/* Title 1: YAY! YOU DID IT! */}
               <h2
-                className="text-base sm:text-xl text-[#521321] mb-4"
+                className="text-sm sm:text-lg md:text-xl text-[#521321] mb-3 sm:mb-4"
                 style={{
                   fontFamily: "'Press Start 2P', monospace",
                   textShadow: "2px 2px 0px #E9A0AA",
@@ -670,7 +670,7 @@ With love, always. ♡`;
 
               {/* Title 2: You collected all my hearts! */}
               <p
-                className="text-xs sm:text-sm text-[#8B2635] mb-8 leading-relaxed font-bold"
+                className="text-[11px] sm:text-xs md:text-sm text-[#8B2635] mb-6 sm:mb-8 leading-relaxed font-bold"
                 style={{
                   fontFamily: "'Press Start 2P', monospace",
                   lineHeight: "1.8",
@@ -682,10 +682,10 @@ With love, always. ♡`;
               {/* Button: CLAIM YOUR SURPRISE ♡ */}
               <button
                 onClick={() => setGameState("surprise")}
-                className="w-full py-4 px-6 bg-[#8B2635] hover:bg-[#A83250] text-[#FFF9F0] border-4 border-[#1A0307] font-bold text-xs uppercase tracking-wider transition-all cursor-pointer shadow-[4px_4px_0px_#1A0307] active:translate-x-1 active:translate-y-1 active:shadow-none inline-flex items-center justify-center gap-2"
+                className="w-full py-3.5 sm:py-4 px-4 sm:px-6 bg-[#8B2635] hover:bg-[#A83250] text-[#FFF9F0] border-4 border-[#1A0307] font-bold text-[11px] sm:text-xs uppercase tracking-wider transition-all cursor-pointer shadow-[4px_4px_0px_#1A0307] active:translate-x-1 active:translate-y-1 active:shadow-none inline-flex items-center justify-center gap-2"
                 style={{ fontFamily: "'Press Start 2P', monospace" }}
               >
-                <PixelGiftBox size={20} />
+                <PixelGiftBox size={18} />
                 <span>CLAIM YOUR SURPRISE ♡</span>
               </button>
             </div>
@@ -702,55 +702,55 @@ With love, always. ♡`;
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 30 }}
             transition={{ duration: 0.6 }}
-            className="relative z-20 w-full max-w-xl mx-auto flex flex-col items-center text-center"
+            className="relative z-20 w-full max-w-xl mx-auto flex flex-col items-center text-center px-1"
           >
             {/* Retro Pixel Envelope Visual */}
-            <div className="mb-6 flex justify-center">
-              <PixelEnvelope size={120} isOpen={true} />
+            <div className="mb-4 sm:mb-6 flex justify-center">
+              <PixelEnvelope size={88} isOpen={true} />
             </div>
 
             {/* Typewriter Retro Letter Card */}
             <div
-              className="w-full text-left p-6 sm:p-10 border-4 border-[#1A0307]"
+              className="w-full text-left p-4 sm:p-8 md:p-10 border-4 border-[#1A0307]"
               style={{
                 backgroundColor: "#FFF9F0",
-                boxShadow: "8px 8px 0px #1A0307, 0 25px 60px rgba(0,0,0,0.6)",
+                boxShadow: "6px 6px 0px #1A0307, 0 25px 60px rgba(0,0,0,0.6)",
               }}
             >
               {/* Card Header Stamp */}
-              <div className="flex items-center justify-between pb-3 mb-5 border-b-2 border-[#1A0307]">
+              <div className="flex items-center justify-between pb-2.5 mb-4 border-b-2 border-[#1A0307]">
                 <span
-                  className="text-[9px] sm:text-[10px] text-[#8B2635] uppercase font-bold"
+                  className="text-[8px] sm:text-[10px] text-[#8B2635] uppercase font-bold"
                   style={{ fontFamily: "'Press Start 2P', monospace" }}
                 >
                   SECRET BIRTHDAY LETTER
                 </span>
-                <PixelHeart size={16} color="#FF4D6D" outline="#1A0307" />
+                <PixelHeart size={14} color="#FF4D6D" outline="#1A0307" />
               </div>
 
               {/* Typewriter Body Content */}
               <div
-                className="text-base sm:text-xl text-[#350710] leading-relaxed whitespace-pre-line font-medium min-h-[220px]"
+                className="text-sm sm:text-lg md:text-xl text-[#350710] leading-relaxed whitespace-pre-line font-medium min-h-[180px] sm:min-h-[220px]"
                 style={{
                   fontFamily: "'VT323', monospace",
                   lineHeight: "1.6",
                 }}
               >
                 {typedText}
-                <span className="inline-block w-2.5 h-5 bg-[#8B2635] ml-1 animate-pulse align-middle" />
+                <span className="inline-block w-2 sm:w-2.5 h-4 sm:h-5 bg-[#8B2635] ml-1 animate-pulse align-middle" />
               </div>
 
               {/* Replay Button at Bottom */}
-              <div className="pt-5 mt-6 border-t-2 border-[#1A0307] flex items-center justify-between">
+              <div className="pt-4 mt-5 border-t-2 border-[#1A0307] flex items-center justify-between gap-2">
                 <button
                   onClick={handleRestart}
-                  className="px-4 py-2 bg-[#641526] hover:bg-[#8B2635] text-[#FFF9F0] border-2 border-[#1A0307] text-[10px] font-bold uppercase cursor-pointer shadow-[2px_2px_0px_#1A0307] active:translate-x-0.5 active:translate-y-0.5"
+                  className="px-3 sm:px-4 py-2 bg-[#641526] hover:bg-[#8B2635] text-[#FFF9F0] border-2 border-[#1A0307] text-[9px] sm:text-[10px] font-bold uppercase cursor-pointer shadow-[2px_2px_0px_#1A0307] active:translate-x-0.5 active:translate-y-0.5"
                   style={{ fontFamily: "'Press Start 2P', monospace" }}
                 >
                   ↺ PLAY AGAIN
                 </button>
                 <span
-                  className="text-[9px] text-[#8B2635]"
+                  className="text-[8px] sm:text-[9px] text-[#8B2635]"
                   style={{ fontFamily: "'Press Start 2P', monospace" }}
                 >
                   WITH LOVE ♡

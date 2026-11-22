@@ -18,7 +18,7 @@ export default function OpeningSection() {
   return (
     <section
       id="home"
-      className="relative w-full min-h-screen flex items-center justify-end overflow-hidden select-none bg-[#080B12]"
+      className="relative w-full min-h-screen flex items-center justify-end overflow-hidden select-none bg-[#26040D]"
     >
       {/* ── 1. Full-Screen Cinematic Backdrop Photo ── */}
       <div className="absolute inset-0 z-0 overflow-hidden">
@@ -33,21 +33,21 @@ export default function OpeningSection() {
         />
 
         {/* Cinematic Translucent Dark Overlay */}
-        <div className="absolute inset-0 bg-black/40 pointer-events-none" />
+        <div className="absolute inset-0 bg-[#26040D]/50 pointer-events-none" />
 
-        {/* Multi-Directional Film Gradients (Dark from Left and Right, plus Top and Bottom) */}
+        {/* Multi-Directional Film Gradients (Dark burgundy from Left, Right, Top and Bottom) */}
         {/* Left Dark Gradient */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/40 to-transparent pointer-events-none md:w-3/5" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#26040D]/90 via-[#26040D]/40 to-transparent pointer-events-none md:w-3/5" />
         {/* Right Dark Gradient (Darker on Right side where information sits) */}
-        <div className="absolute inset-0 bg-gradient-to-l from-[#080B12]/95 via-[#080B12]/75 to-transparent pointer-events-none md:w-3/4 md:left-auto" />
+        <div className="absolute inset-0 bg-gradient-to-l from-[#26040D]/95 via-[#26040D]/75 to-transparent pointer-events-none md:w-3/4 md:left-auto" />
         {/* Top Gradient for Header contrast */}
-        <div className="absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-black/85 via-black/40 to-transparent pointer-events-none" />
+        <div className="absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-[#26040D]/90 via-[#26040D]/40 to-transparent pointer-events-none" />
         {/* Bottom Fade to blend seamlessly with next section */}
-        <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[#080B12] via-[#080B12]/70 to-transparent pointer-events-none" />
+        <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[#4A0714] via-[#350710]/80 to-transparent pointer-events-none" />
       </div>
 
       {/* ── 2. Information & Story Content Area (Right-Aligned / Cinematic Movie Hero) ── */}
-      <div className="relative z-20 w-full max-w-7xl mx-auto px-6 sm:px-10 lg:px-14 pt-32 pb-20 flex justify-end">
+      <div className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-8 lg:px-14 pt-28 sm:pt-32 pb-16 sm:pb-20 flex justify-center md:justify-end">
         <motion.div
           initial={{ opacity: 0, x: 40 }}
           animate={{ opacity: 1, x: 0 }}
@@ -55,21 +55,21 @@ export default function OpeningSection() {
           className="w-full max-w-xl md:max-w-2xl lg:max-w-xl flex flex-col items-start text-left"
         >
           {/* Badge / Category: FOR MY FAVORITE PERSON */}
-          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-md bg-white/10 border border-white/20 backdrop-blur-md mb-4 shadow-sm">
-            <Sparkles size={13} className="text-white" />
-            <span className="text-[11px] sm:text-xs font-mono font-bold tracking-[0.22em] text-white uppercase">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-white/10 border border-[#B08A52]/40 backdrop-blur-md mb-3 sm:mb-4 shadow-sm">
+            <Sparkles size={13} className="text-[#FFF5E8]" />
+            <span className="text-[10px] sm:text-xs font-mono font-bold tracking-[0.22em] text-[#FFF5E8] uppercase">
               Untuk orang favoritku
             </span>
           </div>
 
           {/* Small Meta Info: A SPECIAL DAY • MADE WITH LOVE */}
-          <p className="text-xs sm:text-sm font-mono tracking-[0.25em] text-white/70 uppercase mb-2">
+          <p className="text-[11px] sm:text-xs md:text-sm font-mono tracking-[0.25em] text-[#B08A52] uppercase mb-1.5 sm:mb-2 font-semibold">
             HARI YANG DITUNGGU TUNGGU
           </p>
 
-          {/* Big Cinematic Movie Title: OUR STORY */}
+          {/* Big Cinematic Movie Title: 19 */}
           <h1
-            className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white tracking-tight uppercase leading-[0.95] mb-2"
+            className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-[#FFF5E8] tracking-tight uppercase leading-[0.95] mb-2"
             style={{
               fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
               textShadow: "0 4px 30px rgba(0, 0, 0, 0.9), 0 2px 10px rgba(0, 0, 0, 0.7)",
@@ -78,9 +78,9 @@ export default function OpeningSection() {
             19
           </h1>
 
-          {/* Subtitle: EVERY MOMENT WITH YOU */}
+          {/* Subtitle: HAPPY BIRTHDAY */}
           <h2
-            className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white tracking-wider uppercase mb-5"
+            className="text-lg sm:text-2xl md:text-3xl font-extrabold text-[#FFF5E8] tracking-wider uppercase mb-4 sm:mb-5"
             style={{
               fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
               textShadow: "0 2px 20px rgba(0, 0, 0, 0.8)",
@@ -90,23 +90,23 @@ export default function OpeningSection() {
           </h2>
 
           {/* Romantic & Personal Story Description */}
-          <p className="text-sm sm:text-base md:text-lg text-white/85 font-normal leading-relaxed mb-8 max-w-lg">
+          <p className="text-xs sm:text-base md:text-lg text-[#FFF5E8]/90 font-normal leading-relaxed mb-6 sm:mb-8 max-w-lg">
             Selamat ulang tahun sayang, Semoga panjang umur sehat selalu, selalu dalam lindungan Allah SWT, dan dimudahkan rezekinya, aminn 
           </p>
 
           {/* ── 3. Three Interactive Buttons ── */}
-          <div className="flex flex-wrap items-center gap-3 sm:gap-4 w-full">
+          <div className="flex flex-wrap items-center gap-2.5 sm:gap-4 w-full">
             {/* 1. Buka Surat (White Clean Button with Play Icon) */}
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => scrollTo("letter")}
-              className="flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3.5 rounded-full font-bold text-xs sm:text-sm tracking-wider uppercase transition-all shadow-xl cursor-pointer bg-white text-[#080B12] hover:bg-white/90"
+              className="flex items-center justify-center gap-2 px-5 sm:px-7 py-3 sm:py-3.5 rounded-full font-bold text-xs sm:text-sm tracking-wider uppercase transition-all shadow-xl cursor-pointer bg-[#FFF5E8] text-[#26040D] hover:bg-white"
               style={{
-                boxShadow: "0 6px 25px rgba(255, 255, 255, 0.25)",
+                boxShadow: "0 6px 25px rgba(255, 245, 232, 0.25)",
               }}
             >
-              <Play size={16} className="fill-[#080B12] text-[#080B12]" />
+              <Play size={15} className="fill-[#26040D] text-[#26040D]" />
               <span>Buka Suratnya</span>
             </motion.button>
 
@@ -115,14 +115,14 @@ export default function OpeningSection() {
               whileHover={{ scale: 1.05, backgroundColor: "rgba(255, 255, 255, 0.18)" }}
               whileTap={{ scale: 0.95 }}
               onClick={() => scrollTo("memories")}
-              className="flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 rounded-full font-semibold text-xs sm:text-sm tracking-wider uppercase text-white transition-all backdrop-blur-md cursor-pointer"
+              className="flex items-center justify-center gap-2 px-4.5 sm:px-6 py-3 sm:py-3.5 rounded-full font-semibold text-xs sm:text-sm tracking-wider uppercase text-[#FFF5E8] transition-all backdrop-blur-md cursor-pointer"
               style={{
-                background: "rgba(28, 32, 45, 0.8)",
-                border: "1px solid rgba(255, 255, 255, 0.2)",
+                background: "rgba(59, 7, 21, 0.85)",
+                border: "1px solid rgba(176, 138, 82, 0.4)",
                 boxShadow: "0 4px 20px rgba(0, 0, 0, 0.4)",
               }}
             >
-              <Info size={16} />
+              <Info size={15} />
               <span>Gallery</span>
             </motion.button>
 
@@ -131,16 +131,16 @@ export default function OpeningSection() {
               whileHover={{ scale: 1.1, rotate: 6 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => setShowSurpriseModal(true)}
-              className="w-12 h-12 rounded-full flex items-center justify-center transition-all cursor-pointer backdrop-blur-md text-white hover:bg-white/10"
+              className="w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all cursor-pointer backdrop-blur-md text-[#FFF5E8] hover:bg-white/10"
               style={{
-                background: "rgba(18, 22, 34, 0.85)",
-                border: "1px solid rgba(255, 255, 255, 0.25)",
+                background: "rgba(38, 4, 13, 0.9)",
+                border: "1px solid rgba(176, 138, 82, 0.5)",
                 boxShadow: "0 4px 15px rgba(0, 0, 0, 0.5)",
               }}
               title="Surprise Box"
               aria-label="Surprise Box"
             >
-              <Gift size={20} className="animate-pulse" />
+              <Gift size={18} className="animate-pulse text-[#B08A52]" />
             </motion.button>
           </div>
         </motion.div>

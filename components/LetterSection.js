@@ -77,7 +77,7 @@ export default function LetterSection() {
         viewport={{ once: true }}
         transition={{ duration: 0.9, delay: 0.4, ease: easeSoft }}
         whileHover={{ scale: 1.06, rotate: 3, transition: { duration: 0.25 } }}
-        className="absolute bottom-2 left-2 sm:bottom-6 sm:left-6 z-25 w-32 sm:w-44 md:w-52 lg:w-60 pointer-events-auto select-none drop-shadow-2xl cursor-pointer"
+        className="absolute bottom-2 left-2 sm:bottom-6 sm:left-6 z-25 w-20 sm:w-32 md:w-44 lg:w-60 pointer-events-auto select-none drop-shadow-2xl cursor-pointer"
         title="Snoopy with red roses"
       >
         <img
@@ -94,7 +94,7 @@ export default function LetterSection() {
         viewport={{ once: true }}
         transition={{ duration: 0.9, delay: 0.85, ease: easePop }}
         whileHover={{ scale: 1.08, rotate: -4, transition: { duration: 0.25 } }}
-        className="absolute bottom-3 right-3 sm:bottom-6 sm:right-6 md:right-10 z-35 w-28 sm:w-36 md:w-44 lg:w-52 pointer-events-auto select-none drop-shadow-2xl cursor-pointer"
+        className="absolute bottom-2 right-2 sm:bottom-6 sm:right-6 md:right-10 z-35 w-16 sm:w-26 md:w-38 lg:w-52 pointer-events-auto select-none drop-shadow-2xl cursor-pointer"
         title="Cute Spiderman"
       >
         <img
@@ -267,7 +267,7 @@ export default function LetterSection() {
             whileInView={{ opacity: 1, y: 0, rotate: -1.2, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.9, delay: 0.3, ease: easeSoft }}
-            className="relative z-20 rounded-[2px] px-6 sm:px-10 md:px-14 py-8 sm:py-10 md:py-12 transition-shadow duration-300 border border-[#E9A0AA]/25 w-full"
+            className="relative z-20 rounded-[2px] px-4 sm:px-8 md:px-14 py-6 sm:py-8 md:py-12 transition-shadow duration-300 border border-[#E9A0AA]/25 w-full"
             style={{
               backgroundColor: "#FFF9F0", // Ivory Paper
               boxShadow:
@@ -280,7 +280,7 @@ export default function LetterSection() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.5, ease: easeSoft }}
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-center tracking-normal mb-1.5 sm:mb-2 font-normal"
+              className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl text-center tracking-normal mb-1.5 sm:mb-2 font-normal"
               style={{
                 fontFamily: "'Alex Brush', 'Dancing Script', cursive",
                 color: "#521321", // Deep burgundy text
@@ -296,7 +296,7 @@ export default function LetterSection() {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.6, ease: easeSoft }}
-              className="text-center text-xs sm:text-sm md:text-base font-medium tracking-wide mb-4 sm:mb-6"
+              className="text-center text-[11px] sm:text-sm md:text-base font-medium tracking-wide mb-3 sm:mb-6"
               style={{
                 fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
                 color: "#E9A0AA", // Pink accent
@@ -307,7 +307,7 @@ export default function LetterSection() {
 
             {/* Isi Surat: Format Paragraf Melebar Tanpa Perlu Scroll */}
             <div
-              className="space-y-3 sm:space-y-3.5 text-center text-xs sm:text-sm md:text-[15px] leading-relaxed font-normal w-full max-w-3xl lg:max-w-4xl mx-auto"
+              className="space-y-2.5 sm:space-y-3.5 text-center text-xs sm:text-sm md:text-[15px] leading-relaxed font-normal w-full max-w-3xl lg:max-w-4xl mx-auto"
               style={{ color: "#521321" }}
             >
               <motion.p
@@ -354,7 +354,7 @@ export default function LetterSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.85, delay: 0.7, ease: easeSoft }}
               whileHover={{ scale: 1.08, rotate: 4, transition: { duration: 0.2 } }}
-              className="absolute -bottom-8 sm:-bottom-12 -right-4 sm:-right-8 z-30 w-24 sm:w-32 md:w-38 pointer-events-auto select-none drop-shadow-xl cursor-pointer"
+              className="absolute -bottom-6 sm:-bottom-12 -right-3 sm:-right-8 z-30 w-16 sm:w-26 md:w-38 pointer-events-auto select-none drop-shadow-xl cursor-pointer"
               title="Watercolor Birthday Cake"
             >
               <img

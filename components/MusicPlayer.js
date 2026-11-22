@@ -67,15 +67,15 @@ export default function MusicPlayer({ autoPlayTrigger = false, visible = true })
       {/* Floating Button visible only when unlocked */}
       <AnimatePresence>
         {visible && (
-          <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3">
+          <div className="fixed bottom-5 sm:bottom-6 left-4 sm:left-6 z-50 flex items-center gap-3">
             <motion.button
               onClick={togglePlay}
-              className="w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 group relative cursor-pointer"
+              className="w-11 h-11 sm:w-13 sm:h-13 md:w-14 md:h-14 rounded-full flex items-center justify-center transition-all duration-300 group relative cursor-pointer"
               style={{
-                background: "rgba(45, 10, 24, 0.9)",
+                background: "rgba(38, 4, 13, 0.92)",
                 backdropFilter: "blur(20px)",
-                border: "1px solid rgba(226, 125, 155, 0.4)",
-                boxShadow: "0 8px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(217, 43, 107, 0.3)",
+                border: "1px solid rgba(176, 138, 82, 0.5)",
+                boxShadow: "0 8px 30px rgba(0, 0, 0, 0.6), 0 0 15px rgba(176, 138, 82, 0.25)",
               }}
               initial={{ scale: 0, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -87,16 +87,16 @@ export default function MusicPlayer({ autoPlayTrigger = false, visible = true })
             >
               {isPlaying ? (
                 <motion.div animate={{ rotate: 360 }} transition={{ duration: 3, repeat: Infinity, ease: "linear" }}>
-                  <DiscIcon size={26} className="text-[#E27D9B]" />
+                  <DiscIcon size={22} className="text-[#B08A52] sm:w-6 sm:h-6" />
                 </motion.div>
               ) : (
-                <MusicIcon size={24} className="text-[#E27D9B] animate-bounce" />
+                <MusicIcon size={20} className="text-[#B08A52] sm:w-6 sm:h-6 animate-bounce" />
               )}
 
               {/* Tooltip on hover */}
               <span
-                className="absolute bottom-full mb-2.5 px-3 py-1.5 text-xs rounded-xl whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-lg border border-[#E27D9B]/30"
-                style={{ background: "rgba(38, 8, 20, 0.95)", color: "#FFF5F7" }}
+                className="absolute bottom-full left-0 mb-2.5 px-3 py-1.5 text-xs rounded-xl whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-lg border border-[#B08A52]/30"
+                style={{ background: "rgba(38, 4, 13, 0.95)", color: "#FFF5E8" }}
               >
                 {isPlaying ? `Pause: ${musicData.title} - ${musicData.artist}` : `Play: ${musicData.title} - ${musicData.artist} ♫`}
               </span>
@@ -104,7 +104,7 @@ export default function MusicPlayer({ autoPlayTrigger = false, visible = true })
               {/* Glowing Pulse Ring while playing */}
               {isPlaying && (
                 <motion.div
-                  className="absolute -inset-1.5 rounded-full border-2 border-[#D92B6B] pointer-events-none"
+                  className="absolute -inset-1.5 rounded-full border-2 border-[#B08A52]"
                   animate={{ scale: [1, 1.4], opacity: [0.7, 0] }}
                   transition={{ duration: 1.5, repeat: Infinity, ease: "easeOut" }}
                 />

@@ -273,7 +273,7 @@ export default function SecretCodeSection({ onUnlock }) {
 
         {/* 6 Digit Input Boxes */}
         <motion.div
-          className="flex justify-center items-center gap-2 sm:gap-2.5 w-full my-6 px-1"
+          className="flex justify-center items-center gap-1.5 sm:gap-2.5 w-full my-5 sm:my-6 px-1"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
@@ -291,7 +291,7 @@ export default function SecretCodeSection({ onUnlock }) {
               onChange={(e) => handleChange(i, e.target.value)}
               onKeyDown={(e) => handleKeyDown(i, e)}
               onPaste={handlePaste}
-              className={`shrink-0 text-center font-bold rounded-xl outline-none transition-all duration-300 text-xl sm:text-2xl ${
+              className={`shrink-0 text-center font-bold rounded-xl outline-none transition-all duration-300 text-lg sm:text-2xl w-10 h-10 sm:w-12 sm:h-12 md:w-13 md:h-13 ${
                 error
                   ? "text-red-300 bg-red-500/15"
                   : isUnlocking
@@ -301,12 +301,6 @@ export default function SecretCodeSection({ onUnlock }) {
                   : "text-[#FFF5ED] bg-white/5"
               }`}
               style={{
-                width: "48px",
-                height: "48px",
-                maxWidth: "50px",
-                maxHeight: "50px",
-                minWidth: "38px",
-                minHeight: "38px",
                 aspectRatio: "1 / 1",
                 padding: "0",
                 border: `2px solid ${
