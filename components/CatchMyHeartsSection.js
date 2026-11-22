@@ -217,17 +217,19 @@ export default function CatchMyHeartsSection() {
 
   // Typewriter effect state for letter
   const [typedText, setTypedText] = useState("");
-  const fullLetterText = `Dear you,
+  const fullLetterText = `*Untuk Kamu, Sayang
 
-If you're reading this, it means you've found your little surprise.
+Jika kamu sedang membaca surat ini, berarti kamu sudah berhasil menemukan kejutan kecil dariku.
 
-I just want you to know that you are someone truly special to me. I hope this little game made you smile, even just a little.
+Aku hanya ingin kamu tahu bahwa kamu adalah seseorang yang benar-benar istimewa bagiku. Aku harap permainan kecil tadi berhasil membuatmu tersenyum, meskipun hanya sedikit.
 
-You deserve happiness, love, and all the beautiful things in this world.
+Kamu pantas mendapatkan kebahagiaan, cinta, dan semua hal indah yang ada di dunia ini.
 
-Thank you for being you.
+Terima kasih sudah menjadi dirimu sendiri. Terima kasih sudah hadir dan memberikan banyak warna dalam hidupku.
 
-With love, always. ♡`;
+Oh iya, masih ada satu kejutan lagi untukmu. Jangan berhenti sampai di sini, ya. Coba keluar sebentar dan lihat ke depan rumah. Karena ada hadiah kecil yang sudah menunggumu.
+
+Dengan cinta, selalu.*`;
 
   // Update bucket helper
   const updateBucketX = (val) => {
@@ -479,7 +481,7 @@ With love, always. ♡`;
                   lineHeight: "1.8",
                 }}
               >
-                Before you leave, I have one little game for you. Don&apos;t worry, there&apos;s a special surprise waiting at the end.
+                Sebelum kamu tutup sayang, Aku punya sedikit game, ada kejutannya di akhir.
               </p>
 
               {/* Button: LET'S PLAY! ♡ */}
@@ -493,7 +495,7 @@ With love, always. ♡`;
                 style={{ fontFamily: "'Press Start 2P', monospace" }}
               >
                 <PixelHeart size={16} color="#FFF9F0" outline="#1A0307" />
-                <span>LET&apos;S PLAY! ♡</span>
+                <span>Ayo mulai</span>
               </button>
             </div>
           </motion.div>
@@ -665,7 +667,7 @@ With love, always. ♡`;
                   textShadow: "2px 2px 0px #E9A0AA",
                 }}
               >
-                YAY! YOU DID IT!
+                YEAY KAMU BERHASIL SAYANG
               </h2>
 
               {/* Title 2: You collected all my hearts! */}
@@ -676,7 +678,7 @@ With love, always. ♡`;
                   lineHeight: "1.8",
                 }}
               >
-                You collected all my hearts!
+                Kamu berhasil mengambil semua hatiku
               </p>
 
               {/* Button: CLAIM YOUR SURPRISE ♡ */}
@@ -686,7 +688,7 @@ With love, always. ♡`;
                 style={{ fontFamily: "'Press Start 2P', monospace" }}
               >
                 <PixelGiftBox size={18} />
-                <span>CLAIM YOUR SURPRISE ♡</span>
+                <span>CLAIM YOUR SURPRISE </span>
               </button>
             </div>
           </motion.div>
