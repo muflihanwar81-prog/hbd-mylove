@@ -190,36 +190,53 @@ export default function LetterSection() {
         {/* ── RIGHT COLUMN: Stacked Paper Letter Sheets + Accents ── */}
         <div className="relative flex-1 w-full max-w-2xl lg:max-w-3xl">
 
-          {/* ── 6. HELLO KITTY DENGAN BUKET (Di Atas Surat Bagian Kiri) ── */}
+          {/* ── STIKER KIRI ATAS: Karakter Pixel Membawa Buket Bunga ── */}
           <motion.div
             initial={{ opacity: 0, y: -50, scale: 0.8 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.85, delay: 0.5, ease: easeSoft }}
-            whileHover={{ scale: 1.08, rotate: -4, transition: { duration: 0.2 } }}
-            className="absolute -top-12 sm:-top-16 -left-4 sm:-left-8 z-35 w-28 sm:w-36 md:w-44 pointer-events-auto select-none drop-shadow-2xl cursor-pointer"
-            title="Hello Kitty with Bouquet"
+            whileHover={{ scale: 1.08, rotate: -3, transition: { duration: 0.2 } }}
+            className="absolute -top-14 sm:-top-20 -left-4 sm:-left-8 z-35 w-28 sm:w-36 md:w-44 pointer-events-auto select-none drop-shadow-2xl cursor-pointer"
+            title="Cute Character with Flower Bouquet"
           >
             <img
-              src="/images/letter-stickers/cat-flowers.png"
-              alt="Hello Kitty with Flowers"
+              src="/images/letter-stickers/character-bouquet.png"
+              alt="Character with Flowers"
               className="w-full h-auto"
             />
           </motion.div>
 
-          {/* ── 7. HELLO KITTY DI ATAS KUE (Di Kanan Atas) ── */}
+          {/* ── STIKER TENGAH ATAS: 3 Hati Pixel Merah ── */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0, y: -20 }}
+            whileInView={{ opacity: 1, scale: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.55, ease: easePop }}
+            whileHover={{ scale: 1.1, transition: { duration: 0.2 } }}
+            className="absolute -top-6 sm:-top-9 left-1/2 -translate-x-1/2 z-35 w-28 sm:w-36 md:w-44 pointer-events-auto select-none drop-shadow-lg cursor-pointer"
+            title="Pixel Hearts"
+          >
+            <img
+              src="/images/letter-stickers/pixel-hearts.png"
+              alt="Pixel Hearts"
+              className="w-full h-auto"
+            />
+          </motion.div>
+
+          {/* ── STIKER KANAN ATAS: Disco Mirror Ball dengan Bintang Merah ── */}
           <motion.div
             initial={{ opacity: 0, y: -50, x: 30, scale: 0.8, rotate: 15 }}
             whileInView={{ opacity: 1, y: 0, x: 0, rotate: 6 }}
             viewport={{ once: true }}
             transition={{ duration: 0.85, delay: 0.6, ease: easeSoft }}
-            whileHover={{ scale: 1.08, rotate: 12, transition: { duration: 0.2 } }}
-            className="absolute -top-14 sm:-top-18 -right-3 sm:-right-7 z-35 w-24 sm:w-32 md:w-38 pointer-events-auto select-none drop-shadow-2xl cursor-pointer"
-            title="Hello Kitty on Birthday Cake"
+            whileHover={{ scale: 1.08, rotate: 10, transition: { duration: 0.2 } }}
+            className="absolute -top-12 sm:-top-16 -right-4 sm:-right-8 z-35 w-26 sm:w-34 md:w-40 pointer-events-auto select-none drop-shadow-2xl cursor-pointer"
+            title="Disco Ball with Red Stars"
           >
             <img
-              src="/images/letter-stickers/pixel-cat-cake.png"
-              alt="Hello Kitty Birthday Cake"
+              src="/images/letter-stickers/disco-ball.png"
+              alt="Disco Ball"
               className="w-full h-auto"
             />
           </motion.div>
