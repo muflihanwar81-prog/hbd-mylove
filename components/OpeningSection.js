@@ -26,7 +26,7 @@ export default function OpeningSection() {
         style={{
           backgroundImage: `url(${imageSrc})`,
           backgroundSize: "cover",
-          backgroundPosition: "15% 30%",
+          backgroundPosition: "center 25%",
           backgroundRepeat: "no-repeat",
         }}
       />
