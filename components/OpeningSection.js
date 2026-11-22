@@ -33,13 +33,15 @@ export default function OpeningSection() {
         />
 
         {/* Cinematic Translucent Dark Overlay */}
-        <div className="absolute inset-0 bg-[#26040D]/30 pointer-events-none" />
+        <div className="absolute inset-0 bg-[#26040D]/50 pointer-events-none" />
 
-        {/* Multi-Directional Film Gradients */}
+        {/* Multi-Directional Film Gradients (Dark burgundy from Left, Right, Top and Bottom) */}
         {/* Left Dark Gradient */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#26040D]/80 via-[#26040D]/30 to-transparent pointer-events-none md:w-3/5" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#26040D]/90 via-[#26040D]/40 to-transparent pointer-events-none md:w-3/5" />
         {/* Right Dark Gradient (Darker on Right side where information sits) */}
-        <div className="absolute inset-0 bg-gradient-to-l from-[#26040D]/90 via-[#26040D]/60 to-transparent pointer-events-none md:w-3/4 md:left-auto" />
+        <div className="absolute inset-0 bg-gradient-to-l from-[#26040D]/95 via-[#26040D]/75 to-transparent pointer-events-none md:w-3/4 md:left-auto" />
+        {/* Top Gradient for Header contrast */}
+        <div className="absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-[#26040D]/90 via-[#26040D]/40 to-transparent pointer-events-none" />
         {/* Bottom Fade to blend seamlessly with next section */}
         <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[#4A0714] via-[#350710]/80 to-transparent pointer-events-none" />
       </div>
