@@ -138,7 +138,12 @@ function createPhotoTexture(src) {
     img.crossOrigin = "anonymous";
     img.onload = () => {
       ctx.clearRect(0, 0, 1200, 850);
-      ctx.drawImage(img, 0, 0, 1200, 850);
+      const scale = Math.max(1200 / img.width, 850 / img.height);
+      const w = img.width * scale;
+      const h = img.height * scale;
+      const x = (1200 - w) / 2;
+      const y = (850 - h) / 2;
+      ctx.drawImage(img, x, y, w, h);
       texture.needsUpdate = true;
     };
     img.src = src;
