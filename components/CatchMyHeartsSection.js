@@ -363,7 +363,7 @@ Oh iya, masih ada satu kejutan lagi untukmu. Jangan berhenti sampai di sini, ya.
   return (
     <section
       id="game"
-      className="relative min-h-screen w-full flex items-center justify-center px-4 py-16 sm:py-20 md:py-24 overflow-hidden select-none"
+      className="relative min-h-[100dvh] w-full flex items-center justify-center px-3 py-[clamp(1rem,3dvh,2.5rem)] overflow-hidden select-none"
       style={{
         backgroundColor: "#350710", // Dark Burgundy 8-bit Background
         backgroundImage: `
@@ -444,7 +444,7 @@ Oh iya, masih ada satu kejutan lagi untukmu. Jangan berhenti sampai di sini, ya.
 
             {/* Retro 8-Bit Ivory Card Container */}
             <div
-              className="relative z-20 rounded-none px-4 sm:px-10 py-8 sm:py-14 text-center border-4 border-[#1A0307]"
+              className="relative z-20 rounded-none px-4 sm:px-8 py-[clamp(1.5rem,3.5dvh,2.75rem)] text-center border-4 border-[#1A0307]"
               style={{
                 backgroundColor: "#FFF9F0",
                 boxShadow: "6px 6px 0px #1A0307, 0 20px 40px rgba(0,0,0,0.5)",
@@ -547,7 +547,7 @@ Oh iya, masih ada satu kejutan lagi untukmu. Jangan berhenti sampai di sini, ya.
               ref={gameAreaRef}
               onMouseMove={handlePointerMove}
               onTouchMove={handlePointerMove}
-              className="relative w-full h-[380px] sm:h-[440px] border-4 border-[#1A0307] overflow-hidden cursor-ew-resize select-none"
+              className="relative w-full h-[clamp(250px,46dvh,420px)] border-4 border-[#1A0307] overflow-hidden cursor-ew-resize select-none"
               style={{
                 backgroundColor: "#2A050D",
                 boxShadow: "8px 8px 0px #1A0307, inset 0 0 40px rgba(0,0,0,0.8)",
@@ -646,7 +646,7 @@ Oh iya, masih ada satu kejutan lagi untukmu. Jangan berhenti sampai di sini, ya.
           >
             {/* Victory Pixel Card */}
             <div
-              className="relative z-20 rounded-none px-4 sm:px-10 py-8 sm:py-14 text-center border-4 border-[#1A0307]"
+              className="relative z-20 rounded-none px-4 sm:px-8 py-[clamp(1.5rem,3.5dvh,2.75rem)] text-center border-4 border-[#1A0307]"
               style={{
                 backgroundColor: "#FFF9F0",
                 boxShadow: "6px 6px 0px #1A0307, 0 20px 40px rgba(0,0,0,0.6)",
@@ -711,7 +711,7 @@ Oh iya, masih ada satu kejutan lagi untukmu. Jangan berhenti sampai di sini, ya.
 
             {/* Typewriter Retro Letter Card */}
             <div
-              className="w-full text-left p-4 sm:p-8 md:p-10 border-4 border-[#1A0307]"
+              className="w-full text-left p-[clamp(1rem,2.8dvh,2.5rem)] border-4 border-[#1A0307] max-h-[82dvh] overflow-y-auto"
               style={{
                 backgroundColor: "#FFF9F0",
                 boxShadow: "6px 6px 0px #1A0307, 0 25px 60px rgba(0,0,0,0.6)",

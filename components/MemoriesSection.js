@@ -874,7 +874,7 @@ export default function MemoriesSection({ onPhotoClick }) {
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
-      className="relative w-full h-screen overflow-hidden select-none"
+      className="relative w-full min-h-[100dvh] h-[100dvh] overflow-hidden select-none"
       style={{ background: COLOR_VOID, touchAction: "none" }}
     >
       {/* ── 3D WebGL Canvas ── */}
@@ -884,7 +884,7 @@ export default function MemoriesSection({ onPhotoClick }) {
       />
 
       {/* ── Bottom-Center Display: 1 text "memory" ── */}
-      <div className="absolute bottom-24 sm:bottom-28 md:bottom-10 left-1/2 -translate-x-1/2 z-20 pointer-events-auto text-center w-[92%] max-w-xl px-2">
+      <div className="absolute bottom-[clamp(4.5rem,11dvh,6.5rem)] left-1/2 -translate-x-1/2 z-20 pointer-events-auto text-center w-[92%] max-w-xl px-2">
         <h2
           onClick={() => {
             if (activeArtwork) {
@@ -893,7 +893,7 @@ export default function MemoriesSection({ onPhotoClick }) {
               if (onPhotoClick) onPhotoClick(activeArtwork);
             }
           }}
-          className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-widest uppercase cursor-pointer hover:opacity-80 transition-opacity select-none"
+          className="text-[clamp(1.5rem,4.2dvh,3.5rem)] font-bold text-white tracking-widest uppercase cursor-pointer hover:opacity-80 transition-opacity select-none"
           style={{
             fontFamily: "'Playfair Display', Georgia, serif",
             textShadow: "0 2px 25px rgba(0, 0, 0, 0.95), 0 0 15px rgba(255, 255, 255, 0.2)",
@@ -904,12 +904,12 @@ export default function MemoriesSection({ onPhotoClick }) {
       </div>
 
       {/* ── Bottom Navigation & Instructions (Responsive across Mobile, Tablet, Desktop) ── */}
-      <div className="absolute bottom-5 sm:bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-8 z-20 pointer-events-auto flex flex-col items-center md:items-end gap-2 md:gap-3">
+      <div className="absolute bottom-[clamp(0.75rem,2.5dvh,2rem)] left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-8 z-20 pointer-events-auto flex flex-col items-center md:items-end gap-2 md:gap-3">
         {/* Stepper Buttons: Left Arrow, Auto-Walk Play/Pause, and Right Arrow */}
         <div className="flex items-center gap-2 sm:gap-2.5">
           <button
             onClick={() => stepWalk(-1)}
-            className="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition-all cursor-pointer hover:bg-[#4A0B1C] hover:border-[#B08A52] hover:shadow-[0_0_15px_rgba(176,138,82,0.45)] active:scale-95 shadow-xl"
+            className="w-[clamp(2.25rem,4.5dvh,2.75rem)] h-[clamp(2.25rem,4.5dvh,2.75rem)] rounded-full flex items-center justify-center transition-all cursor-pointer hover:bg-[#4A0B1C] hover:border-[#B08A52] hover:shadow-[0_0_15px_rgba(176,138,82,0.45)] active:scale-95 shadow-xl text-sm"
             style={{
               background: "rgba(59, 7, 21, 0.94)",
               border: "1px solid #B08A52",
@@ -922,7 +922,7 @@ export default function MemoriesSection({ onPhotoClick }) {
           </button>
           <button
             onClick={toggleAutoPlay}
-            className="h-10 sm:h-11 px-3.5 sm:px-4 rounded-full flex items-center justify-center gap-2 transition-all cursor-pointer hover:bg-[#4A0B1C] hover:border-[#B08A52] hover:shadow-[0_0_15px_rgba(176,138,82,0.45)] active:scale-95 shadow-xl"
+            className="h-[clamp(2.25rem,4.5dvh,2.75rem)] px-3 sm:px-4 rounded-full flex items-center justify-center gap-2 transition-all cursor-pointer hover:bg-[#4A0B1C] hover:border-[#B08A52] hover:shadow-[0_0_15px_rgba(176,138,82,0.45)] active:scale-95 shadow-xl"
             style={{
               background: isAutoPlaying ? "rgba(74, 11, 28, 0.95)" : "rgba(38, 4, 13, 0.94)",
               border: isAutoPlaying ? "1px solid #B08A52" : "1px solid rgba(176, 138, 82, 0.60)",
@@ -939,7 +939,7 @@ export default function MemoriesSection({ onPhotoClick }) {
           </button>
           <button
             onClick={() => stepWalk(1)}
-            className="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition-all cursor-pointer hover:bg-[#4A0B1C] hover:border-[#B08A52] hover:shadow-[0_0_15px_rgba(176,138,82,0.45)] active:scale-95 shadow-xl"
+            className="w-[clamp(2.25rem,4.5dvh,2.75rem)] h-[clamp(2.25rem,4.5dvh,2.75rem)] rounded-full flex items-center justify-center transition-all cursor-pointer hover:bg-[#4A0B1C] hover:border-[#B08A52] hover:shadow-[0_0_15px_rgba(176,138,82,0.45)] active:scale-95 shadow-xl text-sm"
             style={{
               background: "rgba(59, 7, 21, 0.94)",
               border: "1px solid #B08A52",

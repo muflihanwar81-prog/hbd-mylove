@@ -18,7 +18,7 @@ export default function OpeningSection() {
   return (
     <section
       id="home"
-      className="relative w-full min-h-screen overflow-hidden select-none bg-[#080808] flex items-center"
+      className="relative w-full min-h-[100dvh] h-[100dvh] overflow-hidden select-none bg-[#080808] flex items-center justify-center"
     >
       {/* ── Layer 1: Fullscreen Background Photo (Cover, Center Position) ── */}
       <div
@@ -42,7 +42,7 @@ export default function OpeningSection() {
 
       {/* Vignette atas halus agar menu navigasi transparan tetap terbaca jelas */}
       <div
-        className="absolute inset-x-0 top-0 h-32 pointer-events-none z-10"
+        className="absolute inset-x-0 top-0 h-24 sm:h-32 pointer-events-none z-10"
         style={{
           background:
             "linear-gradient(180deg, rgba(0,0,0,0.70) 0%, rgba(0,0,0,0.25) 55%, transparent 100%)",
@@ -51,7 +51,7 @@ export default function OpeningSection() {
 
       {/* Gradasi Bawah: Opacity ringan agar transisi ke section berikutnya seamless */}
       <div
-        className="absolute inset-x-0 bottom-0 h-28 md:h-36 pointer-events-none z-10"
+        className="absolute inset-x-0 bottom-0 h-24 sm:h-32 pointer-events-none z-10"
         style={{
           background:
             "linear-gradient(0deg, rgba(8,8,8,0.85) 0%, rgba(8,8,8,0.25) 50%, transparent 100%)",
@@ -67,32 +67,32 @@ export default function OpeningSection() {
         }}
       />
 
-      {/* ── Layer 4: Content Container (Dua Kolom Berjauhan, Sisakan Tengah Kosong) ── */}
-      <div className="relative z-20 w-full min-h-screen max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-14 pt-24 sm:pt-28 pb-12 sm:pb-16 flex items-center justify-between">
+      {/* ── Layer 4: Content Container (Dua Kolom Berjauhan, Fit to Screen 100dvh) ── */}
+      <div className="relative z-20 w-full h-full max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-14 pt-[clamp(4.25rem,10dvh,6.5rem)] pb-[clamp(1.5rem,4dvh,3.5rem)] flex items-center justify-between">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-          className="w-full flex flex-col md:flex-row items-center justify-between gap-10 md:gap-6 my-auto"
+          className="w-full flex flex-col md:flex-row items-center justify-between gap-[clamp(1rem,3dvh,2.5rem)] md:gap-4 my-auto h-full max-h-[88dvh]"
         >
           {/* ── KOLOM KIRI (Sekitar 30% Lebar Layar, Digeser Lebih Dekat ke Kiri) ── */}
-          <div className="w-full md:w-[34%] lg:w-[30%] flex flex-col items-start text-left">
+          <div className="w-full md:w-[34%] lg:w-[30%] flex flex-col items-start text-left shrink-0">
             {/* Label: UNTUK ORANG FAVORITKU */}
-            <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/60 border border-white/40 backdrop-blur-md mb-3 sm:mb-4 shadow-sm">
-              <Sparkles size={13} className="text-white" />
-              <span className="text-[10px] sm:text-xs font-mono font-bold tracking-[0.22em] text-white uppercase">
+            <div className="flex items-center gap-1.5 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-black/60 border border-white/40 backdrop-blur-md mb-[clamp(0.4rem,1.4dvh,1rem)] shadow-sm">
+              <Sparkles size={12} className="text-white shrink-0" />
+              <span className="text-[clamp(9px,1.2dvh,11px)] font-mono font-bold tracking-[0.2em] text-white uppercase">
                 UNTUK ORANG FAVORITKU
               </span>
             </div>
 
             {/* Teks kecil: HARI YANG DITUNGGU TUNGGU */}
-            <p className="text-[11px] sm:text-xs md:text-sm font-mono tracking-[0.25em] text-white uppercase mb-1.5 sm:mb-2 font-semibold">
+            <p className="text-[clamp(10px,1.3dvh,13px)] font-mono tracking-[0.22em] text-white uppercase mb-[clamp(0.2rem,0.8dvh,0.5rem)] font-semibold">
               HARI YANG DITUNGGU TUNGGU
             </p>
 
             {/* Angka 19 dengan ukuran besar */}
             <h1
-              className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-white tracking-tight uppercase leading-[0.92] mb-2"
+              className="text-[clamp(3.5rem,11dvh,8rem)] font-black text-white tracking-tight uppercase leading-[0.88] mb-[clamp(0.25rem,0.9dvh,0.5rem)]"
               style={{
                 fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
                 textShadow: "0 4px 35px rgba(0, 0, 0, 0.95), 0 0 25px rgba(255, 255, 255, 0.2)",
@@ -103,7 +103,7 @@ export default function OpeningSection() {
 
             {/* Judul: HAPPY BIRTHDAY */}
             <h2
-              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-white tracking-wider uppercase"
+              className="text-[clamp(1.25rem,4dvh,3rem)] font-extrabold text-white tracking-wider uppercase leading-tight"
               style={{
                 fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
                 textShadow: "0 2px 20px rgba(0, 0, 0, 0.95)",
@@ -117,25 +117,25 @@ export default function OpeningSection() {
           <div className="hidden md:block md:w-[26%] lg:w-[34%] pointer-events-none" />
 
           {/* ── KOLOM KANAN (Sekitar 30% Lebar Layar, Digeser Lebih Dekat ke Kanan) ── */}
-          <div className="w-full md:w-[36%] lg:w-[30%] flex flex-col items-start text-left">
+          <div className="w-full md:w-[36%] lg:w-[30%] flex flex-col items-start text-left shrink-0">
             {/* Ucapan selamat ulang tahun */}
-            <p className="text-sm sm:text-base md:text-lg text-white font-normal leading-relaxed mb-6 sm:mb-8 max-w-md drop-shadow-[0_2px_10px_rgba(0,0,0,0.95)]">
+            <p className="text-[clamp(11px,1.7dvh,16px)] text-white font-normal leading-relaxed mb-[clamp(0.75rem,2.2dvh,2rem)] max-w-md drop-shadow-[0_2px_10px_rgba(0,0,0,0.95)]">
               Selamat ulang tahun sayang, Semoga panjang umur sehat selalu, selalu dalam lindungan Allah SWT, dan dimudahkan rezekinya, aminn
             </p>
 
             {/* Tombol: BUKA SURATNYA, GALLERY, dan Tombol Hadiah */}
-            <div className="flex flex-wrap items-center gap-3 sm:gap-4 w-full">
+            <div className="flex flex-wrap items-center gap-[clamp(0.5rem,1.5vw,1rem)] w-full">
               {/* Primary Button: BUKA SURATNYA (Putih dengan teks hitam) */}
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => scrollTo("letter")}
-                className="flex items-center justify-center gap-2 px-5 sm:px-7 py-3 sm:py-3.5 rounded-full font-bold text-xs sm:text-sm tracking-wider uppercase transition-all shadow-xl cursor-pointer bg-white hover:bg-white/90 text-black"
+                className="flex items-center justify-center gap-2 px-[clamp(1rem,2vw,1.75rem)] py-[clamp(0.5rem,1.3dvh,0.875rem)] rounded-full font-bold text-[clamp(10px,1.3dvh,13px)] tracking-wider uppercase transition-all shadow-xl cursor-pointer bg-white hover:bg-white/90 text-black"
                 style={{
                   boxShadow: "0 6px 25px rgba(255, 255, 255, 0.25)",
                 }}
               >
-                <Play size={15} className="fill-black text-black" />
+                <Play size={13} className="fill-black text-black shrink-0" />
                 <span>BUKA SURATNYA</span>
               </motion.button>
 
@@ -144,9 +144,9 @@ export default function OpeningSection() {
                 whileHover={{ scale: 1.05, backgroundColor: "rgba(255, 255, 255, 0.15)" }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => scrollTo("memories")}
-                className="flex items-center justify-center gap-2 px-4.5 sm:px-6 py-3 sm:py-3.5 rounded-full font-semibold text-xs sm:text-sm tracking-wider uppercase text-white transition-all backdrop-blur-md cursor-pointer bg-black/50 border border-white/60 shadow-lg hover:border-white"
+                className="flex items-center justify-center gap-2 px-[clamp(0.875rem,1.8vw,1.5rem)] py-[clamp(0.5rem,1.3dvh,0.875rem)] rounded-full font-semibold text-[clamp(10px,1.3dvh,13px)] tracking-wider uppercase text-white transition-all backdrop-blur-md cursor-pointer bg-black/50 border border-white/60 shadow-lg hover:border-white"
               >
-                <Info size={15} className="text-white" />
+                <Info size={13} className="text-white shrink-0" />
                 <span>GALLERY</span>
               </motion.button>
 
@@ -155,11 +155,11 @@ export default function OpeningSection() {
                 whileHover={{ scale: 1.1, rotate: 6 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => setShowSurpriseModal(true)}
-                className="w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all cursor-pointer backdrop-blur-md bg-black/50 border border-white/60 hover:border-white text-white shadow-md hover:bg-black/75"
+                className="w-[clamp(2.5rem,4.8dvh,3rem)] h-[clamp(2.5rem,4.8dvh,3rem)] rounded-full flex items-center justify-center transition-all cursor-pointer backdrop-blur-md bg-black/50 border border-white/60 hover:border-white text-white shadow-md hover:bg-black/75 shrink-0"
                 title="Surprise Box"
                 aria-label="Surprise Box"
               >
-                <Gift size={18} className="animate-pulse text-white" />
+                <Gift size={16} className="animate-pulse text-white" />
               </motion.button>
             </div>
           </div>

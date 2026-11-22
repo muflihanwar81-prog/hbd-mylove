@@ -51,7 +51,7 @@ export default function LetterSection() {
   return (
     <section
       id="letter"
-      className="relative min-h-screen w-full flex items-center justify-center px-4 sm:px-6 py-12 sm:py-16 md:py-20 overflow-hidden select-none"
+      className="relative min-h-[100dvh] w-full flex items-center justify-center px-3 sm:px-6 py-[clamp(1rem,3dvh,2.5rem)] overflow-hidden select-none"
       style={{
         backgroundColor: "#4A0714", // Deep romantic maroon
         backgroundImage: "radial-gradient(circle at 50% 30%, #641526 0%, #4A0714 65%, #350710 100%)",
@@ -66,8 +66,8 @@ export default function LetterSection() {
         className="absolute inset-0 pointer-events-none z-0"
       >
         {/* Soft textured vignettes */}
-        <div className="absolute top-0 left-0 w-96 h-96 bg-[#641526]/40 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#350710]/60 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 left-0 w-72 sm:w-96 h-72 sm:h-96 bg-[#641526]/40 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-72 sm:w-96 h-72 sm:h-96 bg-[#350710]/60 rounded-full blur-3xl pointer-events-none" />
       </motion.div>
 
       {/* ── 5. SNOOPY DENGAN BUKET BUNGA (Kiri Bawah) ── */}
@@ -77,7 +77,7 @@ export default function LetterSection() {
         viewport={{ once: true }}
         transition={{ duration: 0.9, delay: 0.4, ease: easeSoft }}
         whileHover={{ scale: 1.06, rotate: 3, transition: { duration: 0.25 } }}
-        className="absolute bottom-2 left-2 sm:bottom-6 sm:left-6 z-25 w-20 sm:w-32 md:w-44 lg:w-60 pointer-events-auto select-none drop-shadow-2xl cursor-pointer"
+        className="absolute bottom-2 left-2 sm:bottom-4 sm:left-4 z-25 w-[clamp(4.5rem,10vw,11rem)] pointer-events-auto select-none drop-shadow-2xl cursor-pointer"
         title="Snoopy with red roses"
       >
         <img
@@ -94,7 +94,7 @@ export default function LetterSection() {
         viewport={{ once: true }}
         transition={{ duration: 0.9, delay: 0.85, ease: easePop }}
         whileHover={{ scale: 1.08, rotate: -4, transition: { duration: 0.25 } }}
-        className="absolute bottom-2 right-2 sm:bottom-6 sm:right-6 md:right-10 z-35 w-16 sm:w-26 md:w-38 lg:w-52 pointer-events-auto select-none drop-shadow-2xl cursor-pointer"
+        className="absolute bottom-2 right-2 sm:bottom-4 sm:right-4 md:right-8 z-35 w-[clamp(3.5rem,8vw,9.5rem)] pointer-events-auto select-none drop-shadow-2xl cursor-pointer"
         title="Cute Spiderman"
       >
         <img
@@ -105,10 +105,10 @@ export default function LetterSection() {
       </motion.div>
 
       {/* ── Main Composition Container ── */}
-      <div className="relative z-20 w-full max-w-[1360px] mx-auto flex flex-col lg:flex-row items-center justify-center gap-10 lg:gap-8 px-2 sm:px-6">
+      <div className="relative z-20 w-full max-w-[1360px] mx-auto flex flex-col lg:flex-row items-center justify-center gap-[clamp(1rem,3dvh,2rem)] lg:gap-8 px-2 sm:px-4 my-auto">
 
         {/* ── LEFT COLUMN: Vinyl + Stacked Polaroid Frames + Wax Seal + Stars ── */}
-        <div className="relative shrink-0 flex flex-col items-center justify-center w-full max-w-xs sm:max-w-sm lg:w-[320px] lg:self-start lg:pt-6">
+        <div className="relative shrink-0 flex flex-col items-center justify-center w-full max-w-[280px] sm:max-w-xs lg:w-[clamp(200px,22vw,280px)] lg:self-center">
 
           {/* ── 1. VINYL RECORD (Kiri Atas, Sedikit Miring) ── */}
           <motion.div
@@ -117,7 +117,7 @@ export default function LetterSection() {
             viewport={{ once: true }}
             transition={{ duration: 0.9, delay: 0.2, ease: easeSoft }}
             whileHover={{ scale: 1.05, rotate: -5, transition: { duration: 0.3 } }}
-            className="absolute -top-12 sm:-top-16 -left-6 sm:-left-12 z-0 w-36 sm:w-44 md:w-50 pointer-events-auto select-none drop-shadow-2xl cursor-pointer"
+            className="absolute -top-8 sm:-top-12 -left-4 sm:-left-8 z-0 w-[clamp(5rem,9vw,10rem)] pointer-events-auto select-none drop-shadow-2xl cursor-pointer"
             title="Romantic Vinyl Record"
           >
             <img
@@ -135,7 +135,7 @@ export default function LetterSection() {
             viewport={{ once: true }}
             transition={{ duration: 0.9, delay: 0.35, ease: easeSoft }}
             whileHover={{ scale: 1.03, rotate: -2, zIndex: 30, transition: { duration: 0.25 } }}
-            className="relative z-20 transition-shadow duration-300 w-48 sm:w-56 md:w-60 cursor-pointer"
+            className="relative z-20 transition-shadow duration-300 w-[clamp(115px,16vw,200px)] cursor-pointer"
           >
             <PolaroidFrame photo={photo1} alt="Memory 1" />
           </motion.div>
@@ -147,7 +147,7 @@ export default function LetterSection() {
             viewport={{ once: true }}
             transition={{ duration: 0.9, delay: 0.45, ease: easeSoft }}
             whileHover={{ scale: 1.03, rotate: 2, zIndex: 30, transition: { duration: 0.25 } }}
-            className="relative z-10 transition-shadow duration-300 w-48 sm:w-56 md:w-60 -mt-16 sm:-mt-20 ml-16 sm:ml-24 cursor-pointer"
+            className="relative z-10 transition-shadow duration-300 w-[clamp(115px,16vw,200px)] -mt-[clamp(2.5rem,5dvh,4rem)] ml-[clamp(2rem,4vw,4.5rem)] cursor-pointer"
           >
             <PolaroidFrame photo={photo2} alt="Memory 2" />
 
@@ -158,7 +158,7 @@ export default function LetterSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.7, delay: 0.75, ease: easePop }}
               whileHover={{ scale: 1.15, rotate: 8, transition: { duration: 0.2 } }}
-              className="absolute -bottom-3 -left-4 z-40 w-14 sm:w-16 pointer-events-auto select-none drop-shadow-xl cursor-pointer"
+              className="absolute -bottom-2 -left-3 z-40 w-10 sm:w-12 pointer-events-auto select-none drop-shadow-xl cursor-pointer"
               title="Wax Seal with Rose Stamp"
             >
               <img
@@ -176,7 +176,7 @@ export default function LetterSection() {
             viewport={{ once: true }}
             transition={{ duration: 0.65, delay: 0.65, ease: easePop }}
             whileHover={{ scale: 1.15, rotate: 10, transition: { duration: 0.2 } }}
-            className="absolute left-0 sm:left-2 top-[60%] -translate-y-1/2 z-30 w-16 sm:w-20 md:w-24 pointer-events-auto drop-shadow-xl select-none cursor-pointer"
+            className="absolute left-0 sm:left-2 top-[60%] -translate-y-1/2 z-30 w-12 sm:w-16 pointer-events-auto drop-shadow-xl select-none cursor-pointer"
             title="Red Embroidered Stars"
           >
             <img
@@ -188,16 +188,16 @@ export default function LetterSection() {
         </div>
 
         {/* ── RIGHT COLUMN: Stacked Paper Letter Sheets + Accents ── */}
-        <div className="relative flex-1 w-full max-w-3xl lg:max-w-4xl xl:max-w-5xl">
+        <div className="relative flex-1 w-full max-w-2xl lg:max-w-3xl xl:max-w-4xl flex items-center justify-center">
 
-          {/* ── STIKER KIRI ATAS: Karakter Pixel Membawa Buket Bunga ── */}
+          {/* ── STIKER KIRI ATAS: Karakter memegang buket bunga mawar merah ── */}
           <motion.div
             initial={{ opacity: 0, y: -50, scale: 0.8 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.85, delay: 0.5, ease: easeSoft }}
             whileHover={{ scale: 1.08, rotate: -3, transition: { duration: 0.2 } }}
-            className="absolute -top-14 sm:-top-20 -left-4 sm:-left-8 z-35 w-28 sm:w-36 md:w-44 pointer-events-auto select-none drop-shadow-2xl cursor-pointer"
+            className="absolute -top-8 sm:-top-14 -left-2 sm:-left-6 z-35 w-[clamp(4rem,7vw,7.5rem)] pointer-events-auto select-none drop-shadow-2xl cursor-pointer"
             title="Cute Character with Flower Bouquet"
           >
             <img
@@ -214,7 +214,7 @@ export default function LetterSection() {
             viewport={{ once: true }}
             transition={{ duration: 0.7, delay: 0.55, ease: easePop }}
             whileHover={{ scale: 1.1, transition: { duration: 0.2 } }}
-            className="absolute -top-6 sm:-top-9 left-1/2 -translate-x-1/2 z-35 w-28 sm:w-36 md:w-44 pointer-events-auto select-none drop-shadow-lg cursor-pointer"
+            className="absolute -top-4 sm:-top-7 left-1/2 -translate-x-1/2 z-35 w-[clamp(4.5rem,8vw,8rem)] pointer-events-auto select-none drop-shadow-lg cursor-pointer"
             title="Pixel Hearts"
           >
             <img
@@ -231,7 +231,7 @@ export default function LetterSection() {
             viewport={{ once: true }}
             transition={{ duration: 0.85, delay: 0.6, ease: easeSoft }}
             whileHover={{ scale: 1.08, rotate: 10, transition: { duration: 0.2 } }}
-            className="absolute -top-12 sm:-top-16 -right-4 sm:-right-8 z-35 w-26 sm:w-34 md:w-40 pointer-events-auto select-none drop-shadow-2xl cursor-pointer"
+            className="absolute -top-8 sm:-top-12 -right-2 sm:-right-6 z-35 w-[clamp(4rem,7vw,7rem)] pointer-events-auto select-none drop-shadow-2xl cursor-pointer"
             title="Disco Ball with Red Stars"
           >
             <img
@@ -241,9 +241,9 @@ export default function LetterSection() {
             />
           </motion.div>
 
-          {/* Layer 3: Deepest Background Paper Sheet (Dark Ivory / Burgundy Shadow) */}
+          {/* Layer 3: Deepest Background Paper Sheet */}
           <div
-            className="absolute -bottom-3 -right-2 sm:-right-4 left-3 top-4 rounded-[2px] pointer-events-none"
+            className="absolute -bottom-2 -right-1 sm:-right-3 left-2 top-3 rounded-[2px] pointer-events-none"
             style={{
               backgroundColor: "#EBDAC5",
               transform: "rotate(1.8deg)",
@@ -251,9 +251,9 @@ export default function LetterSection() {
             }}
           />
 
-          {/* Layer 2: Middle Paper Sheet (Warm Ivory) */}
+          {/* Layer 2: Middle Paper Sheet */}
           <div
-            className="absolute -bottom-1.5 -left-1 sm:-left-2 right-1 top-2 rounded-[2px] pointer-events-none"
+            className="absolute -bottom-1 -left-1 sm:-left-2 right-1 top-1.5 rounded-[2px] pointer-events-none"
             style={{
               backgroundColor: "#F7EEDF",
               transform: "rotate(-0.8deg)",
@@ -267,7 +267,7 @@ export default function LetterSection() {
             whileInView={{ opacity: 1, y: 0, rotate: -1.2, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.9, delay: 0.3, ease: easeSoft }}
-            className="relative z-20 rounded-[2px] px-4 sm:px-8 md:px-14 py-6 sm:py-8 md:py-12 transition-shadow duration-300 border border-[#E9A0AA]/25 w-full"
+            className="relative z-20 rounded-[2px] px-[clamp(1rem,3vw,3.5rem)] py-[clamp(1rem,2.5dvh,2.5rem)] transition-shadow duration-300 border border-[#E9A0AA]/25 w-full flex flex-col justify-center"
             style={{
               backgroundColor: "#FFF9F0", // Ivory Paper
               boxShadow:
@@ -280,7 +280,7 @@ export default function LetterSection() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.5, ease: easeSoft }}
-              className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl text-center tracking-normal mb-1.5 sm:mb-2 font-normal"
+              className="text-[clamp(1.75rem,5.2dvh,4.5rem)] text-center tracking-normal mb-[clamp(0.15rem,0.8dvh,0.5rem)] font-normal leading-tight"
               style={{
                 fontFamily: "'Alex Brush', 'Dancing Script', cursive",
                 color: "#521321", // Deep burgundy text
@@ -296,7 +296,7 @@ export default function LetterSection() {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.6, ease: easeSoft }}
-              className="text-center text-[11px] sm:text-sm md:text-base font-medium tracking-wide mb-3 sm:mb-6"
+              className="text-center text-[clamp(10px,1.4dvh,14px)] font-medium tracking-wide mb-[clamp(0.4rem,1.4dvh,1.25rem)]"
               style={{
                 fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
                 color: "#E9A0AA", // Pink accent
@@ -305,9 +305,9 @@ export default function LetterSection() {
               happy birthday,  sweet heart
             </motion.p>
 
-            {/* Isi Surat: Format Paragraf Melebar Tanpa Perlu Scroll */}
+            {/* Isi Surat: Format Paragraf Melebar dengan Scroll Halus di Layar Kecil */}
             <div
-              className="space-y-2.5 sm:space-y-3.5 text-center text-xs sm:text-sm md:text-[15px] leading-relaxed font-normal w-full max-w-3xl lg:max-w-4xl mx-auto"
+              className="space-y-[clamp(0.35rem,1.2dvh,0.85rem)] text-center text-[clamp(11px,1.55dvh,14px)] leading-relaxed font-normal w-full max-w-3xl lg:max-w-4xl mx-auto max-h-[clamp(180px,46dvh,420px)] overflow-y-auto pr-1 sm:pr-2 scrollbar-thin"
               style={{ color: "#521321" }}
             >
               <motion.p
@@ -354,7 +354,7 @@ export default function LetterSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.85, delay: 0.7, ease: easeSoft }}
               whileHover={{ scale: 1.08, rotate: 4, transition: { duration: 0.2 } }}
-              className="absolute -bottom-6 sm:-bottom-12 -right-3 sm:-right-8 z-30 w-16 sm:w-26 md:w-38 pointer-events-auto select-none drop-shadow-xl cursor-pointer"
+              className="absolute -bottom-4 sm:-bottom-8 -right-2 sm:-right-6 z-30 w-[clamp(3.5rem,8vw,7.5rem)] pointer-events-auto select-none drop-shadow-xl cursor-pointer"
               title="Watercolor Birthday Cake"
             >
               <img

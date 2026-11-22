@@ -17,7 +17,7 @@ export default function PhotoModal({ photo, isOpen, onClose }) {
         onClick={onClose}
       >
         <motion.div
-          className="relative max-w-2xl w-full rounded-3xl p-4 md:p-6 shadow-2xl overflow-hidden"
+          className="relative max-w-2xl w-full max-h-[90dvh] overflow-y-auto rounded-3xl p-4 md:p-6 shadow-2xl"
           style={{ background: "#FFF8F2", border: "1px solid rgba(214, 165, 109, 0.45)" }}
           initial={{ scale: 0.85, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}

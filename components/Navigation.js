@@ -49,13 +49,13 @@ export default function Navigation() {
       transition={{ duration: 0.6, ease: "easeOut" }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 flex items-center select-none ${
         scrolled
-          ? "h-[70px] bg-black/80 backdrop-blur-md border-b border-white/15 shadow-lg"
-          : "h-[70px] sm:h-[80px] bg-transparent border-b border-transparent"
+          ? "h-[clamp(56px,7.5dvh,70px)] bg-black/80 backdrop-blur-md border-b border-white/15 shadow-lg"
+          : "h-[clamp(56px,7.5dvh,72px)] bg-transparent border-b border-transparent"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-14 flex items-center justify-center relative w-full">
         {/* Desktop Links: Pure Text Centered */}
-        <nav className="hidden md:flex items-center justify-center gap-8 lg:gap-10 text-xs sm:text-sm tracking-widest uppercase font-medium">
+        <nav className="hidden md:flex items-center justify-center gap-[clamp(1.25rem,3vw,2.5rem)] text-[clamp(11px,1.4dvh,13px)] tracking-widest uppercase font-medium">
           {navLinks.map((item) => {
             const isActive = activeSection === item.id;
             return (
