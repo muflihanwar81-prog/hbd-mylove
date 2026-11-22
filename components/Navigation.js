@@ -54,22 +54,9 @@ export default function Navigation() {
           : "bg-transparent py-6"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-14 flex items-center justify-between">
-        {/* Brand: Pure Text Only */}
-        <div
-          onClick={() => scrollTo("home")}
-          className="cursor-pointer select-none"
-        >
-          <span
-            className="text-xl sm:text-2xl font-bold tracking-tight text-white hover:text-white/80 transition-colors"
-            style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
-          >
-            For You
-          </span>
-        </div>
-
-        {/* Desktop Links: Pure Text Only */}
-        <nav className="hidden md:flex items-center gap-7 lg:gap-9 text-xs sm:text-sm tracking-widest uppercase font-medium">
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-14 flex items-center justify-center relative">
+        {/* Desktop Links: Pure Text Centered */}
+        <nav className="hidden md:flex items-center justify-center gap-8 lg:gap-10 text-xs sm:text-sm tracking-widest uppercase font-medium">
           {navLinks.map((item) => {
             const isActive = activeSection === item.id;
             return (
@@ -88,8 +75,8 @@ export default function Navigation() {
           })}
         </nav>
 
-        {/* Mobile Hamburger: Text Toggle */}
-        <div className="md:hidden flex items-center">
+        {/* Mobile Hamburger Toggle */}
+        <div className="md:hidden flex items-center justify-end w-full">
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="p-1.5 text-white/90 hover:text-white cursor-pointer"
