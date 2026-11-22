@@ -2,19 +2,210 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, Heart, Play, Gift, ArrowRight, RotateCcw } from "lucide-react";
-import Confetti from "@/components/Confetti";
 
-/* ── Smooth Easing ── */
-const easeSoft = [0.22, 1, 0.36, 1];
-const easePop = [0.34, 1.56, 0.64, 1];
+/* ── 8-BIT RETRO PIXEL ART SPRITES (Pure crisp SVG) ── */
+
+// 1. Pixel Heart (Classic 11x10 grid)
+function PixelHeart({ color = "#E9A0AA", outline = "#1A0307", size = 28, className = "" }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 11 10"
+      className={className}
+      style={{ imageRendering: "pixelated", shapeRendering: "crispEdges" }}
+    >
+      {/* Outline */}
+      <rect x="2" y="0" width="2" height="1" fill={outline} />
+      <rect x="7" y="0" width="2" height="1" fill={outline} />
+      <rect x="1" y="1" width="1" height="1" fill={outline} />
+      <rect x="4" y="1" width="1" height="1" fill={outline} />
+      <rect x="6" y="1" width="1" height="1" fill={outline} />
+      <rect x="9" y="1" width="1" height="1" fill={outline} />
+      <rect x="0" y="2" width="1" height="3" fill={outline} />
+      <rect x="10" y="2" width="1" height="3" fill={outline} />
+      <rect x="1" y="5" width="1" height="1" fill={outline} />
+      <rect x="9" y="5" width="1" height="1" fill={outline} />
+      <rect x="2" y="6" width="1" height="1" fill={outline} />
+      <rect x="8" y="6" width="1" height="1" fill={outline} />
+      <rect x="3" y="7" width="1" height="1" fill={outline} />
+      <rect x="7" y="7" width="1" height="1" fill={outline} />
+      <rect x="4" y="8" width="1" height="1" fill={outline} />
+      <rect x="6" y="8" width="1" height="1" fill={outline} />
+      <rect x="5" y="9" width="1" height="1" fill={outline} />
+
+      {/* Main Fill */}
+      <rect x="2" y="1" width="2" height="1" fill={color} />
+      <rect x="7" y="1" width="2" height="1" fill={color} />
+      <rect x="1" y="2" width="9" height="3" fill={color} />
+      <rect x="2" y="5" width="7" height="1" fill={color} />
+      <rect x="3" y="6" width="5" height="1" fill={color} />
+      <rect x="4" y="7" width="3" height="1" fill={color} />
+      <rect x="5" y="8" width="1" height="1" fill={color} />
+
+      {/* Highlight Glint (Top-left white sparkle) */}
+      <rect x="2" y="2" width="1" height="1" fill="#FFFFFF" />
+      <rect x="3" y="2" width="1" height="1" fill="#FFFFFF" />
+      <rect x="2" y="3" width="1" height="1" fill="#FFFFFF" />
+    </svg>
+  );
+}
+
+// 2. Pixel Bucket / Basket (Classic 16x14 grid)
+function PixelBucket({ size = 72 }) {
+  return (
+    <svg
+      width={size}
+      height={(size * 14) / 16}
+      viewBox="0 0 16 14"
+      style={{ imageRendering: "pixelated", shapeRendering: "crispEdges" }}
+    >
+      {/* Handle */}
+      <rect x="4" y="0" width="8" height="1" fill="#1A0307" />
+      <rect x="3" y="1" width="1" height="3" fill="#1A0307" />
+      <rect x="12" y="1" width="1" height="3" fill="#1A0307" />
+      <rect x="4" y="1" width="8" height="1" fill="#E9A0AA" />
+
+      {/* Top Rim */}
+      <rect x="1" y="4" width="14" height="2" fill="#1A0307" />
+      <rect x="2" y="4" width="12" height="1" fill="#8B2635" />
+      <rect x="2" y="5" width="12" height="1" fill="#641526" />
+
+      {/* Bucket Body Outline */}
+      <rect x="2" y="6" width="1" height="6" fill="#1A0307" />
+      <rect x="13" y="6" width="1" height="6" fill="#1A0307" />
+      <rect x="3" y="12" width="10" height="2" fill="#1A0307" />
+
+      {/* Bucket Body Fill */}
+      <rect x="3" y="6" width="10" height="6" fill="#8B2635" />
+      <rect x="4" y="12" width="8" height="1" fill="#641526" />
+
+      {/* Wooden / Texture Planks */}
+      <rect x="3" y="6" width="2" height="6" fill="#A83250" />
+      <rect x="6" y="6" width="1" height="6" fill="#641526" />
+      <rect x="10" y="6" width="1" height="6" fill="#641526" />
+
+      {/* Center Heart Badge on Bucket */}
+      <rect x="7" y="8" width="1" height="1" fill="#FFF9F0" />
+      <rect x="9" y="8" width="1" height="1" fill="#FFF9F0" />
+      <rect x="6" y="9" width="5" height="1" fill="#FFF9F0" />
+      <rect x="7" y="10" width="3" height="1" fill="#FFF9F0" />
+      <rect x="8" y="11" width="1" height="1" fill="#FFF9F0" />
+    </svg>
+  );
+}
+
+// 3. Pixel Star (8-bit blinking star)
+function PixelStar({ size = 22, color = "#FFF9F0" }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 9 9"
+      style={{ imageRendering: "pixelated", shapeRendering: "crispEdges" }}
+    >
+      <rect x="4" y="0" width="1" height="9" fill={color} />
+      <rect x="0" y="4" width="9" height="1" fill={color} />
+      <rect x="3" y="2" width="3" height="5" fill={color} />
+      <rect x="2" y="3" width="5" height="3" fill={color} />
+      <rect x="4" y="4" width="1" height="1" fill="#FFFFFF" />
+    </svg>
+  );
+}
+
+// 4. Pixel Flower (8-bit romantic rose)
+function PixelFlower({ size = 36 }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 12 12"
+      style={{ imageRendering: "pixelated", shapeRendering: "crispEdges" }}
+    >
+      {/* Stem & Leaves */}
+      <rect x="5" y="7" width="2" height="5" fill="#2E7D32" />
+      <rect x="3" y="8" width="2" height="2" fill="#4CAF50" />
+      <rect x="7" y="9" width="2" height="2" fill="#4CAF50" />
+      {/* Petals */}
+      <rect x="3" y="2" width="6" height="5" fill="#1A0307" />
+      <rect x="4" y="1" width="4" height="6" fill="#8B2635" />
+      <rect x="3" y="3" width="6" height="3" fill="#E9A0AA" />
+      <rect x="5" y="3" width="2" height="2" fill="#FFF9F0" />
+    </svg>
+  );
+}
+
+// 5. Pixel Gift Box (8-bit gift)
+function PixelGiftBox({ size = 36 }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 12 12"
+      style={{ imageRendering: "pixelated", shapeRendering: "crispEdges" }}
+    >
+      <rect x="1" y="4" width="10" height="7" fill="#1A0307" />
+      <rect x="2" y="5" width="8" height="6" fill="#8B2635" />
+      <rect x="0" y="3" width="12" height="2" fill="#1A0307" />
+      <rect x="1" y="3" width="10" height="1" fill="#E9A0AA" />
+      {/* Ribbon */}
+      <rect x="5" y="3" width="2" height="8" fill="#FFF9F0" />
+      <rect x="3" y="1" width="6" height="2" fill="#FFF9F0" />
+      <rect x="5" y="1" width="2" height="1" fill="#1A0307" />
+    </svg>
+  );
+}
+
+// 6. Pixel Envelope (8-bit wine envelope with heart seal)
+function PixelEnvelope({ size = 180, isOpen = false }) {
+  return (
+    <svg
+      width={size}
+      height={(size * 12) / 16}
+      viewBox="0 0 16 12"
+      style={{ imageRendering: "pixelated", shapeRendering: "crispEdges" }}
+      className="drop-shadow-2xl"
+    >
+      {/* Envelope Outer Border */}
+      <rect x="0" y="0" width="16" height="12" fill="#1A0307" />
+      <rect x="1" y="1" width="14" height="10" fill="#641526" />
+
+      {/* Interior / Flap */}
+      {isOpen ? (
+        <>
+          {/* Open Flap facing up */}
+          <rect x="2" y="1" width="12" height="3" fill="#8B2635" />
+          <rect x="3" y="0" width="10" height="1" fill="#1A0307" />
+          {/* White Letter peeking inside */}
+          <rect x="3" y="2" width="10" height="6" fill="#FFF9F0" />
+          <rect x="4" y="3" width="8" height="1" fill="#521321" />
+          <rect x="4" y="5" width="6" height="1" fill="#521321" />
+        </>
+      ) : (
+        <>
+          {/* Closed Flap V-shape */}
+          <rect x="2" y="1" width="12" height="1" fill="#8B2635" />
+          <rect x="3" y="2" width="10" height="1" fill="#8B2635" />
+          <rect x="4" y="3" width="8" height="1" fill="#8B2635" />
+          <rect x="5" y="4" width="6" height="1" fill="#8B2635" />
+          <rect x="6" y="5" width="4" height="1" fill="#8B2635" />
+          <rect x="7" y="6" width="2" height="1" fill="#8B2635" />
+          {/* Pixel Heart Wax Seal */}
+          <rect x="6" y="5" width="4" height="3" fill="#E9A0AA" />
+          <rect x="7" y="7" width="2" height="1" fill="#E9A0AA" />
+          <rect x="7" y="5" width="2" height="1" fill="#FFF9F0" />
+        </>
+      )}
+    </svg>
+  );
+}
 
 export default function CatchMyHeartsSection() {
   // Game states: "intro" | "playing" | "victory" | "surprise"
   const [gameState, setGameState] = useState("intro");
   const [score, setScore] = useState(0);
 
-  // Game canvas & bucket ref
+  // Bucket & game loop refs
   const gameAreaRef = useRef(null);
   const [bucketX, setBucketX] = useState(50); // percentage 0 - 100
   const bucketXRef = useRef(50);
@@ -24,17 +215,28 @@ export default function CatchMyHeartsSection() {
   const [isCatching, setIsCatching] = useState(false);
   const [catchBurst, setCatchBurst] = useState(null);
 
-  // Envelope state for Part 4
-  const [isEnvelopeOpen, setIsEnvelopeOpen] = useState(false);
+  // Typewriter effect state for letter
+  const [typedText, setTypedText] = useState("");
+  const fullLetterText = `Dear you,
 
-  // Helper to update bucket position safely without restarting game loop
+If you're reading this, it means you've found your little surprise.
+
+I just want you to know that you are someone truly special to me. I hope this little game made you smile, even just a little.
+
+You deserve happiness, love, and all the beautiful things in this world.
+
+Thank you for being you.
+
+With love, always. ♡`;
+
+  // Update bucket helper
   const updateBucketX = (val) => {
     const clamped = Math.max(8, Math.min(92, val));
     bucketXRef.current = clamped;
     setBucketX(clamped);
   };
 
-  // ── Keyboard Controls for Desktop ──
+  // ── Keyboard Controls (Arrow Left/Right, A/D) ──
   useEffect(() => {
     if (gameState !== "playing") return;
 
@@ -50,7 +252,7 @@ export default function CatchMyHeartsSection() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [gameState]);
 
-  // ── Pointer / Drag Controls for Touch & Mouse ──
+  // ── Mouse / Touch Drag Controls ──
   const handlePointerMove = (e) => {
     if (gameState !== "playing" || !gameAreaRef.current) return;
     const rect = gameAreaRef.current.getBoundingClientRect();
@@ -61,11 +263,10 @@ export default function CatchMyHeartsSection() {
     }
   };
 
-  // ── Game Loop: Spawning & Falling Hearts ──
+  // ── 8-bit Game Loop: Spawning & Falling Hearts ──
   useEffect(() => {
     if (gameState !== "playing") return;
 
-    // Reset game counters
     heartsRef.current = [];
     scoreRef.current = 0;
     setScore(0);
@@ -77,28 +278,27 @@ export default function CatchMyHeartsSection() {
     const gameLoop = () => {
       const now = Date.now();
 
-      // Spawn a new heart every ~800ms
-      if (now - lastSpawnTime > 800) {
+      // Spawn a new pixel heart every ~850ms
+      if (now - lastSpawnTime > 850) {
         lastSpawnTime = now;
         const newHeart = {
           id: Math.random().toString(36).substr(2, 9),
-          x: Math.random() * 80 + 10, // 10% to 90%
+          x: Math.random() * 80 + 10,
           y: -5,
-          speed: Math.random() * 0.4 + 0.85, // gentle falling speed
-          size: Math.random() * 8 + 26, // 26px - 34px
-          color: Math.random() > 0.4 ? "#E9A0AA" : "#FFFFFF",
+          speed: Math.random() * 0.35 + 0.8,
+          color: Math.random() > 0.4 ? "#E9A0AA" : "#FF4D6D",
         };
         heartsRef.current.push(newHeart);
       }
 
-      // Update positions & check collisions against current bucket position
+      // Update positions & collision check
       const currentBucketX = bucketXRef.current;
       const nextHearts = [];
 
       for (let h of heartsRef.current) {
         h.y += h.speed;
 
-        // Collision check with bucket (bucket rim is at y ~76% - 90%)
+        // Bucket collision boundary (bucket top is at y ~76% - 90%)
         const isNearBottom = h.y >= 75 && h.y <= 90;
         const isHorizontallyAligned = Math.abs(h.x - currentBucketX) <= 12;
 
@@ -106,8 +306,8 @@ export default function CatchMyHeartsSection() {
           // Heart caught!
           setIsCatching(true);
           setCatchBurst({ x: currentBucketX, y: h.y });
-          setTimeout(() => setIsCatching(false), 200);
-          setTimeout(() => setCatchBurst(null), 400);
+          setTimeout(() => setIsCatching(false), 180);
+          setTimeout(() => setCatchBurst(null), 350);
 
           scoreRef.current += 1;
           const currentScore = scoreRef.current;
@@ -116,11 +316,9 @@ export default function CatchMyHeartsSection() {
           if (currentScore >= 10) {
             setTimeout(() => setGameState("victory"), 350);
           }
-          // Do not re-add caught heart
           continue;
         }
 
-        // If heart fell past bottom without being caught, it continues offscreen safely
         if (h.y <= 105) {
           nextHearts.push(h);
         }
@@ -137,13 +335,28 @@ export default function CatchMyHeartsSection() {
     return () => {
       cancelAnimationFrame(animationFrameId);
     };
-  }, [gameState]); // ONLY depends on gameState, NEVER restarts when moving bucket!
+  }, [gameState]);
 
-  // Restart game
+  // ── Typewriter effect for Part 5 Surprise ──
+  useEffect(() => {
+    if (gameState === "surprise") {
+      setTypedText("");
+      let i = 0;
+      const timer = setInterval(() => {
+        i++;
+        setTypedText(fullLetterText.slice(0, i));
+        if (i >= fullLetterText.length) {
+          clearInterval(timer);
+        }
+      }, 28);
+      return () => clearInterval(timer);
+    }
+  }, [gameState]);
+
+  // Restart handler
   const handleRestart = () => {
     setScore(0);
     setHearts([]);
-    setIsEnvelopeOpen(false);
     setGameState("intro");
   };
 
@@ -152,108 +365,107 @@ export default function CatchMyHeartsSection() {
       id="game"
       className="relative min-h-screen w-full flex items-center justify-center px-4 py-16 sm:py-20 md:py-24 overflow-hidden select-none"
       style={{
-        backgroundColor: "#4A0714",
-        backgroundImage: "radial-gradient(circle at 50% 40%, #641526 0%, #4A0714 65%, #350710 100%)",
+        backgroundColor: "#350710", // Dark Burgundy 8-bit Background
+        backgroundImage: `
+          radial-gradient(#4A0714 15%, transparent 16%),
+          radial-gradient(#2A050D 15%, transparent 16%)
+        `,
+        backgroundSize: "24px 24px",
       }}
     >
-      {/* ── Background Subtle Scrapbook Ambience ── */}
-      <Confetti active={gameState === "victory"} />
+      {/* ── Twinkling Background 8-Bit Pixel Stars ── */}
       <div className="absolute inset-0 pointer-events-none z-0">
-        <div className="absolute top-10 left-10 w-96 h-96 bg-[#8B2635]/25 rounded-full blur-3xl" />
-        <div className="absolute bottom-10 right-10 w-96 h-96 bg-[#350710]/50 rounded-full blur-3xl" />
+        <div className="absolute top-12 left-10 animate-pulse">
+          <PixelStar size={18} color="#E9A0AA" />
+        </div>
+        <div className="absolute top-28 right-16 animate-pulse" style={{ animationDelay: "0.5s" }}>
+          <PixelStar size={24} color="#FFF9F0" />
+        </div>
+        <div className="absolute bottom-20 left-16 animate-pulse" style={{ animationDelay: "1s" }}>
+          <PixelStar size={20} color="#FF6B8B" />
+        </div>
+        <div className="absolute bottom-28 right-24 animate-pulse" style={{ animationDelay: "1.5s" }}>
+          <PixelStar size={16} color="#E9A0AA" />
+        </div>
+        <div className="absolute top-1/2 left-8 animate-pulse" style={{ animationDelay: "0.8s" }}>
+          <PixelStar size={14} color="#FFF9F0" />
+        </div>
       </div>
 
       {/* ══════════════════════════════════════════════════════════════
-          BAGIAN 1 — GAME INTRO
+          2. HALAMAN AWAL GAME (Retro 8-Bit Intro)
       ══════════════════════════════════════════════════════════════ */}
       <AnimatePresence mode="wait">
         {gameState === "intro" && (
           <motion.div
             key="intro-screen"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.8, ease: easeSoft }}
-            className="relative z-20 w-full max-w-xl mx-auto text-center"
+            transition={{ duration: 0.5 }}
+            className="relative z-20 w-full max-w-lg mx-auto text-center"
           >
-            {/* Scrapbook Decorative Stickers Around Intro */}
-            {/* 1. Wax Seal Sticker (Top Left) */}
+            {/* Pixel Art Decorative Sprites Floating Around Intro Card */}
+            {/* Floating Pixel Hearts */}
             <motion.div
-              initial={{ scale: 0, rotate: -20 }}
-              animate={{ scale: 1, rotate: 0 }}
-              transition={{ delay: 0.3, duration: 0.6, ease: easePop }}
-              whileHover={{ scale: 1.15, rotate: 8 }}
-              className="absolute -top-10 -left-6 sm:-left-10 z-30 w-16 sm:w-20 pointer-events-auto select-none drop-shadow-xl cursor-pointer"
+              animate={{ y: [-4, 4, -4] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute -top-10 -left-6 z-30 pointer-events-none"
             >
-              <img
-                src="/images/letter-stickers/wax-seal.png"
-                alt="Wax Seal"
-                className="w-full h-auto"
-              />
+              <PixelHeart size={36} color="#FF4D6D" />
             </motion.div>
 
-            {/* 2. Red Embroidered Stars (Top Right) */}
+            {/* Pixel Flower */}
             <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.45, duration: 0.6, ease: easePop }}
-              whileHover={{ scale: 1.15, rotate: -10 }}
-              className="absolute -top-12 -right-6 sm:-right-10 z-30 w-18 sm:w-22 pointer-events-auto select-none drop-shadow-xl cursor-pointer"
+              animate={{ rotate: [-6, 6, -6] }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute -top-10 -right-6 z-30 pointer-events-none"
             >
-              <img
-                src="/images/letter-stickers/red-stars.png"
-                alt="Red Stars"
-                className="w-full h-auto"
-              />
+              <PixelFlower size={40} />
             </motion.div>
 
-            {/* 3. Pixel Hearts (Bottom Center / Floating) */}
+            {/* Pixel Envelope */}
             <motion.div
-              initial={{ scale: 0, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              transition={{ delay: 0.55, duration: 0.6, ease: easePop }}
-              whileHover={{ scale: 1.1 }}
-              className="absolute -bottom-8 left-1/2 -translate-x-1/2 z-30 w-32 sm:w-38 pointer-events-auto select-none drop-shadow-lg cursor-pointer"
+              animate={{ y: [4, -4, 4] }}
+              transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute -bottom-8 -left-6 z-30 pointer-events-none"
             >
-              <img
-                src="/images/letter-stickers/pixel-hearts.png"
-                alt="Hearts"
-                className="w-full h-auto"
-              />
+              <PixelEnvelope size={56} isOpen={false} />
             </motion.div>
 
-            {/* Layer 2: Decorative Shadow Paper */}
+            {/* Pixel Gift Box */}
+            <motion.div
+              animate={{ rotate: [5, -5, 5] }}
+              transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute -bottom-8 -right-6 z-30 pointer-events-none"
+            >
+              <PixelGiftBox size={40} />
+            </motion.div>
+
+            {/* Retro 8-Bit Ivory Card Container */}
             <div
-              className="absolute -bottom-2 -right-2 left-2 top-2 rounded-2xl pointer-events-none"
-              style={{
-                backgroundColor: "#EBDAC5",
-                transform: "rotate(1.2deg)",
-                boxShadow: "0 15px 35px rgba(53, 7, 16, 0.45)",
-              }}
-            />
-
-            {/* Layer 1: Main Ivory Scrapbook Card */}
-            <div
-              className="relative z-20 rounded-2xl px-6 sm:px-12 py-12 sm:py-16 border border-[#E9A0AA]/30 shadow-2xl"
+              className="relative z-20 rounded-none px-6 sm:px-10 py-10 sm:py-14 text-center border-4 border-[#1A0307]"
               style={{
                 backgroundColor: "#FFF9F0",
-                boxShadow: "0 25px 60px rgba(53, 7, 16, 0.6), 0 0 0 1px rgba(233, 160, 170, 0.2)",
+                boxShadow: "8px 8px 0px #1A0307, 0 20px 40px rgba(0,0,0,0.5)",
               }}
             >
               {/* Category Badge */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#641526]/10 border border-[#641526]/20 mb-4">
-                <Sparkles size={13} className="text-[#8B2635]" />
-                <span className="text-[11px] sm:text-xs font-mono font-bold tracking-widest text-[#8B2635] uppercase">
-                  MINI SCRAPBOOK GAME
+              <div className="inline-block px-3 py-1 bg-[#641526] text-[#FFF9F0] border-2 border-[#1A0307] mb-6">
+                <span
+                  className="text-[10px] tracking-widest uppercase font-bold"
+                  style={{ fontFamily: "'Press Start 2P', monospace" }}
+                >
+                  ★ 8-BIT RETRO GAME ★
                 </span>
               </div>
 
               {/* Title: A Little Game for You ♡ */}
               <h2
-                className="text-4xl sm:text-5xl md:text-6xl text-[#521321] font-normal mb-4 tracking-normal"
+                className="text-lg sm:text-2xl text-[#521321] leading-relaxed mb-6"
                 style={{
-                  fontFamily: "'Alex Brush', 'Dancing Script', cursive",
-                  textShadow: "0 2px 6px rgba(82, 19, 33, 0.15)",
+                  fontFamily: "'Press Start 2P', monospace",
+                  textShadow: "2px 2px 0px #E9A0AA",
                 }}
               >
                 A Little Game for You ♡
@@ -261,40 +473,34 @@ export default function CatchMyHeartsSection() {
 
               {/* Description */}
               <p
-                className="text-sm sm:text-base md:text-lg leading-relaxed max-w-md mx-auto mb-8 font-normal"
+                className="text-xs sm:text-sm leading-relaxed mb-8 max-w-sm mx-auto text-[#641526]"
                 style={{
-                  fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
-                  color: "#641526",
+                  fontFamily: "'Press Start 2P', monospace",
+                  lineHeight: "1.8",
                 }}
               >
                 Before you leave, I have one little game for you. Don&apos;t worry, there&apos;s a special surprise waiting at the end.
               </p>
 
-              {/* Button: Let's Play! ♡ */}
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+              {/* Button: LET'S PLAY! ♡ */}
+              <button
                 onClick={() => {
                   setScore(0);
                   setHearts([]);
                   setGameState("playing");
                 }}
-                className="inline-flex items-center justify-center gap-2.5 px-8 sm:px-10 py-3.5 sm:py-4 rounded-full font-bold text-xs sm:text-sm tracking-wider uppercase transition-all shadow-xl cursor-pointer text-[#FFF9F0]"
-                style={{
-                  backgroundColor: "#8B2635",
-                  backgroundImage: "linear-gradient(135deg, #8B2635 0%, #641526 100%)",
-                  boxShadow: "0 8px 25px rgba(100, 21, 38, 0.45)",
-                }}
+                className="w-full sm:w-auto px-8 py-4 bg-[#8B2635] hover:bg-[#A83250] text-[#FFF9F0] border-4 border-[#1A0307] font-bold text-xs sm:text-sm uppercase tracking-wider transition-all cursor-pointer shadow-[4px_4px_0px_#1A0307] active:translate-x-1 active:translate-y-1 active:shadow-none inline-flex items-center justify-center gap-3"
+                style={{ fontFamily: "'Press Start 2P', monospace" }}
               >
-                <Heart size={16} className="fill-[#FFF9F0]" />
-                <span>Let&apos;s Play! ♡</span>
-              </motion.button>
+                <PixelHeart size={16} color="#FFF9F0" outline="#1A0307" />
+                <span>LET&apos;S PLAY! ♡</span>
+              </button>
             </div>
           </motion.div>
         )}
 
         {/* ══════════════════════════════════════════════════════════════
-            BAGIAN 2 — THE GAME (Catch My Hearts)
+            3. GAMEPLAY – CATCH MY HEARTS (8-Bit Retro)
         ══════════════════════════════════════════════════════════════ */}
         {gameState === "playing" && (
           <motion.div
@@ -302,200 +508,192 @@ export default function CatchMyHeartsSection() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.6, ease: easeSoft }}
-            className="relative z-20 w-full max-w-xl mx-auto flex flex-col items-center"
+            transition={{ duration: 0.4 }}
+            className="relative z-20 w-full max-w-lg mx-auto flex flex-col items-center"
           >
-            {/* Game Card Header & Score Progress */}
-            <div className="w-full flex items-center justify-between px-6 py-3 mb-3 bg-[#FFF9F0] rounded-xl border border-[#E9A0AA]/30 shadow-md">
+            {/* Top Score HUD */}
+            <div
+              className="w-full flex items-center justify-between px-5 py-3 mb-3 bg-[#FFF9F0] border-4 border-[#1A0307]"
+              style={{
+                boxShadow: "4px 4px 0px #1A0307",
+                fontFamily: "'Press Start 2P', monospace",
+              }}
+            >
               <div className="flex items-center gap-2">
-                <Heart size={18} className="fill-[#8B2635] text-[#8B2635]" />
-                <span className="font-bold text-xs sm:text-sm text-[#521321] uppercase tracking-wider">
-                  Hearts Collected
+                <PixelHeart size={16} color="#FF4D6D" outline="#1A0307" />
+                <span className="text-[10px] sm:text-xs text-[#521321] font-bold">
+                  HEARTS
                 </span>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="font-mono font-bold text-base sm:text-lg text-[#8B2635]">
-                  {score} / 10
-                </span>
+              <div className="text-[11px] sm:text-sm text-[#8B2635] font-bold">
+                {score}/10 HEARTS
               </div>
             </div>
 
-            {/* Progress Bar */}
-            <div className="w-full h-2.5 bg-[#350710]/40 rounded-full mb-3 overflow-hidden border border-[#E9A0AA]/20">
-              <motion.div
-                className="h-full bg-gradient-to-r from-[#E9A0AA] to-[#8B2635]"
-                initial={{ width: "0%" }}
-                animate={{ width: `${(score / 10) * 100}%` }}
-                transition={{ duration: 0.3 }}
-              />
+            {/* Stepped Pixel Progress Bar */}
+            <div className="w-full h-4 bg-[#1A0307] border-2 border-[#1A0307] mb-3 flex p-0.5 gap-1">
+              {Array.from({ length: 10 }).map((_, idx) => (
+                <div
+                  key={idx}
+                  className={`flex-1 h-full transition-all duration-300 ${
+                    idx < score ? "bg-[#FF4D6D]" : "bg-[#4A0714]"
+                  }`}
+                />
+              ))}
             </div>
 
-            {/* Interactive Game Canvas / Area */}
+            {/* Retro 8-Bit Canvas Screen */}
             <div
               ref={gameAreaRef}
               onMouseMove={handlePointerMove}
               onTouchMove={handlePointerMove}
-              className="relative w-full h-[400px] sm:h-[450px] rounded-2xl overflow-hidden border border-[#E9A0AA]/30 shadow-2xl cursor-ew-resize select-none"
+              className="relative w-full h-[380px] sm:h-[440px] border-4 border-[#1A0307] overflow-hidden cursor-ew-resize select-none"
               style={{
                 backgroundColor: "#2A050D",
-                backgroundImage: "radial-gradient(circle at 50% 50%, #4A0714 0%, #2A050D 100%)",
+                boxShadow: "8px 8px 0px #1A0307, inset 0 0 40px rgba(0,0,0,0.8)",
+                backgroundImage: `
+                  linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                  linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)
+                `,
+                backgroundSize: "20px 20px",
               }}
             >
-              {/* Instructions banner on top */}
+              {/* Instructions banner at top */}
               <div className="absolute top-3 inset-x-0 text-center pointer-events-none">
-                <p className="text-[11px] sm:text-xs text-white/60 tracking-wider font-mono uppercase">
-                  ← Geser ember / tombol panah untuk menangkap hati →
+                <p
+                  className="text-[9px] text-[#E9A0AA] tracking-wider uppercase"
+                  style={{ fontFamily: "'Press Start 2P', monospace" }}
+                >
+                  ← MOVE BUCKET TO CATCH →
                 </p>
               </div>
 
-              {/* Falling Hearts */}
+              {/* Falling Pixel Hearts */}
               {hearts.map((h) => (
                 <div
                   key={h.id}
-                  className="absolute pointer-events-none transition-transform"
+                  className="absolute pointer-events-none"
                   style={{
                     left: `${h.x}%`,
                     top: `${h.y}%`,
                     transform: "translate(-50%, -50%)",
                   }}
                 >
-                  <Heart
-                    size={h.size}
-                    className="drop-shadow-[0_0_8px_rgba(233,160,170,0.8)] animate-pulse"
-                    style={{
-                      fill: h.color,
-                      color: h.color,
-                    }}
-                  />
+                  <PixelHeart size={28} color={h.color} outline="#1A0307" />
                 </div>
               ))}
 
-              {/* Catch Burst Floating Feedback */}
+              {/* Catch "+1" Pixel Feedback */}
               {catchBurst && (
                 <motion.div
                   initial={{ opacity: 1, y: 0, scale: 0.8 }}
-                  animate={{ opacity: 0, y: -30, scale: 1.3 }}
-                  transition={{ duration: 0.4 }}
-                  className="absolute pointer-events-none -translate-x-1/2 font-bold text-sm text-[#FFF9F0] drop-shadow-[0_0_8px_rgba(233,160,170,0.9)]"
+                  animate={{ opacity: 0, y: -35, scale: 1.2 }}
+                  transition={{ duration: 0.35 }}
+                  className="absolute pointer-events-none -translate-x-1/2 text-xs font-bold text-[#FFF9F0] drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]"
                   style={{
                     left: `${catchBurst.x}%`,
                     top: `${catchBurst.y}%`,
+                    fontFamily: "'Press Start 2P', monospace",
                   }}
                 >
                   +1 ♡
                 </motion.div>
               )}
 
-              {/* Player Bucket / Basket */}
-              <motion.div
-                animate={{
-                  scale: isCatching ? 1.18 : 1,
-                  y: isCatching ? -8 : 0,
-                }}
-                transition={{ duration: 0.15 }}
-                className="absolute bottom-5 -translate-x-1/2 pointer-events-none flex flex-col items-center"
+              {/* 8-Bit Pixel Bucket */}
+              <div
+                className="absolute bottom-4 -translate-x-1/2 pointer-events-none transition-transform"
                 style={{
                   left: `${bucketX}%`,
+                  transform: `translateX(-50%) ${isCatching ? "scale(1.15)" : "scale(1)"}`,
                 }}
               >
-                {/* Wicker / Romantic Heart Basket Graphic */}
-                <div className="relative w-16 sm:w-20 h-12 sm:h-14 bg-gradient-to-b from-[#8B2635] to-[#4A0714] rounded-b-2xl border-2 border-[#E9A0AA] shadow-2xl flex items-center justify-center">
-                  <div className="absolute -top-3 w-10 sm:w-12 h-6 border-2 border-[#E9A0AA] rounded-t-full pointer-events-none" />
-                  <Heart size={18} className="fill-[#FFF9F0] text-[#FFF9F0]" />
-                </div>
-              </motion.div>
+                <PixelBucket size={68} />
+              </div>
             </div>
 
-            {/* Mobile Controls Helpers */}
-            <div className="md:hidden flex items-center justify-between w-full mt-3 px-2 gap-3">
+            {/* Mobile / Tablet Touch Button Helpers */}
+            <div className="md:hidden flex items-center justify-between w-full mt-3 px-1 gap-3">
               <button
                 onClick={() => updateBucketX(bucketXRef.current - 14)}
-                className="flex-1 py-3 bg-[#FFF9F0] rounded-xl text-[#521321] font-bold text-xs shadow-md active:bg-[#E9A0AA]/40 uppercase tracking-wider"
+                className="flex-1 py-3.5 bg-[#FFF9F0] border-4 border-[#1A0307] text-[#521321] font-bold text-xs active:bg-[#E9A0AA] uppercase tracking-wider shadow-[3px_3px_0px_#1A0307] active:translate-x-0.5 active:translate-y-0.5"
+                style={{ fontFamily: "'Press Start 2P', monospace" }}
               >
-                ← Kiri
+                ◀ LEFT
               </button>
               <button
                 onClick={() => updateBucketX(bucketXRef.current + 14)}
-                className="flex-1 py-3 bg-[#FFF9F0] rounded-xl text-[#521321] font-bold text-xs shadow-md active:bg-[#E9A0AA]/40 uppercase tracking-wider"
+                className="flex-1 py-3.5 bg-[#FFF9F0] border-4 border-[#1A0307] text-[#521321] font-bold text-xs active:bg-[#E9A0AA] uppercase tracking-wider shadow-[3px_3px_0px_#1A0307] active:translate-x-0.5 active:translate-y-0.5"
+                style={{ fontFamily: "'Press Start 2P', monospace" }}
               >
-                Kanan →
+                RIGHT ▶
               </button>
             </div>
           </motion.div>
         )}
 
         {/* ══════════════════════════════════════════════════════════════
-            BAGIAN 3 — VICTORY SCREEN
+            4. HALAMAN KEMENANGAN (Victory Screen)
         ══════════════════════════════════════════════════════════════ */}
         {gameState === "victory" && (
           <motion.div
             key="victory-screen"
-            initial={{ opacity: 0, scale: 0.85 }}
+            initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
-            transition={{ duration: 0.8, ease: easePop }}
-            className="relative z-20 w-full max-w-lg mx-auto text-center"
+            transition={{ duration: 0.5 }}
+            className="relative z-20 w-full max-w-md mx-auto text-center"
           >
-            {/* Scrapbook Victory Card */}
+            {/* Victory Pixel Card */}
             <div
-              className="relative z-20 rounded-2xl px-6 sm:px-12 py-12 sm:py-16 border border-[#E9A0AA]/40 shadow-2xl"
+              className="relative z-20 rounded-none px-6 sm:px-10 py-10 sm:py-14 text-center border-4 border-[#1A0307]"
               style={{
                 backgroundColor: "#FFF9F0",
-                boxShadow: "0 25px 60px rgba(53, 7, 16, 0.65)",
+                boxShadow: "8px 8px 0px #1A0307, 0 20px 40px rgba(0,0,0,0.6)",
               }}
             >
-              {/* Victory Heart Icon */}
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: [0, 1.25, 1] }}
-                transition={{ duration: 0.6, ease: easePop }}
-                className="w-20 h-20 mx-auto rounded-full bg-[#8B2635]/15 border border-[#8B2635]/30 flex items-center justify-center text-[#8B2635] mb-5"
-              >
-                <Heart size={40} className="fill-[#8B2635]" />
-              </motion.div>
+              {/* Victory Big Pixel Heart Icon */}
+              <div className="flex justify-center mb-6">
+                <PixelHeart size={64} color="#FF4D6D" outline="#1A0307" className="animate-bounce" />
+              </div>
 
-              {/* Victory Headlines */}
+              {/* Title 1: YAY! YOU DID IT! */}
               <h2
-                className="text-4xl sm:text-5xl text-[#521321] font-normal mb-2 tracking-normal"
+                className="text-base sm:text-xl text-[#521321] mb-4"
                 style={{
-                  fontFamily: "'Alex Brush', 'Dancing Script', cursive",
-                  textShadow: "0 2px 8px rgba(82, 19, 33, 0.15)",
+                  fontFamily: "'Press Start 2P', monospace",
+                  textShadow: "2px 2px 0px #E9A0AA",
                 }}
               >
                 YAY! YOU DID IT!
               </h2>
 
+              {/* Title 2: You collected all my hearts! */}
               <p
-                className="text-base sm:text-xl font-bold tracking-wide uppercase mb-8"
+                className="text-xs sm:text-sm text-[#8B2635] mb-8 leading-relaxed font-bold"
                 style={{
-                  fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
-                  color: "#8B2635",
+                  fontFamily: "'Press Start 2P', monospace",
+                  lineHeight: "1.8",
                 }}
               >
                 You collected all my hearts!
               </p>
 
-              {/* Button: Claim Your Surprise ♡ */}
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+              {/* Button: CLAIM YOUR SURPRISE ♡ */}
+              <button
                 onClick={() => setGameState("surprise")}
-                className="inline-flex items-center justify-center gap-2 px-8 sm:px-10 py-4 rounded-full font-bold text-xs sm:text-sm tracking-wider uppercase transition-all shadow-xl cursor-pointer text-[#FFF9F0]"
-                style={{
-                  backgroundColor: "#8B2635",
-                  backgroundImage: "linear-gradient(135deg, #8B2635 0%, #641526 100%)",
-                  boxShadow: "0 8px 30px rgba(100, 21, 38, 0.5)",
-                }}
+                className="w-full py-4 px-6 bg-[#8B2635] hover:bg-[#A83250] text-[#FFF9F0] border-4 border-[#1A0307] font-bold text-xs uppercase tracking-wider transition-all cursor-pointer shadow-[4px_4px_0px_#1A0307] active:translate-x-1 active:translate-y-1 active:shadow-none inline-flex items-center justify-center gap-2"
+                style={{ fontFamily: "'Press Start 2P', monospace" }}
               >
-                <Gift size={18} />
-                <span>Claim Your Surprise ♡</span>
-              </motion.button>
+                <PixelGiftBox size={20} />
+                <span>CLAIM YOUR SURPRISE ♡</span>
+              </button>
             </div>
           </motion.div>
         )}
 
         {/* ══════════════════════════════════════════════════════════════
-            BAGIAN 4 — SURPRISE ENVELOPE & SECRET LETTER
+            5. HADIAH SURAT (Pixel Envelope & Typewriter Letter)
         ══════════════════════════════════════════════════════════════ */}
         {gameState === "surprise" && (
           <motion.div
@@ -503,115 +701,60 @@ export default function CatchMyHeartsSection() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 30 }}
-            transition={{ duration: 0.8, ease: easeSoft }}
+            transition={{ duration: 0.6 }}
             className="relative z-20 w-full max-w-xl mx-auto flex flex-col items-center text-center"
           >
-            {/* The Maroon Envelope with Heart Wax Seal */}
-            <div className="relative w-full max-w-md">
+            {/* Retro Pixel Envelope Visual */}
+            <div className="mb-6 flex justify-center">
+              <PixelEnvelope size={120} isOpen={true} />
+            </div>
 
-              {/* Envelope Body */}
+            {/* Typewriter Retro Letter Card */}
+            <div
+              className="w-full text-left p-6 sm:p-10 border-4 border-[#1A0307]"
+              style={{
+                backgroundColor: "#FFF9F0",
+                boxShadow: "8px 8px 0px #1A0307, 0 25px 60px rgba(0,0,0,0.6)",
+              }}
+            >
+              {/* Card Header Stamp */}
+              <div className="flex items-center justify-between pb-3 mb-5 border-b-2 border-[#1A0307]">
+                <span
+                  className="text-[9px] sm:text-[10px] text-[#8B2635] uppercase font-bold"
+                  style={{ fontFamily: "'Press Start 2P', monospace" }}
+                >
+                  SECRET BIRTHDAY LETTER
+                </span>
+                <PixelHeart size={16} color="#FF4D6D" outline="#1A0307" />
+              </div>
+
+              {/* Typewriter Body Content */}
               <div
-                className="relative rounded-2xl overflow-hidden shadow-2xl transition-all duration-700"
+                className="text-base sm:text-xl text-[#350710] leading-relaxed whitespace-pre-line font-medium min-h-[220px]"
                 style={{
-                  backgroundColor: "#4A0714",
-                  border: "2px solid rgba(233, 160, 170, 0.4)",
-                  boxShadow: "0 25px 60px rgba(0, 0, 0, 0.6)",
+                  fontFamily: "'VT323', monospace",
+                  lineHeight: "1.6",
                 }}
               >
-                {/* Envelope Flap Header */}
-                <div
-                  className="px-6 py-6 text-center border-b border-[#E9A0AA]/20"
-                  style={{
-                    backgroundColor: "#641526",
-                  }}
+                {typedText}
+                <span className="inline-block w-2.5 h-5 bg-[#8B2635] ml-1 animate-pulse align-middle" />
+              </div>
+
+              {/* Replay Button at Bottom */}
+              <div className="pt-5 mt-6 border-t-2 border-[#1A0307] flex items-center justify-between">
+                <button
+                  onClick={handleRestart}
+                  className="px-4 py-2 bg-[#641526] hover:bg-[#8B2635] text-[#FFF9F0] border-2 border-[#1A0307] text-[10px] font-bold uppercase cursor-pointer shadow-[2px_2px_0px_#1A0307] active:translate-x-0.5 active:translate-y-0.5"
+                  style={{ fontFamily: "'Press Start 2P', monospace" }}
                 >
-                  <p className="text-xs uppercase font-mono tracking-widest text-[#E9A0AA]">
-                    CONFIDENTIAL & SPECIAL FOR YOU
-                  </p>
-                </div>
-
-                {/* Wax Seal Toggle Button */}
-                {!isEnvelopeOpen && (
-                  <div className="py-12 sm:py-16 flex flex-col items-center justify-center">
-                    <motion.div
-                      whileHover={{ scale: 1.1, rotate: 6 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => setIsEnvelopeOpen(true)}
-                      className="w-24 h-24 rounded-full bg-[#8B2635] border-2 border-[#E9A0AA] shadow-2xl flex items-center justify-center cursor-pointer select-none group"
-                    >
-                      <img
-                        src="/images/letter-stickers/wax-seal.png"
-                        alt="Heart Wax Seal"
-                        className="w-20 h-20 transition-transform group-hover:scale-110 drop-shadow-md"
-                      />
-                    </motion.div>
-                    <p className="mt-4 text-xs sm:text-sm font-semibold uppercase tracking-wider text-[#FFF9F0]/80">
-                      Klik Segel Lilin Untuk Membuka 💌
-                    </p>
-                  </div>
-                )}
-
-                {/* Secret Letter Slides Out Slowly */}
-                <AnimatePresence>
-                  {isEnvelopeOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 60, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      transition={{ duration: 1, ease: easeSoft }}
-                      className="px-6 sm:px-10 py-10 sm:py-12 m-4 rounded-xl border border-[#E9A0AA]/30 text-left shadow-inner"
-                      style={{
-                        backgroundColor: "#FFF9F0",
-                      }}
-                    >
-                      {/* Letter Top Stamp */}
-                      <div className="flex items-center justify-between mb-4 border-b border-[#641526]/15 pb-3">
-                        <span className="text-[11px] font-mono tracking-widest text-[#8B2635] uppercase">
-                          FROM THE DEEPEST OF MY HEART
-                        </span>
-                        <Heart size={16} className="fill-[#8B2635] text-[#8B2635]" />
-                      </div>
-
-                      {/* Letter Title */}
-                      <h3
-                        className="text-3xl sm:text-4xl text-[#521321] font-normal mb-4"
-                        style={{
-                          fontFamily: "'Alex Brush', 'Dancing Script', cursive",
-                        }}
-                      >
-                        A Special Secret For You ♡
-                      </h3>
-
-                      {/* Romantic Content */}
-                      <p
-                        className="text-xs sm:text-sm md:text-base leading-relaxed text-[#521321] mb-6 font-normal"
-                        style={{
-                          fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
-                        }}
-                      >
-                        Kamu berhasil mengumpulkan semua hatiku di mini game ini... tapi sebenarnya, seluruh hatiku sudah menjadi milikmu seutuhnya sejak hari pertama kita bersama.
-                        <br /><br />
-                        Terima kasih sudah selalu menjadi alasan di balik senyumku, tempat pulang ternyamanku, dan kado terindah yang pernah Tuhan hadirkan dalam hidupku.
-                        <br /><br />
-                        I love you more than words could ever say, happy birthday my favorite person in the whole universe! 🤍
-                      </p>
-
-                      {/* Footer / Replay Button */}
-                      <div className="flex items-center justify-between pt-4 border-t border-[#641526]/15">
-                        <button
-                          onClick={handleRestart}
-                          className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#8B2635] hover:text-[#521321] cursor-pointer"
-                        >
-                          <RotateCcw size={14} />
-                          <span>Main Lagi ↺</span>
-                        </button>
-
-                        <span className="text-xs font-mono text-[#8B2635]">
-                          Forever & Always ♡
-                        </span>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                  ↺ PLAY AGAIN
+                </button>
+                <span
+                  className="text-[9px] text-[#8B2635]"
+                  style={{ fontFamily: "'Press Start 2P', monospace" }}
+                >
+                  WITH LOVE ♡
+                </span>
               </div>
             </div>
           </motion.div>
