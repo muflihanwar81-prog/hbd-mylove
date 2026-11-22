@@ -13,58 +13,74 @@ export default function OpeningSection() {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const imageSrc = openingData.polaroidPhoto || "/images/couple-main.jpg";
+  const imageSrc = openingData.polaroidPhoto || "/images/home-hero.jpg";
 
   return (
     <section
       id="home"
-      className="relative w-full min-h-screen flex items-center justify-end overflow-hidden select-none bg-[#26040D]"
+      className="relative w-full min-h-screen overflow-hidden select-none bg-[#26040D]"
     >
-      {/* ── 1. Full-Screen Cinematic Backdrop Photo ── */}
+      {/* ── 1. Background Photo & 270deg Maroon Gradient (Split Hero Concept) ── */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         <motion.img
           initial={{ scale: 1.05, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 1.4, ease: "easeOut" }}
           src={imageSrc}
-          alt="Home Hero Background"
-          className="w-full h-full object-cover object-[center_15%] sm:object-[20%_20%] md:object-[18%_20%]"
+          alt="Home Hero Photo"
+          className="w-full h-full object-cover object-[center_12%] md:object-[15%_center]"
         />
 
-        {/* Right Dark Gradient: Only on the right side to ensure text readability, leaving the left photo completely clear */}
-        <div className="absolute inset-0 bg-gradient-to-l from-[#26040D]/95 via-[#26040D]/70 md:via-[#26040D]/60 to-transparent pointer-events-none md:w-3/5 md:left-auto" />
+        {/* Desktop Split Gradient: linear-gradient(270deg, Dark Burgundy 95% on Right -> Burgundy 70% in Middle -> 0% Transparent on Left Photo) */}
+        <div
+          className="hidden md:block absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(270deg, rgba(38, 4, 13, 0.95) 0%, rgba(38, 4, 13, 0.95) 45%, rgba(74, 11, 28, 0.70) 65%, rgba(38, 4, 13, 0) 100%)",
+          }}
+        />
 
-        {/* Mobile-only subtle bottom gradient for text readability */}
-        <div className="md:hidden absolute inset-0 bg-gradient-to-t from-[#26040D]/90 via-[#26040D]/30 to-transparent pointer-events-none" />
+        {/* Mobile Gradient: Top Photo remains clear, bottom overlay ensures text readability */}
+        <div
+          className="md:hidden absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(38, 4, 13, 0) 0%, rgba(38, 4, 13, 0.25) 30%, rgba(74, 11, 28, 0.85) 60%, rgba(38, 4, 13, 0.98) 85%, #26040D 100%)",
+          }}
+        />
 
-        {/* Bottom Fade to blend seamlessly with next section */}
-        <div className="absolute inset-x-0 bottom-0 h-32 md:h-40 bg-gradient-to-t from-[#26040D] via-[#26040D]/60 to-transparent pointer-events-none" />
+        {/* Seamless bottom fade into next section */}
+        <div className="absolute inset-x-0 bottom-0 h-24 md:h-32 bg-gradient-to-t from-[#26040D] to-transparent pointer-events-none" />
       </div>
 
-      {/* ── 2. Information & Story Content Area (Right-Aligned / Cinematic Movie Hero) ── */}
-      <div className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-8 lg:px-14 pt-28 sm:pt-32 pb-16 sm:pb-20 flex justify-center md:justify-end">
+      {/* ── 2. Split Hero Content Container (55% Left Photo Space / 45% Right Text Area) ── */}
+      <div className="relative z-10 w-full min-h-screen max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 pt-28 sm:pt-32 pb-16 sm:pb-20 flex flex-col md:flex-row items-center justify-between">
+        {/* Left Area (55% width on desktop: left open and clear for the hero photo) */}
+        <div className="hidden md:block md:w-[52%] lg:w-[55%] pointer-events-none" />
+
+        {/* Right Area (45% width: birthday texts, greetings, and action buttons) */}
         <motion.div
           initial={{ opacity: 0, x: 40 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-          className="w-full max-w-xl md:max-w-2xl lg:max-w-xl flex flex-col items-start text-left"
+          className="w-full md:w-[48%] lg:w-[45%] flex flex-col items-start text-left mt-auto md:mt-0"
         >
-          {/* Badge / Category: FOR MY FAVORITE PERSON */}
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-white/10 border border-[#B08A52]/40 backdrop-blur-md mb-3 sm:mb-4 shadow-sm">
-            <Sparkles size={13} className="text-[#FFF5E8]" />
+          {/* Badge: UNTUK ORANG FAVORITKU */}
+          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#3B0715]/60 border border-[#C5A46D]/60 backdrop-blur-md mb-3 sm:mb-4 shadow-sm">
+            <Sparkles size={13} className="text-[#C5A46D]" />
             <span className="text-[10px] sm:text-xs font-mono font-bold tracking-[0.22em] text-[#FFF5E8] uppercase">
-              Untuk orang favoritku
+              UNTUK ORANG FAVORITKU
             </span>
           </div>
 
-          {/* Small Meta Info: A SPECIAL DAY • MADE WITH LOVE */}
-          <p className="text-[11px] sm:text-xs md:text-sm font-mono tracking-[0.25em] text-[#B08A52] uppercase mb-1.5 sm:mb-2 font-semibold">
+          {/* Meta Info: HARI YANG DITUNGGU TUNGGU */}
+          <p className="text-[11px] sm:text-xs md:text-sm font-mono tracking-[0.25em] text-[#C5A46D] uppercase mb-1.5 sm:mb-2 font-semibold">
             HARI YANG DITUNGGU TUNGGU
           </p>
 
-          {/* Big Cinematic Movie Title: 19 */}
+          {/* Age Number: 19 */}
           <h1
-            className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-[#FFF5E8] tracking-tight uppercase leading-[0.95] mb-2"
+            className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-[#FFF5E8] tracking-tight uppercase leading-[0.95] mb-2"
             style={{
               fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
               textShadow: "0 4px 30px rgba(0, 0, 0, 0.9), 0 2px 10px rgba(0, 0, 0, 0.7)",
@@ -73,9 +89,9 @@ export default function OpeningSection() {
             19
           </h1>
 
-          {/* Subtitle: HAPPY BIRTHDAY */}
+          {/* Title: HAPPY BIRTHDAY */}
           <h2
-            className="text-lg sm:text-2xl md:text-3xl font-extrabold text-[#FFF5E8] tracking-wider uppercase mb-4 sm:mb-5"
+            className="text-xl sm:text-2xl md:text-3xl font-extrabold text-[#FFF5E8] tracking-wider uppercase mb-4 sm:mb-5"
             style={{
               fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
               textShadow: "0 2px 20px rgba(0, 0, 0, 0.8)",
@@ -84,58 +100,48 @@ export default function OpeningSection() {
             HAPPY BIRTHDAY
           </h2>
 
-          {/* Romantic & Personal Story Description */}
-          <p className="text-xs sm:text-base md:text-lg text-[#FFF5E8]/90 font-normal leading-relaxed mb-6 sm:mb-8 max-w-lg">
-            Selamat ulang tahun sayang, Semoga panjang umur sehat selalu, selalu dalam lindungan Allah SWT, dan dimudahkan rezekinya, aminn 
+          {/* Description */}
+          <p className="text-xs sm:text-base md:text-lg text-[#F2E6D5] font-normal leading-relaxed mb-6 sm:mb-8 max-w-lg">
+            Selamat ulang tahun sayang, Semoga panjang umur sehat selalu, selalu dalam lindungan Allah SWT, dan dimudahkan rezekinya, aminn
           </p>
 
-          {/* ── 3. Three Interactive Buttons ── */}
-          <div className="flex flex-wrap items-center gap-2.5 sm:gap-4 w-full">
-            {/* 1. Buka Surat (White Clean Button with Play Icon) */}
+          {/* ── 3. Action Buttons ── */}
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4 w-full">
+            {/* Primary Button: Buka Suratnya (Cream background, Dark Burgundy text) */}
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => scrollTo("letter")}
-              className="flex items-center justify-center gap-2 px-5 sm:px-7 py-3 sm:py-3.5 rounded-full font-bold text-xs sm:text-sm tracking-wider uppercase transition-all shadow-xl cursor-pointer bg-[#FFF5E8] text-[#26040D] hover:bg-white"
+              className="flex items-center justify-center gap-2 px-5 sm:px-7 py-3 sm:py-3.5 rounded-full font-bold text-xs sm:text-sm tracking-wider uppercase transition-all shadow-xl cursor-pointer bg-[#FFF5E8] hover:bg-[#F2E6D5] text-[#26040D]"
               style={{
                 boxShadow: "0 6px 25px rgba(255, 245, 232, 0.25)",
               }}
             >
               <Play size={15} className="fill-[#26040D] text-[#26040D]" />
-              <span>Buka Suratnya</span>
+              <span>BUKA SURATNYA</span>
             </motion.button>
 
-            {/* 2. Our Story (Dark Charcoal Button with Info Icon) */}
+            {/* Secondary Button: Gallery (Dark Burgundy background, Antique Gold border, Warm Ivory text) */}
             <motion.button
-              whileHover={{ scale: 1.05, backgroundColor: "rgba(255, 255, 255, 0.18)" }}
+              whileHover={{ scale: 1.05, backgroundColor: "rgba(59, 7, 21, 0.95)" }}
               whileTap={{ scale: 0.95 }}
               onClick={() => scrollTo("memories")}
-              className="flex items-center justify-center gap-2 px-4.5 sm:px-6 py-3 sm:py-3.5 rounded-full font-semibold text-xs sm:text-sm tracking-wider uppercase text-[#FFF5E8] transition-all backdrop-blur-md cursor-pointer"
-              style={{
-                background: "rgba(59, 7, 21, 0.85)",
-                border: "1px solid rgba(176, 138, 82, 0.4)",
-                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.4)",
-              }}
+              className="flex items-center justify-center gap-2 px-4.5 sm:px-6 py-3 sm:py-3.5 rounded-full font-semibold text-xs sm:text-sm tracking-wider uppercase text-[#FFF5E8] transition-all backdrop-blur-md cursor-pointer bg-[#26040D] border border-[#C5A46D] shadow-lg hover:border-[#FFF5E8]"
             >
-              <Info size={15} />
-              <span>Gallery</span>
+              <Info size={15} className="text-[#C5A46D]" />
+              <span>GALLERY</span>
             </motion.button>
 
-            {/* 3. Surprise (Dark Background Gift Icon Button) */}
+            {/* Surprise Gift Button */}
             <motion.button
               whileHover={{ scale: 1.1, rotate: 6 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => setShowSurpriseModal(true)}
-              className="w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all cursor-pointer backdrop-blur-md text-[#FFF5E8] hover:bg-white/10"
-              style={{
-                background: "rgba(38, 4, 13, 0.9)",
-                border: "1px solid rgba(176, 138, 82, 0.5)",
-                boxShadow: "0 4px 15px rgba(0, 0, 0, 0.5)",
-              }}
+              className="w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all cursor-pointer backdrop-blur-md bg-[#26040D] border border-[#C5A46D] hover:border-[#FFF5E8] text-[#C5A46D] shadow-md"
               title="Surprise Box"
               aria-label="Surprise Box"
             >
-              <Gift size={18} className="animate-pulse text-[#B08A52]" />
+              <Gift size={18} className="animate-pulse text-[#C5A46D]" />
             </motion.button>
           </div>
         </motion.div>
