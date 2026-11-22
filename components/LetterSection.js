@@ -287,7 +287,7 @@ export default function LetterSection() {
                 textShadow: "0 2px 6px rgba(82, 19, 33, 0.12)",
               }}
             >
-              A letter for you
+              Dari aku untukmu
             </motion.h2>
 
             {/* Subjudul: Salutation */}
@@ -302,7 +302,7 @@ export default function LetterSection() {
                 color: "#E9A0AA", // Pink accent
               }}
             >
-              happy birthday, love 🤍
+              happy birthday,  sweet heart
             </motion.p>
 
             {/* Isi Surat: Format Paragraf Melebar Tanpa Perlu Scroll */}
