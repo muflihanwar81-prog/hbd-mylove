@@ -6,9 +6,14 @@ import { X, Calendar } from "lucide-react";
 import { memoriesData } from "@/lib/data-konten";
 
 // ─── Reference Palette & Architectural Constants ──────────────────────────────
-const COLOR_WALL = "#FAF8F2";       // Bright radiant warm ivory / off-white
-const COLOR_FLOOR = "#29292C";      // Dark charcoal floor
-const COLOR_VOID = "#111521";       // Deep midnight navy void/ceiling
+// Luxury Vintage Museum – Burgundy & Cream Theme
+const COLOR_WALL = "#F5EBDD";       // Cream vintage wall
+const COLOR_FLOOR = "#3B101B";      // Dark burgundy floor
+const COLOR_VOID = "#641B2B";       // Burgundy ceiling / atmospheric void
+const COLOR_GOLD = "#C5A46D";       // Antique gold
+const COLOR_MAROON = "#8B1E2D";     // Deep romantic maroon
+const COLOR_CREAM = "#FFF5E9";      // Soft vintage cream
+const COLOR_BROWN = "#3B2525";      // Dark vintage brown
 
 const R_OUTER_WALL = 19.5;          // Outer curved wall radius (Right side)
 const R_INNER_WALL = 14.3;          // Inner curved wall radius (Left side - dimajukan agar foto jelas terlihat)
@@ -93,15 +98,15 @@ function createPhotoTexture(src) {
   canvas.height = 850;
   const ctx = canvas.getContext("2d");
 
-  // Warm ivory placeholder gradient
+  // Deep burgundy & dark wine placeholder gradient
   const grad = ctx.createLinearGradient(0, 0, 1200, 850);
-  grad.addColorStop(0, "#1A253D");
-  grad.addColorStop(1, "#10192A");
+  grad.addColorStop(0, "#4A0714");
+  grad.addColorStop(1, "#24060C");
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, 1200, 850);
 
-  ctx.fillStyle = "#A9C7EA";
-  ctx.font = "bold 34px 'Playfair Display', serif";
+  ctx.fillStyle = "#C5A46D";
+  ctx.font = "bold 34px 'Playfair Display', Georgia, serif";
   ctx.textAlign = "center";
   ctx.fillText("Exhibition Artwork", 600, 425);
 
@@ -131,36 +136,41 @@ function createLabelCardTexture(artwork) {
   canvas.height = 256;
   const ctx = canvas.getContext("2d");
 
-  // Clean white card background
-  ctx.fillStyle = "#FFFFFF";
+  // Vintage cream card background
+  ctx.fillStyle = "#FFF5E9";
   ctx.fillRect(0, 0, 512, 256);
 
-  // Subtle border line
-  ctx.strokeStyle = "rgba(0,0,0,0.08)";
-  ctx.lineWidth = 2;
-  ctx.strokeRect(1, 1, 510, 254);
+  // Antique gold border line
+  ctx.strokeStyle = "rgba(197, 164, 109, 0.55)";
+  ctx.lineWidth = 3;
+  ctx.strokeRect(2, 2, 508, 252);
 
-  // Artwork Number & Date
-  ctx.fillStyle = "#6B7280";
+  // Inner subtle border line for luxury vintage framing
+  ctx.strokeStyle = "rgba(139, 30, 45, 0.20)";
+  ctx.lineWidth = 1;
+  ctx.strokeRect(6, 6, 500, 244);
+
+  // Artwork Number & Date in Romantic Maroon
+  ctx.fillStyle = "#8B1E2D";
   ctx.font = "bold 20px monospace";
   ctx.fillText(`${artwork.artworkNumber}  •  ${artwork.date || "ARCHIVE"}`, 32, 54);
 
-  // Title / Caption
-  ctx.fillStyle = "#111827";
+  // Title / Caption in Vintage Dark Brown
+  ctx.fillStyle = "#3B2525";
   ctx.font = "bold 28px 'Playfair Display', Georgia, serif";
   const title = artwork.caption || "Untitled Memory";
   const truncated = title.length > 28 ? title.substring(0, 26) + "..." : title;
   ctx.fillText(truncated, 32, 105);
 
-  // Subtitle / Description
-  ctx.fillStyle = "#4B5563";
+  // Subtitle / Description in Warm Rose Brown
+  ctx.fillStyle = "#5C353A";
   ctx.font = "italic 20px 'Playfair Display', Georgia, serif";
   const desc = artwork.alt || "Personal Collection";
   const truncDesc = desc.length > 34 ? desc.substring(0, 32) + "..." : desc;
   ctx.fillText(`"${truncDesc}"`, 32, 155);
 
-  // Bottom catalog indicator
-  ctx.fillStyle = "#9CA3AF";
+  // Bottom catalog indicator in Maroon
+  ctx.fillStyle = "#8B1E2D";
   ctx.font = "16px monospace";
   ctx.fillText("CURATED MEMORY • PERMANENT COLLECTION", 32, 215);
 
@@ -176,12 +186,12 @@ function createSpotlightHaloTexture() {
   canvas.height = 512;
   const ctx = canvas.getContext("2d");
 
-  // Radiant museum warm white light pool
+  // Radiant warm white spotlight with soft gentle falloff
   const grad = ctx.createRadialGradient(256, 256, 15, 256, 256, 250);
-  grad.addColorStop(0, "rgba(255, 255, 248, 0.72)");
-  grad.addColorStop(0.35, "rgba(255, 252, 242, 0.48)");
-  grad.addColorStop(0.70, "rgba(255, 250, 236, 0.18)");
-  grad.addColorStop(1, "rgba(255, 250, 236, 0)");
+  grad.addColorStop(0, "rgba(255, 252, 242, 0.70)");
+  grad.addColorStop(0.35, "rgba(255, 248, 232, 0.45)");
+  grad.addColorStop(0.70, "rgba(255, 242, 222, 0.16)");
+  grad.addColorStop(1, "rgba(255, 242, 222, 0)");
 
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, 512, 512);
@@ -208,33 +218,33 @@ function ArtworkModal({ artwork, onClose }) {
       onClick={onClose}
       className="fixed inset-0 z-[300] flex items-center justify-center p-4 md:p-8"
       style={{
-        background: "rgba(10, 14, 24, 0.96)",
-        backdropFilter: "blur(18px)",
+        background: "rgba(38, 8, 16, 0.96)",
+        backdropFilter: "blur(20px)",
       }}
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative max-w-4xl w-full bg-white shadow-2xl flex flex-col md:flex-row overflow-hidden"
+        className="relative max-w-4xl w-full bg-[#FFF5E9] shadow-2xl flex flex-col md:flex-row overflow-hidden rounded-sm"
         style={{
-          border: "1px solid rgba(255, 255, 255, 0.15)",
-          boxShadow: "0 30px 80px rgba(0,0,0,0.85)",
+          border: "1px solid rgba(197, 164, 109, 0.45)",
+          boxShadow: "0 30px 80px rgba(25, 4, 10, 0.90)",
         }}
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-40 p-2 rounded-full bg-black/5 hover:bg-black/10 text-neutral-800 transition-colors"
+          className="absolute top-4 right-4 z-40 p-2 rounded-full bg-[#8B1E2D]/10 hover:bg-[#8B1E2D]/20 text-[#8B1E2D] transition-colors"
           aria-label="Close"
         >
           <X size={20} />
         </button>
 
         {/* Artwork Canvas */}
-        <div className="w-full md:w-3/5 bg-[#16181E] p-6 md:p-10 flex items-center justify-center relative">
+        <div className="w-full md:w-3/5 bg-[#20070E] p-6 md:p-10 flex items-center justify-center relative">
           <div
-            className="p-3 bg-[#111216] shadow-2xl"
-            style={{ border: "1px solid rgba(255,255,255,0.08)" }}
+            className="p-3 bg-[#150409] shadow-2xl"
+            style={{ border: "2px solid rgba(197, 164, 109, 0.4)" }}
           >
-            <div className="relative aspect-[4/3] w-full min-w-[260px] max-w-[480px] overflow-hidden bg-black/20">
+            <div className="relative aspect-[4/3] w-full min-w-[260px] max-w-[480px] overflow-hidden bg-black/30">
               {artwork.src && (
                 <img
                   src={artwork.src}
@@ -247,47 +257,47 @@ function ArtworkModal({ artwork, onClose }) {
         </div>
 
         {/* Museum Plaque Details */}
-        <div className="w-full md:w-2/5 p-6 md:p-10 flex flex-col justify-between bg-[#FCFBF8] text-[#111827]">
+        <div className="w-full md:w-2/5 p-6 md:p-10 flex flex-col justify-between bg-[#FFF5E9] text-[#3B2525]">
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <span className="px-2 py-0.5 text-[10px] font-mono tracking-widest uppercase font-bold text-neutral-900 bg-neutral-200">
+              <span className="px-2 py-0.5 text-[10px] font-mono tracking-widest uppercase font-bold text-[#FFF5E9] bg-[#8B1E2D] rounded-sm">
                 {artwork.artworkNumber}
               </span>
-              <span className="text-[11px] font-mono text-neutral-400">
+              <span className="text-[11px] font-mono text-[#8B1E2D]/75 font-semibold">
                 {artwork.isLeftWall ? "Inner Gallery" : "Main Exhibition Wall"}
               </span>
             </div>
 
             <h3
-              className="text-2xl md:text-3xl font-bold tracking-tight text-[#0F172A] mb-3 leading-tight"
+              className="text-2xl md:text-3xl font-bold tracking-tight text-[#3B2525] mb-3 leading-tight"
               style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
             >
               {artwork.caption}
             </h3>
 
             {artwork.date && (
-              <div className="flex items-center gap-2 text-xs font-mono text-neutral-500 mb-4">
+              <div className="flex items-center gap-2 text-xs font-mono text-[#8B1E2D] mb-4">
                 <Calendar size={13} />
                 <span>{artwork.date}</span>
               </div>
             )}
 
-            <div className="w-12 h-0.5 bg-neutral-300 mb-5" />
+            <div className="w-12 h-0.5 bg-[#C5A46D] mb-5" />
 
             {artwork.alt && (
-              <p className="text-sm md:text-base text-neutral-700 font-serif italic leading-relaxed pl-3 border-l-2 border-neutral-400">
+              <p className="text-sm md:text-base text-[#4A2828] font-serif italic leading-relaxed pl-3 border-l-2 border-[#8B1E2D]">
                 "{artwork.alt}"
               </p>
             )}
           </div>
 
-          <div className="pt-8 border-t border-neutral-200 flex items-center justify-between mt-6">
-            <span className="text-[11px] font-mono text-neutral-400 uppercase tracking-wider">
+          <div className="pt-8 border-t border-[#E8D8C3] flex items-center justify-between mt-6">
+            <span className="text-[11px] font-mono text-[#8B1E2D]/70 uppercase tracking-wider">
               Circular Museum Archive
             </span>
             <button
               onClick={onClose}
-              className="px-4 py-2 text-xs font-mono tracking-wider uppercase text-white bg-[#1A1A1F] hover:bg-[#33333A] transition-colors"
+              className="px-4 py-2 text-xs font-mono tracking-wider uppercase text-[#FFF5E9] bg-[#8B1E2D] hover:bg-[#641526] transition-colors border border-[#C5A46D]/40"
             >
               Close
             </button>
@@ -379,27 +389,42 @@ export default function MemoriesSection({ onPhotoClick }) {
     threeStateRef.current = { scene, camera, renderer, animId: null };
 
     // ─── Reference Lighting Setup ─────────────────────────────────────────────
-    // Bright, soft, radiant warm white museum lighting
-    const ambientLight = new THREE.AmbientLight("#FFFDF5", 1.25);
+    // Warm white museum lighting with soft gentle ambient radiance
+    const ambientLight = new THREE.AmbientLight("#FFF8EE", 1.20);
     scene.add(ambientLight);
 
-    const hemiLight = new THREE.HemisphereLight("#FFFFFF", "#2A2E3D", 0.68);
+    const hemiLight = new THREE.HemisphereLight("#FFF5E9", "#4A101C", 0.70);
     scene.add(hemiLight);
 
     // ─── Materials ────────────────────────────────────────────────────────────
-    // Clean bright warm ivory wall plaster
+    // Clean cream vintage wall plaster (#F5EBDD)
     const wallMaterial = new THREE.MeshStandardMaterial({
       color: COLOR_WALL,
-      roughness: 0.65,
-      metalness: 0.0,
+      roughness: 0.68,
+      metalness: 0.02,
       side: THREE.DoubleSide,
     });
 
-    // Dark charcoal floor (#29292C) with subtle satin sheen
+    // Dark burgundy floor (#3B101B) with satin sheen
     const floorMaterial = new THREE.MeshStandardMaterial({
       color: COLOR_FLOOR,
-      roughness: 0.38,
-      metalness: 0.20,
+      roughness: 0.32,
+      metalness: 0.22,
+      side: THREE.DoubleSide,
+    });
+
+    // Luxury Vintage Ornaments: Antique Gold & Romantic Maroon Moldings
+    const goldOrnamentMat = new THREE.MeshStandardMaterial({
+      color: COLOR_GOLD,
+      roughness: 0.32,
+      metalness: 0.75,
+      side: THREE.DoubleSide,
+    });
+
+    const maroonOrnamentMat = new THREE.MeshStandardMaterial({
+      color: COLOR_MAROON,
+      roughness: 0.45,
+      metalness: 0.18,
       side: THREE.DoubleSide,
     });
 
@@ -418,7 +443,7 @@ export default function MemoriesSection({ onPhotoClick }) {
     outerWallMesh.receiveShadow = true;
     scene.add(outerWallMesh);
 
-    // 2. INNER CURVED WALL (Left Wall at R_INNER_WALL = 13.5m)
+    // 2. INNER CURVED WALL (Left Wall at R_INNER_WALL = 14.3m)
     const innerWallGeo = new THREE.CylinderGeometry(
       R_INNER_WALL,
       R_INNER_WALL,
@@ -432,13 +457,67 @@ export default function MemoriesSection({ onPhotoClick }) {
     innerWallMesh.receiveShadow = true;
     scene.add(innerWallMesh);
 
-    // 3. CURVED CHARCOAL FLOOR (#29292C)
+    // 3. CURVED DARK BURGUNDY FLOOR (#3B101B)
     const floorGeo = new THREE.RingGeometry(R_INNER_WALL - 0.2, R_OUTER_WALL + 0.2, 128);
     const floorMesh = new THREE.Mesh(floorGeo, floorMaterial);
     floorMesh.rotation.x = -Math.PI / 2;
     floorMesh.position.y = 0.001;
     floorMesh.receiveShadow = true;
     scene.add(floorMesh);
+
+    // 4. ELEGANT VINTAGE ARCHITECTURAL ORNAMENTS (Subtle Luxury Moldings)
+    // A. Baseboard Moldings (Maroon band with gold trim along floor edges)
+    const outerBaseboardGeo = new THREE.CylinderGeometry(R_OUTER_WALL - 0.015, R_OUTER_WALL - 0.015, 0.16, 128, 1, true);
+    const outerBaseboardMesh = new THREE.Mesh(outerBaseboardGeo, maroonOrnamentMat);
+    outerBaseboardMesh.position.y = 0.08;
+    scene.add(outerBaseboardMesh);
+
+    const innerBaseboardGeo = new THREE.CylinderGeometry(R_INNER_WALL + 0.015, R_INNER_WALL + 0.015, 0.16, 128, 1, true);
+    const innerBaseboardMesh = new THREE.Mesh(innerBaseboardGeo, maroonOrnamentMat);
+    innerBaseboardMesh.position.y = 0.08;
+    scene.add(innerBaseboardMesh);
+
+    const outerBaseGoldGeo = new THREE.CylinderGeometry(R_OUTER_WALL - 0.016, R_OUTER_WALL - 0.016, 0.02, 128, 1, true);
+    const outerBaseGoldMesh = new THREE.Mesh(outerBaseGoldGeo, goldOrnamentMat);
+    outerBaseGoldMesh.position.y = 0.17;
+    scene.add(outerBaseGoldMesh);
+
+    const innerBaseGoldGeo = new THREE.CylinderGeometry(R_INNER_WALL + 0.016, R_INNER_WALL + 0.016, 0.02, 128, 1, true);
+    const innerBaseGoldMesh = new THREE.Mesh(innerBaseGoldGeo, goldOrnamentMat);
+    innerBaseGoldMesh.position.y = 0.17;
+    scene.add(innerBaseGoldMesh);
+
+    // B. Subtle Antique Gold Chair-Rail Molding (Horizontal trim line along corridor walls)
+    const outerChairRailGeo = new THREE.CylinderGeometry(R_OUTER_WALL - 0.018, R_OUTER_WALL - 0.018, 0.035, 128, 1, true);
+    const outerChairRailMesh = new THREE.Mesh(outerChairRailGeo, goldOrnamentMat);
+    outerChairRailMesh.position.y = 0.95;
+    scene.add(outerChairRailMesh);
+
+    const innerChairRailGeo = new THREE.CylinderGeometry(R_INNER_WALL + 0.018, R_INNER_WALL + 0.018, 0.035, 128, 1, true);
+    const innerChairRailMesh = new THREE.Mesh(innerChairRailGeo, goldOrnamentMat);
+    innerChairRailMesh.position.y = 0.95;
+    scene.add(innerChairRailMesh);
+
+    // C. Crown Moldings (Maroon band with gold trim along upper ceiling edges)
+    const outerCrownGeo = new THREE.CylinderGeometry(R_OUTER_WALL - 0.015, R_OUTER_WALL - 0.015, 0.14, 128, 1, true);
+    const outerCrownMesh = new THREE.Mesh(outerCrownGeo, maroonOrnamentMat);
+    outerCrownMesh.position.y = WALL_HEIGHT - 0.07;
+    scene.add(outerCrownMesh);
+
+    const innerCrownGeo = new THREE.CylinderGeometry(R_INNER_WALL + 0.015, R_INNER_WALL + 0.015, 0.14, 128, 1, true);
+    const innerCrownMesh = new THREE.Mesh(innerCrownGeo, maroonOrnamentMat);
+    innerCrownMesh.position.y = WALL_HEIGHT - 0.07;
+    scene.add(innerCrownMesh);
+
+    const outerCrownGoldGeo = new THREE.CylinderGeometry(R_OUTER_WALL - 0.016, R_OUTER_WALL - 0.016, 0.02, 128, 1, true);
+    const outerCrownGoldMesh = new THREE.Mesh(outerCrownGoldGeo, goldOrnamentMat);
+    outerCrownGoldMesh.position.y = WALL_HEIGHT - 0.15;
+    scene.add(outerCrownGoldMesh);
+
+    const innerCrownGoldGeo = new THREE.CylinderGeometry(R_INNER_WALL + 0.016, R_INNER_WALL + 0.016, 0.02, 128, 1, true);
+    const innerCrownGoldMesh = new THREE.Mesh(innerCrownGoldGeo, goldOrnamentMat);
+    innerCrownGoldMesh.position.y = WALL_HEIGHT - 0.15;
+    scene.add(innerCrownGoldMesh);
 
     // Shared spotlight halo texture for wall light pools
     const haloTexture = createSpotlightHaloTexture();
@@ -476,14 +555,14 @@ export default function MemoriesSection({ onPhotoClick }) {
       haloMesh.position.set(0, h * 0.22, -0.015);
       artworkGroup.add(haloMesh);
 
-      // 2. Clean Rectangular Frame (Thin subtle dark border #18181A)
-      const borderThickness = 0.035;
+      // 2. Antique Gold Frame (#C5A46D with luxurious metallic sheen)
+      const borderThickness = 0.04;
       const frameDepth = 0.045;
       const frameGeo = new THREE.BoxGeometry(w + borderThickness * 2, h + borderThickness * 2, frameDepth);
       const frameMat = new THREE.MeshStandardMaterial({
-        color: "#18181A",
-        roughness: 0.45,
-        metalness: 0.15,
+        color: COLOR_GOLD,
+        roughness: 0.32,
+        metalness: 0.72,
       });
       const frameMesh = new THREE.Mesh(frameGeo, frameMat);
       frameMesh.castShadow = true;
@@ -729,16 +808,16 @@ export default function MemoriesSection({ onPhotoClick }) {
         className="absolute inset-0 w-full h-full block z-0"
       />
 
-      {/* ── Bottom-Center Display (Exact Reference Typography) ── */}
+      {/* ── Bottom-Center Display (Luxury Vintage Typography) ── */}
       <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 pointer-events-none text-center">
-        <p className="text-[10px] md:text-[11px] font-mono tracking-[0.28em] text-neutral-400 uppercase mb-1">
+        <p className="text-[10px] md:text-[11px] font-mono tracking-[0.28em] text-[#C5A46D] uppercase mb-1 drop-shadow-md font-semibold">
           YOU ARE WALKING PAST
         </p>
         <h2
-          className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-wider uppercase mb-2"
+          className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#FFF5E9] tracking-wider uppercase mb-2"
           style={{
             fontFamily: "'Playfair Display', Georgia, serif",
-            textShadow: "0 2px 20px rgba(0,0,0,0.8)",
+            textShadow: "0 2px 25px rgba(59, 16, 27, 0.95), 0 0 10px rgba(0,0,0,0.8)",
           }}
         >
           {activeArtwork?.caption || memoriesData.title || "UNLISTED PAINTINGS"}
@@ -751,24 +830,24 @@ export default function MemoriesSection({ onPhotoClick }) {
               if (onPhotoClick) onPhotoClick(activeArtwork);
             }
           }}
-          className="pointer-events-auto inline-flex items-center gap-2 text-[10px] md:text-[11px] font-mono tracking-[0.22em] text-neutral-300 hover:text-white uppercase transition-colors border-b border-white/20 pb-0.5"
+          className="pointer-events-auto inline-flex items-center gap-2 text-[10px] md:text-[11px] font-mono tracking-[0.22em] text-[#FFF5E9]/90 hover:text-[#C5A46D] uppercase transition-colors border-b border-[#C5A46D]/40 hover:border-[#C5A46D] pb-0.5"
         >
           <span>ENTER THE COLLECTION</span>
           <span>→</span>
         </button>
       </div>
 
-      {/* ── Bottom-Right Navigation & Instructions (Exact Reference Layout) ── */}
+      {/* ── Bottom-Right Navigation & Instructions (Luxury Burgundy & Gold Style) ── */}
       <div className="absolute bottom-8 right-8 z-20 pointer-events-auto flex flex-col items-end gap-3">
         {/* Stepper Buttons: Left Arrow, Auto-Walk Play/Pause, and Right Arrow */}
         <div className="flex items-center gap-2">
           <button
             onClick={() => stepWalk(-1)}
-            className="w-10 h-10 rounded-full flex items-center justify-center transition-all cursor-pointer hover:bg-white/20 active:scale-95"
+            className="w-10 h-10 rounded-full flex items-center justify-center transition-all cursor-pointer hover:bg-[#8B1E2D] hover:border-[#C5A46D] active:scale-95 shadow-lg"
             style={{
-              background: "rgba(35, 38, 48, 0.82)",
-              border: "1px solid rgba(255, 255, 255, 0.15)",
-              color: "#FFFFFF",
+              background: "rgba(100, 27, 43, 0.88)",
+              border: "1px solid rgba(197, 164, 109, 0.5)",
+              color: "#FFF5E9",
             }}
             title="Step backward"
             aria-label="Previous artwork"
@@ -777,27 +856,27 @@ export default function MemoriesSection({ onPhotoClick }) {
           </button>
           <button
             onClick={toggleAutoPlay}
-            className="h-10 px-3.5 rounded-full flex items-center justify-center gap-2 transition-all cursor-pointer hover:bg-white/20 active:scale-95"
+            className="h-10 px-3.5 rounded-full flex items-center justify-center gap-2 transition-all cursor-pointer hover:bg-[#8B1E2D] hover:border-[#C5A46D] active:scale-95 shadow-lg"
             style={{
-              background: isAutoPlaying ? "rgba(225, 29, 72, 0.22)" : "rgba(35, 38, 48, 0.82)",
-              border: isAutoPlaying ? "1px solid rgba(244, 63, 94, 0.55)" : "1px solid rgba(255, 255, 255, 0.15)",
-              color: "#FFFFFF",
+              background: isAutoPlaying ? "rgba(139, 30, 45, 0.92)" : "rgba(74, 15, 28, 0.88)",
+              border: isAutoPlaying ? "1px solid #C5A46D" : "1px solid rgba(197, 164, 109, 0.4)",
+              color: "#FFF5E9",
             }}
             title={isAutoPlaying ? "Pause auto-walk" : "Resume auto-walk"}
             aria-label={isAutoPlaying ? "Pause auto-walk" : "Resume auto-walk"}
           >
-            <span className="text-xs">{isAutoPlaying ? "⏸" : "▶"}</span>
-            <span className="text-[10px] font-mono tracking-wider uppercase text-neutral-200">
+            <span className="text-xs text-[#C5A46D]">{isAutoPlaying ? "⏸" : "▶"}</span>
+            <span className="text-[10px] font-mono tracking-wider uppercase text-[#FFF5E9]">
               {isAutoPlaying ? "Auto Walk" : "Paused"}
             </span>
           </button>
           <button
             onClick={() => stepWalk(1)}
-            className="w-10 h-10 rounded-full flex items-center justify-center transition-all cursor-pointer hover:bg-white/20 active:scale-95"
+            className="w-10 h-10 rounded-full flex items-center justify-center transition-all cursor-pointer hover:bg-[#8B1E2D] hover:border-[#C5A46D] active:scale-95 shadow-lg"
             style={{
-              background: "rgba(35, 38, 48, 0.82)",
-              border: "1px solid rgba(255, 255, 255, 0.15)",
-              color: "#FFFFFF",
+              background: "rgba(100, 27, 43, 0.88)",
+              border: "1px solid rgba(197, 164, 109, 0.5)",
+              color: "#FFF5E9",
             }}
             title="Step forward"
             aria-label="Next artwork"
@@ -806,12 +885,12 @@ export default function MemoriesSection({ onPhotoClick }) {
           </button>
         </div>
 
-        {/* Small Uppercase Guide Text (Exact wording & style from screenshot) */}
+        {/* Small Uppercase Guide Text */}
         <div className="text-right pointer-events-none">
-          <p className="text-[9px] font-mono tracking-widest text-neutral-400 uppercase leading-relaxed">
+          <p className="text-[9px] font-mono tracking-widest text-[#FFF5E9]/75 uppercase leading-relaxed drop-shadow">
             SCROLL OR DRAG TO WALK ROUND
           </p>
-          <p className="text-[9px] font-mono tracking-widest text-neutral-400 uppercase leading-relaxed">
+          <p className="text-[9px] font-mono tracking-widest text-[#FFF5E9]/75 uppercase leading-relaxed drop-shadow">
             CLICK A PAINTING TO LOOK CLOSER
           </p>
         </div>
@@ -823,10 +902,10 @@ export default function MemoriesSection({ onPhotoClick }) {
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 pointer-events-none"
         >
           <span
-            className="px-3 py-1 rounded-full text-[10px] font-mono tracking-widest uppercase text-white shadow-xl"
+            className="px-3.5 py-1.5 rounded-full text-[10px] font-mono tracking-widest uppercase text-[#FFF5E9] shadow-2xl"
             style={{
-              background: "rgba(17, 21, 33, 0.85)",
-              border: "1px solid rgba(255, 255, 255, 0.25)",
+              background: "rgba(74, 15, 28, 0.94)",
+              border: "1px solid rgba(197, 164, 109, 0.65)",
             }}
           >
             CLICK TO LOOK CLOSER
