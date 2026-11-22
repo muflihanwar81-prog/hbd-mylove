@@ -11,8 +11,8 @@ export default function Navigation() {
 
   const navLinks = [
     { id: "home", label: "Home" },
-    { id: "letter", label: "Open Letter" },
-    { id: "memories", label: "Our Story" },
+    { id: "letter", label: "Messeges" },
+    { id: "memories", label: "Gallery" },
     { id: "game", label: "Mini Game" },
   ];
 
