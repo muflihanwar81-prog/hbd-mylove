@@ -17,11 +17,22 @@ export default function CatchMyHeartsSection() {
   // Game canvas & bucket ref
   const gameAreaRef = useRef(null);
   const [bucketX, setBucketX] = useState(50); // percentage 0 - 100
+  const bucketXRef = useRef(50);
+  const heartsRef = useRef([]);
+  const scoreRef = useRef(0);
   const [hearts, setHearts] = useState([]);
   const [isCatching, setIsCatching] = useState(false);
+  const [catchBurst, setCatchBurst] = useState(null);
 
   // Envelope state for Part 4
   const [isEnvelopeOpen, setIsEnvelopeOpen] = useState(false);
+
+  // Helper to update bucket position safely without restarting game loop
+  const updateBucketX = (val) => {
+    const clamped = Math.max(8, Math.min(92, val));
+    bucketXRef.current = clamped;
+    setBucketX(clamped);
+  };
 
   // ── Keyboard Controls for Desktop ──
   useEffect(() => {
@@ -29,9 +40,9 @@ export default function CatchMyHeartsSection() {
 
     const handleKeyDown = (e) => {
       if (e.key === "ArrowLeft" || e.key === "a" || e.key === "A") {
-        setBucketX((prev) => Math.max(10, prev - 7));
+        updateBucketX(bucketXRef.current - 7);
       } else if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") {
-        setBucketX((prev) => Math.min(90, prev + 7));
+        updateBucketX(bucketXRef.current + 7);
       }
     };
 
@@ -43,10 +54,10 @@ export default function CatchMyHeartsSection() {
   const handlePointerMove = (e) => {
     if (gameState !== "playing" || !gameAreaRef.current) return;
     const rect = gameAreaRef.current.getBoundingClientRect();
-    const clientX = e.clientX || (e.touches && e.touches[0]?.clientX);
+    const clientX = e.touches ? e.touches[0]?.clientX : e.clientX;
     if (clientX !== undefined) {
       const relX = ((clientX - rect.left) / rect.width) * 100;
-      setBucketX(Math.max(8, Math.min(92, relX)));
+      updateBucketX(relX);
     }
   };
 
@@ -54,61 +65,69 @@ export default function CatchMyHeartsSection() {
   useEffect(() => {
     if (gameState !== "playing") return;
 
+    // Reset game counters
+    heartsRef.current = [];
+    scoreRef.current = 0;
+    setScore(0);
+    setHearts([]);
+
     let animationFrameId;
     let lastSpawnTime = Date.now();
-    let localHearts = [];
 
     const gameLoop = () => {
       const now = Date.now();
 
-      // Spawn a new heart every ~900ms
-      if (now - lastSpawnTime > 850) {
+      // Spawn a new heart every ~800ms
+      if (now - lastSpawnTime > 800) {
         lastSpawnTime = now;
         const newHeart = {
           id: Math.random().toString(36).substr(2, 9),
           x: Math.random() * 80 + 10, // 10% to 90%
           y: -5,
-          speed: Math.random() * 0.7 + 0.9, // smooth falling speed
-          size: Math.random() * 8 + 24, // 24px - 32px
+          speed: Math.random() * 0.4 + 0.85, // gentle falling speed
+          size: Math.random() * 8 + 26, // 26px - 34px
           color: Math.random() > 0.4 ? "#E9A0AA" : "#FFFFFF",
         };
-        localHearts.push(newHeart);
+        heartsRef.current.push(newHeart);
       }
 
-      // Update positions & check collisions
+      // Update positions & check collisions against current bucket position
+      const currentBucketX = bucketXRef.current;
       const nextHearts = [];
-      for (let h of localHearts) {
+
+      for (let h of heartsRef.current) {
         h.y += h.speed;
 
-        // Collision check with bucket (bucket is at y ~82% - 94%)
-        // bucketX is center of bucket
-        const isNearBottom = h.y >= 78 && h.y <= 88;
-        const isHorizontallyAligned = Math.abs(h.x - bucketX) < 14;
+        // Collision check with bucket (bucket rim is at y ~76% - 90%)
+        const isNearBottom = h.y >= 75 && h.y <= 90;
+        const isHorizontallyAligned = Math.abs(h.x - currentBucketX) <= 12;
 
         if (isNearBottom && isHorizontallyAligned) {
           // Heart caught!
           setIsCatching(true);
+          setCatchBurst({ x: currentBucketX, y: h.y });
           setTimeout(() => setIsCatching(false), 200);
+          setTimeout(() => setCatchBurst(null), 400);
 
-          setScore((prevScore) => {
-            const newScore = prevScore + 1;
-            if (newScore >= 10) {
-              setTimeout(() => setGameState("victory"), 300);
-            }
-            return newScore;
-          });
+          scoreRef.current += 1;
+          const currentScore = scoreRef.current;
+          setScore(currentScore);
+
+          if (currentScore >= 10) {
+            setTimeout(() => setGameState("victory"), 350);
+          }
           // Do not re-add caught heart
           continue;
         }
 
-        // If heart fell past bottom without being caught, it just disappears smoothly (no penalty)
+        // If heart fell past bottom without being caught, it continues offscreen safely
         if (h.y <= 105) {
           nextHearts.push(h);
         }
       }
 
-      localHearts = nextHearts;
-      setHearts([...localHearts]);
+      heartsRef.current = nextHearts;
+      setHearts([...nextHearts]);
 
       animationFrameId = requestAnimationFrame(gameLoop);
     };
@@ -118,7 +137,7 @@ export default function CatchMyHeartsSection() {
     return () => {
       cancelAnimationFrame(animationFrameId);
     };
-  }, [gameState, bucketX]);
+  }, [gameState]); // ONLY depends on gameState, NEVER restarts when moving bucket!
 
   // Restart game
   const handleRestart = () => {
@@ -351,11 +370,27 @@ export default function CatchMyHeartsSection() {
                 </div>
               ))}
 
+              {/* Catch Burst Floating Feedback */}
+              {catchBurst && (
+                <motion.div
+                  initial={{ opacity: 1, y: 0, scale: 0.8 }}
+                  animate={{ opacity: 0, y: -30, scale: 1.3 }}
+                  transition={{ duration: 0.4 }}
+                  className="absolute pointer-events-none -translate-x-1/2 font-bold text-sm text-[#FFF9F0] drop-shadow-[0_0_8px_rgba(233,160,170,0.9)]"
+                  style={{
+                    left: `${catchBurst.x}%`,
+                    top: `${catchBurst.y}%`,
+                  }}
+                >
+                  +1 ♡
+                </motion.div>
+              )}
+
               {/* Player Bucket / Basket */}
               <motion.div
                 animate={{
-                  scale: isCatching ? 1.15 : 1,
-                  y: isCatching ? -6 : 0,
+                  scale: isCatching ? 1.18 : 1,
+                  y: isCatching ? -8 : 0,
                 }}
                 transition={{ duration: 0.15 }}
                 className="absolute bottom-5 -translate-x-1/2 pointer-events-none flex flex-col items-center"
@@ -374,13 +409,13 @@ export default function CatchMyHeartsSection() {
             {/* Mobile Controls Helpers */}
             <div className="md:hidden flex items-center justify-between w-full mt-3 px-2 gap-3">
               <button
-                onClick={() => setBucketX((prev) => Math.max(10, prev - 14))}
+                onClick={() => updateBucketX(bucketXRef.current - 14)}
                 className="flex-1 py-3 bg-[#FFF9F0] rounded-xl text-[#521321] font-bold text-xs shadow-md active:bg-[#E9A0AA]/40 uppercase tracking-wider"
               >
                 ← Kiri
               </button>
               <button
-                onClick={() => setBucketX((prev) => Math.min(90, prev + 14))}
+                onClick={() => updateBucketX(bucketXRef.current + 14)}
                 className="flex-1 py-3 bg-[#FFF9F0] rounded-xl text-[#521321] font-bold text-xs shadow-md active:bg-[#E9A0AA]/40 uppercase tracking-wider"
               >
                 Kanan →
