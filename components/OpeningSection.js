@@ -55,9 +55,9 @@ export default function OpeningSection() {
           className="w-full max-w-xl md:max-w-2xl lg:max-w-xl flex flex-col items-start text-left"
         >
           {/* Badge / Category: FOR MY FAVORITE PERSON */}
-          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-md bg-[#D6A56D]/15 border border-[#D6A56D]/35 backdrop-blur-md mb-4 shadow-sm">
-            <Sparkles size={13} className="text-[#D6A56D]" />
-            <span className="text-[11px] sm:text-xs font-mono font-bold tracking-[0.22em] text-[#D6A56D] uppercase">
+          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-md bg-white/10 border border-white/20 backdrop-blur-md mb-4 shadow-sm">
+            <Sparkles size={13} className="text-white" />
+            <span className="text-[11px] sm:text-xs font-mono font-bold tracking-[0.22em] text-white uppercase">
               FOR MY FAVORITE PERSON
             </span>
           </div>
@@ -80,10 +80,10 @@ export default function OpeningSection() {
 
           {/* Subtitle: EVERY MOMENT WITH YOU */}
           <h2
-            className="text-xl sm:text-2xl md:text-3xl font-extrabold text-[#D6A56D] tracking-wider uppercase mb-5"
+            className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white tracking-wider uppercase mb-5"
             style={{
               fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
-              textShadow: "0 2px 15px rgba(214, 165, 109, 0.4)",
+              textShadow: "0 2px 20px rgba(0, 0, 0, 0.8)",
             }}
           >
             EVERY MOMENT WITH YOU
@@ -96,16 +96,14 @@ export default function OpeningSection() {
 
           {/* ── 3. Three Interactive Buttons ── */}
           <div className="flex flex-wrap items-center gap-3 sm:gap-4 w-full">
-            {/* 1. Buka Cerita (Golden Yellow Button with Play Icon) */}
+            {/* 1. Buka Cerita (White Clean Button with Play Icon) */}
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => scrollTo("memories")}
-              className="flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3.5 rounded-full font-bold text-xs sm:text-sm tracking-wider uppercase transition-all shadow-xl cursor-pointer"
+              className="flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3.5 rounded-full font-bold text-xs sm:text-sm tracking-wider uppercase transition-all shadow-xl cursor-pointer bg-white text-[#080B12] hover:bg-white/90"
               style={{
-                background: "linear-gradient(135deg, #F3E5AB 0%, #D6A56D 50%, #B8860B 100%)",
-                color: "#080B12",
-                boxShadow: "0 6px 25px rgba(214, 165, 109, 0.45)",
+                boxShadow: "0 6px 25px rgba(255, 255, 255, 0.25)",
               }}
             >
               <Play size={16} className="fill-[#080B12] text-[#080B12]" />
@@ -133,11 +131,10 @@ export default function OpeningSection() {
               whileHover={{ scale: 1.1, rotate: 6 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => setShowSurpriseModal(true)}
-              className="w-12 h-12 rounded-full flex items-center justify-center transition-all cursor-pointer backdrop-blur-md"
+              className="w-12 h-12 rounded-full flex items-center justify-center transition-all cursor-pointer backdrop-blur-md text-white hover:bg-white/10"
               style={{
                 background: "rgba(18, 22, 34, 0.85)",
-                border: "1px solid rgba(214, 165, 109, 0.4)",
-                color: "#D6A56D",
+                border: "1px solid rgba(255, 255, 255, 0.25)",
                 boxShadow: "0 4px 15px rgba(0, 0, 0, 0.5)",
               }}
               title="Surprise Box"
@@ -161,7 +158,7 @@ export default function OpeningSection() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-lg bg-[#0F1422] border border-[#D6A56D]/30 p-6 sm:p-8 rounded-2xl shadow-2xl text-white"
+              className="relative w-full max-w-lg bg-[#0F1422] border border-white/20 p-6 sm:p-8 rounded-2xl shadow-2xl text-white"
             >
               <button
                 onClick={() => setShowStoryModal(false)}
@@ -169,7 +166,7 @@ export default function OpeningSection() {
               >
                 <X size={20} />
               </button>
-              <span className="text-[11px] font-mono tracking-widest text-[#D6A56D] uppercase">
+              <span className="text-[11px] font-mono tracking-widest text-white/70 uppercase">
                 PRODUCTION ARCHIVE • 2026
               </span>
               <h3 className="text-2xl font-bold text-white mt-1 mb-3">
@@ -199,7 +196,7 @@ export default function OpeningSection() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.85, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-md bg-gradient-to-b from-[#141A2E] to-[#0A0D17] border border-[#D6A56D]/50 p-8 rounded-3xl shadow-2xl text-center text-white"
+              className="relative w-full max-w-md bg-gradient-to-b from-[#141A2E] to-[#0A0D17] border border-white/20 p-8 rounded-3xl shadow-2xl text-center text-white"
             >
               <button
                 onClick={() => setShowSurpriseModal(false)}
@@ -207,8 +204,8 @@ export default function OpeningSection() {
               >
                 <X size={20} />
               </button>
-              <div className="w-16 h-16 mx-auto rounded-full bg-[#D6A56D]/20 flex items-center justify-center text-[#D6A56D] mb-4">
-                <Heart size={32} className="fill-[#D6A56D]" />
+              <div className="w-16 h-16 mx-auto rounded-full bg-white/10 flex items-center justify-center text-white mb-4">
+                <Heart size={32} className="fill-white" />
               </div>
               <h3 className="text-2xl font-bold text-white mb-2">
                 A Surprise For You ✨
@@ -221,7 +218,7 @@ export default function OpeningSection() {
                   setShowSurpriseModal(false);
                   scrollTo("letter");
                 }}
-                className="w-full py-3 rounded-full font-bold text-xs uppercase tracking-wider text-[#0A0D14] bg-gradient-to-r from-[#F3E5AB] to-[#D6A56D] hover:scale-102 transition-transform"
+                className="w-full py-3 rounded-full font-bold text-xs uppercase tracking-wider text-[#0A0D14] bg-white hover:bg-white/90 hover:scale-102 transition-transform cursor-pointer"
               >
                 Baca Surat Spesial Sekarang →
               </button>
