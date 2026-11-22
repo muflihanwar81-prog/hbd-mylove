@@ -27,6 +27,19 @@ const WALL_HEIGHT = 4.8;            // Wall height from floor to top edge
 const EYE_HEIGHT = 1.68;            // Natural human eye level
 const LOOK_AHEAD_RAD = 0.28;        // Look-ahead angle along the sweeping curve
 
+// Responsive Camera FOV: Adapts seamlessly across all screen sizes (mobile, tablet, desktop)
+// while keeping the exact same horizontal corridor framing & painting visual position
+const calculateResponsiveFov = (aspect) => {
+  const baseFov = 64;
+  const baseAspect = 16 / 9; // ~1.778 standard desktop aspect ratio
+  if (aspect >= baseAspect) return baseFov;
+  const baseHalfVRad = (baseFov * Math.PI) / 360;
+  const targetHalfW = Math.tan(baseHalfVRad) * 1.6;
+  const targetHalfVRad = Math.atan(targetHalfW / Math.max(aspect, 0.45));
+  const targetFov = (targetHalfVRad * 360) / Math.PI;
+  return Math.min(Math.max(targetFov, 64), 86);
+};
+
 // ─── Infinite Seamless 360° Circular Artwork Distribution ─────────────────────
 // Total slots around full 2*PI circle: 33 slots
 // DELTA_ANGLE = 2 * PI / 33 = ~0.1904 rad (~10.9°)
@@ -221,7 +234,7 @@ function ArtworkModal({ artwork, onClose }) {
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 z-[300] flex items-center justify-center p-4 md:p-8"
+      className="fixed inset-0 z-[300] flex items-center justify-center p-3 sm:p-4 md:p-8"
       style={{
         background: "rgba(26, 4, 9, 0.97)",
         backdropFilter: "blur(20px)",
@@ -229,7 +242,7 @@ function ArtworkModal({ artwork, onClose }) {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative max-w-4xl w-full bg-[#FFF5E8] shadow-2xl flex flex-col md:flex-row overflow-hidden rounded-sm"
+        className="relative max-w-4xl w-[95%] md:w-full max-h-[88vh] bg-[#FFF5E8] shadow-2xl flex flex-col md:flex-row overflow-y-auto md:overflow-hidden rounded-sm"
         style={{
           border: "1px solid #B08A52",
           boxShadow: "0 30px 80px rgba(18, 2, 6, 0.95)",
@@ -237,19 +250,19 @@ function ArtworkModal({ artwork, onClose }) {
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-40 p-2 rounded-full bg-[#3B0715]/10 hover:bg-[#3B0715]/20 text-[#3B0715] transition-colors"
+          className="absolute top-3 right-3 sm:top-4 sm:right-4 z-40 p-2 rounded-full bg-[#3B0715]/10 hover:bg-[#3B0715]/20 text-[#3B0715] transition-colors"
           aria-label="Close"
         >
-          <X size={20} />
+          <X size={18} className="sm:w-5 sm:h-5" />
         </button>
 
         {/* Artwork Canvas with Deep Burgundy Background & Antique Gold Inner Frame */}
-        <div className="w-full md:w-3/5 bg-[#1C030A] p-6 md:p-10 flex items-center justify-center relative">
+        <div className="w-full md:w-3/5 bg-[#1C030A] p-4 sm:p-6 md:p-10 flex items-center justify-center relative flex-shrink-0">
           <div
-            className="p-3 bg-[#26040D] shadow-2xl"
+            className="p-2 sm:p-3 bg-[#26040D] shadow-2xl w-full flex items-center justify-center"
             style={{ border: "2px solid #B08A52" }}
           >
-            <div className="relative aspect-[4/3] w-full min-w-[260px] max-w-[480px] overflow-hidden bg-black/40">
+            <div className="relative aspect-[4/3] w-full min-w-[200px] max-w-[480px] max-h-[35vh] md:max-h-none overflow-hidden bg-black/40">
               {artwork.src && (
                 <img
                   src={artwork.src}
@@ -262,7 +275,7 @@ function ArtworkModal({ artwork, onClose }) {
         </div>
 
         {/* Museum Plaque Details */}
-        <div className="w-full md:w-2/5 p-6 md:p-10 flex flex-col justify-between bg-[#FFF5E8] text-[#26040D]">
+        <div className="w-full md:w-2/5 p-5 sm:p-6 md:p-10 flex flex-col justify-between bg-[#FFF5E8] text-[#26040D]">
           <div>
             <div className="flex items-center gap-2 mb-3">
               <span className="px-2 py-0.5 text-[10px] font-mono tracking-widest uppercase font-bold text-[#FFF5E8] bg-[#3B0715] rounded-sm">
@@ -334,6 +347,7 @@ export default function MemoriesSection({ onPhotoClick }) {
   const modalOpenRef = useRef(false);
   const lastPointerPosRef = useRef({ x: 0, y: 0 });
   const touchStartYRef = useRef(null);
+  const touchStartPosRef = useRef({ x: 0, y: 0, time: 0 });
   const raycasterRef = useRef(new THREE.Raycaster());
   const mouseCoordsRef = useRef(new THREE.Vector2(-999, -999));
   const artworkMeshesRef = useRef([]);
@@ -367,15 +381,17 @@ export default function MemoriesSection({ onPhotoClick }) {
 
     const width = container.clientWidth;
     const height = container.clientHeight;
+    const aspect = width / height;
 
-    // 1. Scene with Reference Midnight Navy void
+    // 1. Scene with Deep Burgundy void
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(COLOR_VOID);
     scene.fog = new THREE.FogExp2(COLOR_VOID, 0.016);
 
-    // 2. Camera: Wide cinematic perspective matching the reference
-    // FOV 64° menangkap lukisan di dinding kiri dan sapuan dinding kanan secara seimbang
-    const camera = new THREE.PerspectiveCamera(64, width / height, 0.1, 100);
+    // 2. Camera: Responsive perspective matching all screens (Mobile, Tablet, Desktop)
+    // with exact framing and visual artwork positioning
+    const initialFov = calculateResponsiveFov(aspect);
+    const camera = new THREE.PerspectiveCamera(initialFov, aspect, 0.1, 100);
     camera.position.set(0, EYE_HEIGHT, R_CAM);
 
     // 3. Renderer
@@ -693,21 +709,26 @@ export default function MemoriesSection({ onPhotoClick }) {
 
     threeStateRef.current.animId = requestAnimationFrame(animate);
 
-    // ─── Resize Handler ───────────────────────────────────────────────────────
+    // ─── Resize Handler (Responsive across Mobile, Tablet, Desktop) ───────────
     const handleResize = () => {
       if (!container || !renderer || !camera) return;
       const w = container.clientWidth;
       const h = container.clientHeight;
-      camera.aspect = w / h;
+      const asp = w / h;
+      camera.aspect = asp;
+      camera.fov = calculateResponsiveFov(asp);
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     };
 
     window.addEventListener("resize", handleResize);
+    window.addEventListener("orientationchange", handleResize);
 
     // Cleanup
     return () => {
       window.removeEventListener("resize", handleResize);
+      window.removeEventListener("orientationchange", handleResize);
       if (threeStateRef.current.animId) {
         cancelAnimationFrame(threeStateRef.current.animId);
       }
@@ -782,6 +803,11 @@ export default function MemoriesSection({ onPhotoClick }) {
       isDraggingRef.current = true;
       touchStartYRef.current = e.touches[0].clientY;
       lastPointerPosRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      touchStartPosRef.current = {
+        x: e.touches[0].clientX,
+        y: e.touches[0].clientY,
+        time: performance.now(),
+      };
     }
   };
 
@@ -802,6 +828,34 @@ export default function MemoriesSection({ onPhotoClick }) {
   const handleTouchEnd = () => {
     isDraggingRef.current = false;
     touchStartYRef.current = null;
+
+    // Mobile tap detection (tap without dragging opens artwork modal)
+    const dt = performance.now() - touchStartPosRef.current.time;
+    const startPos = touchStartPosRef.current;
+    const lastPos = lastPointerPosRef.current;
+    const dist = Math.hypot(lastPos.x - startPos.x, lastPos.y - startPos.y);
+
+    if (dt < 350 && dist < 14) {
+      const container = containerRef.current;
+      const camera = threeStateRef.current.camera;
+      if (container && camera) {
+        const rect = container.getBoundingClientRect();
+        const tapCoords = new THREE.Vector2(
+          ((startPos.x - rect.left) / rect.width) * 2 - 1,
+          -((startPos.y - rect.top) / rect.height) * 2 + 1
+        );
+        raycasterRef.current.setFromCamera(tapCoords, camera);
+        const intersects = raycasterRef.current.intersectObjects(artworkMeshesRef.current);
+        if (intersects.length > 0) {
+          const art = intersects[0].object.userData.artwork;
+          if (art) {
+            modalOpenRef.current = true;
+            setInspectModalArtwork(art);
+            if (onPhotoClick) onPhotoClick(art);
+          }
+        }
+      }
+    }
   };
 
   return (
@@ -824,13 +878,13 @@ export default function MemoriesSection({ onPhotoClick }) {
         className="absolute inset-0 w-full h-full block z-0"
       />
 
-      {/* ── Bottom-Center Display (Dark Burgundy Luxury Typography) ── */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 pointer-events-none text-center">
+      {/* ── Bottom-Center Display (Responsive Luxury Typography) ── */}
+      <div className="absolute bottom-24 sm:bottom-28 md:bottom-10 left-1/2 -translate-x-1/2 z-20 pointer-events-none text-center w-[92%] max-w-xl px-2">
         <p className="text-[10px] md:text-[11px] font-mono tracking-[0.28em] text-[#B08A52] uppercase mb-1 drop-shadow-md font-semibold">
           YOU ARE WALKING PAST
         </p>
         <h2
-          className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#FFF5E8] tracking-wider uppercase mb-2"
+          className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-extrabold text-[#FFF5E8] tracking-wider uppercase mb-1.5 md:mb-2 line-clamp-2 md:line-clamp-none"
           style={{
             fontFamily: "'Playfair Display', Georgia, serif",
             textShadow: "0 2px 25px rgba(38, 4, 13, 0.98), 0 0 12px rgba(0,0,0,0.9)",
@@ -853,13 +907,13 @@ export default function MemoriesSection({ onPhotoClick }) {
         </button>
       </div>
 
-      {/* ── Bottom-Right Navigation & Instructions (Dark Burgundy & Antique Gold) ── */}
-      <div className="absolute bottom-8 right-8 z-20 pointer-events-auto flex flex-col items-end gap-3">
+      {/* ── Bottom Navigation & Instructions (Responsive across Mobile, Tablet, Desktop) ── */}
+      <div className="absolute bottom-5 sm:bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-8 z-20 pointer-events-auto flex flex-col items-center md:items-end gap-2 md:gap-3">
         {/* Stepper Buttons: Left Arrow, Auto-Walk Play/Pause, and Right Arrow */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 sm:gap-2.5">
           <button
             onClick={() => stepWalk(-1)}
-            className="w-10 h-10 rounded-full flex items-center justify-center transition-all cursor-pointer hover:bg-[#4A0B1C] hover:border-[#B08A52] hover:shadow-[0_0_15px_rgba(176,138,82,0.45)] active:scale-95 shadow-xl"
+            className="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition-all cursor-pointer hover:bg-[#4A0B1C] hover:border-[#B08A52] hover:shadow-[0_0_15px_rgba(176,138,82,0.45)] active:scale-95 shadow-xl"
             style={{
               background: "rgba(59, 7, 21, 0.94)",
               border: "1px solid #B08A52",
@@ -872,7 +926,7 @@ export default function MemoriesSection({ onPhotoClick }) {
           </button>
           <button
             onClick={toggleAutoPlay}
-            className="h-10 px-3.5 rounded-full flex items-center justify-center gap-2 transition-all cursor-pointer hover:bg-[#4A0B1C] hover:border-[#B08A52] hover:shadow-[0_0_15px_rgba(176,138,82,0.45)] active:scale-95 shadow-xl"
+            className="h-10 sm:h-11 px-3.5 sm:px-4 rounded-full flex items-center justify-center gap-2 transition-all cursor-pointer hover:bg-[#4A0B1C] hover:border-[#B08A52] hover:shadow-[0_0_15px_rgba(176,138,82,0.45)] active:scale-95 shadow-xl"
             style={{
               background: isAutoPlaying ? "rgba(74, 11, 28, 0.95)" : "rgba(38, 4, 13, 0.94)",
               border: isAutoPlaying ? "1px solid #B08A52" : "1px solid rgba(176, 138, 82, 0.60)",
@@ -883,13 +937,13 @@ export default function MemoriesSection({ onPhotoClick }) {
             aria-label={isAutoPlaying ? "Pause auto-walk" : "Resume auto-walk"}
           >
             <span className="text-xs text-[#B08A52]">{isAutoPlaying ? "⏸" : "▶"}</span>
-            <span className="text-[10px] font-mono tracking-wider uppercase text-[#FFF5E8]">
+            <span className="text-[10px] sm:text-[11px] font-mono tracking-wider uppercase text-[#FFF5E8]">
               {isAutoPlaying ? "Auto Walk" : "Paused"}
             </span>
           </button>
           <button
             onClick={() => stepWalk(1)}
-            className="w-10 h-10 rounded-full flex items-center justify-center transition-all cursor-pointer hover:bg-[#4A0B1C] hover:border-[#B08A52] hover:shadow-[0_0_15px_rgba(176,138,82,0.45)] active:scale-95 shadow-xl"
+            className="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition-all cursor-pointer hover:bg-[#4A0B1C] hover:border-[#B08A52] hover:shadow-[0_0_15px_rgba(176,138,82,0.45)] active:scale-95 shadow-xl"
             style={{
               background: "rgba(59, 7, 21, 0.94)",
               border: "1px solid #B08A52",
@@ -903,11 +957,11 @@ export default function MemoriesSection({ onPhotoClick }) {
         </div>
 
         {/* Small Uppercase Guide Text */}
-        <div className="text-right pointer-events-none">
-          <p className="text-[9px] font-mono tracking-widest text-[#FFF5E8]/75 uppercase leading-relaxed drop-shadow">
+        <div className="text-center md:text-right pointer-events-none">
+          <p className="text-[8px] sm:text-[9px] font-mono tracking-widest text-[#FFF5E8]/75 uppercase leading-relaxed drop-shadow">
             SCROLL OR DRAG TO WALK ROUND
           </p>
-          <p className="text-[9px] font-mono tracking-widest text-[#FFF5E8]/75 uppercase leading-relaxed drop-shadow">
+          <p className="text-[8px] sm:text-[9px] font-mono tracking-widest text-[#FFF5E8]/75 uppercase leading-relaxed drop-shadow">
             CLICK A PAINTING TO LOOK CLOSER
           </p>
         </div>
