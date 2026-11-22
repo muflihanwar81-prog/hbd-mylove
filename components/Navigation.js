@@ -49,7 +49,7 @@ export default function Navigation() {
       transition={{ duration: 0.6, ease: "easeOut" }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 flex items-center select-none ${
         scrolled
-          ? "h-[70px] bg-black/80 backdrop-blur-md border-b border-[#C5A46D]/20 shadow-lg"
+          ? "h-[70px] bg-black/80 backdrop-blur-md border-b border-white/15 shadow-lg"
           : "h-[70px] sm:h-[80px] bg-transparent border-b border-transparent"
       }`}
     >
@@ -64,8 +64,8 @@ export default function Navigation() {
                 onClick={() => scrollTo(item.id)}
                 className={`transition-colors cursor-pointer select-none drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] ${
                   isActive
-                    ? "text-[#FFF5E8] font-bold underline underline-offset-4 decoration-[#C5A46D]"
-                    : "text-[#FFF5E8]/90 hover:text-[#C5A46D]"
+                    ? "text-white font-bold underline underline-offset-4 decoration-white"
+                    : "text-white/80 hover:text-white"
                 }`}
                 style={{
                   textShadow: "0 2px 10px rgba(0, 0, 0, 0.95)",
@@ -81,7 +81,7 @@ export default function Navigation() {
         <div className="md:hidden flex items-center justify-end w-full">
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="p-2 text-[#FFF5E8] hover:text-[#C5A46D] cursor-pointer rounded-lg bg-black/60 backdrop-blur-md border border-[#C5A46D]/40 shadow-md"
+            className="p-2 text-white hover:text-white/80 cursor-pointer rounded-lg bg-black/60 backdrop-blur-md border border-white/30 shadow-md"
             aria-label="Toggle navigation"
           >
             {isOpen ? <X size={20} /> : <Menu size={20} />}
@@ -96,13 +96,13 @@ export default function Navigation() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden absolute top-[70px] left-0 right-0 bg-[#080808]/95 backdrop-blur-xl px-6 py-5 flex flex-col gap-4 text-center border-t border-[#C5A46D]/20 shadow-2xl"
+            className="md:hidden absolute top-[70px] left-0 right-0 bg-[#080808]/95 backdrop-blur-xl px-6 py-5 flex flex-col gap-4 text-center border-t border-white/15 shadow-2xl"
           >
             {navLinks.map((item) => (
               <button
                 key={item.id}
                 onClick={() => scrollTo(item.id)}
-                className={`py-2 text-xs sm:text-sm uppercase tracking-widest font-medium transition-colors cursor-pointer text-[#FFF5E8] hover:text-[#C5A46D] active:text-[#C5A46D]`}
+                className={`py-2 text-xs sm:text-sm uppercase tracking-widest font-medium transition-colors cursor-pointer text-white hover:text-white/80 active:text-white`}
               >
                 {item.label}
               </button>

@@ -8,7 +8,7 @@ export default function FloatingHearts() {
   const [petals, setPetals] = useState([]);
 
   useEffect(() => {
-    const colors = ["#D6A56D", "#801F3A", "#64152D", "#A83250", "#D6A56D"];
+    const colors = ["#FFFFFF", "#F8FAFC", "#E2E8F0", "#CBD5E1", "#FFFFFF"];
     const generated = Array.from({ length: 18 }, (_, i) => ({
       id: i,
       x: (i * 17 + 5) % 100,

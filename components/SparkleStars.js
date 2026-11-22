@@ -33,12 +33,12 @@ export default function SparkleStars() {
             height: star.size,
             background:
               star.id % 2 === 0
-                ? "rgba(255, 245, 237, 0.95)"
-                : "rgba(214, 165, 109, 0.85)",
+                ? "rgba(255, 255, 255, 0.95)"
+                : "rgba(255, 255, 255, 0.8)",
             boxShadow:
               star.id % 2 === 0
-                ? "0 0 8px rgba(255, 245, 237, 0.8)"
-                : "0 0 10px rgba(214, 165, 109, 0.8)",
+                ? "0 0 8px rgba(255, 255, 255, 0.8)"
+                : "0 0 10px rgba(255, 255, 255, 0.6)",
           }}
           animate={{ opacity: [0, 1, 0], scale: [0.5, 1.3, 0.5] }}
           transition={{ duration: star.duration, delay: star.delay, repeat: Infinity, ease: "easeInOut" }}
