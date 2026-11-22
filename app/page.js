@@ -38,17 +38,6 @@ export default function Home() {
 
   const handleUnlock = () => {
     setIsUnlocked(true);
-    setMusicTrigger(true);
-
-    // Audio triggered directly on user action
-    try {
-      const audioEl = document.getElementById("bg-music-player");
-      if (audioEl && audioEl.paused) {
-        audioEl.play().catch((e) => console.log("Audio play caught:", e));
-      }
-    } catch (e) {
-      console.log("Audio trigger error:", e);
-    }
 
     // Scroll to top
     setTimeout(() => {
@@ -58,10 +47,25 @@ export default function Home() {
 
   const isMainSiteActive = isUnlocked && (isBirthdayReached || previewUnlocked);
 
+  // Auto-start music when entering Home
+  useEffect(() => {
+    if (isMainSiteActive) {
+      setMusicTrigger(true);
+      try {
+        const audioEl = document.getElementById("bg-music-player");
+        if (audioEl && audioEl.paused) {
+          audioEl.play().catch((e) => console.log("Audio play caught:", e));
+        }
+      } catch (e) {
+        console.log("Audio trigger error:", e);
+      }
+    }
+  }, [isMainSiteActive]);
+
   return (
     <main className="relative min-h-screen bg-[#350B19] text-[#FFF5ED]">
       {/* Background audio player - always mounted in DOM for autoplay reliability */}
-      <MusicPlayer autoPlayTrigger={musicTrigger} visible={isUnlocked} />
+      <MusicPlayer autoPlayTrigger={musicTrigger} visible={isMainSiteActive} />
 
       {/* Loading Screen */}
       <AnimatePresence>

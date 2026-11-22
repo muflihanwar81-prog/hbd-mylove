@@ -29,13 +29,34 @@ export default function MusicPlayer({ autoPlayTrigger = false, visible = true })
   const audioRef = useRef(null);
 
   useEffect(() => {
-    if (autoPlayTrigger && audioRef.current) {
-      audioRef.current
-        .play()
-        .then(() => setIsPlaying(true))
-        .catch((err) => console.log("Autoplay caught:", err));
+    if ((autoPlayTrigger || visible) && audioRef.current) {
+      const audio = audioRef.current;
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => setIsPlaying(true))
+          .catch((err) => {
+            console.log("Autoplay waiting for user gesture:", err);
+            // Setup one-time interaction listeners so first tap/click/touch plays music
+            const handleFirstInteraction = () => {
+              if (audio.paused) {
+                audio
+                  .play()
+                  .then(() => setIsPlaying(true))
+                  .catch(() => {});
+              }
+              window.removeEventListener("click", handleFirstInteraction);
+              window.removeEventListener("touchstart", handleFirstInteraction);
+              window.removeEventListener("keydown", handleFirstInteraction);
+            };
+
+            window.addEventListener("click", handleFirstInteraction, { once: true, passive: true });
+            window.addEventListener("touchstart", handleFirstInteraction, { once: true, passive: true });
+            window.addEventListener("keydown", handleFirstInteraction, { once: true, passive: true });
+          });
+      }
     }
-  }, [autoPlayTrigger]);
+  }, [autoPlayTrigger, visible]);
 
   const togglePlay = () => {
     const audio = audioRef.current;

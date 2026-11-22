@@ -32,21 +32,6 @@ export default function SecretCodeSection({ onUnlock }) {
     return () => clearTimeout(timer);
   }, []);
 
-  const triggerAudioPlay = () => {
-    try {
-      const audioEl = document.getElementById("bg-music-player");
-      if (audioEl) {
-        audioEl.currentTime = 0;
-        const playPromise = audioEl.play();
-        if (playPromise !== undefined) {
-          playPromise.catch((e) => console.log("Audio notice:", e));
-        }
-      }
-    } catch (e) {
-      console.log("Audio trigger error:", e);
-    }
-  };
-
   const checkAndSubmit = useCallback((codeArray) => {
     const entered = (codeArray || code).join("").trim();
     if (entered.length !== 6) return;
@@ -58,7 +43,6 @@ export default function SecretCodeSection({ onUnlock }) {
       // Correct password!
       setError(false);
       setIsUnlocking(true);
-      triggerAudioPlay();
 
       // Trigger main site reveal
       setTimeout(() => {
