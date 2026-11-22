@@ -53,92 +53,98 @@ export default function OpeningSection() {
       {/* Seamless bottom fade into next section */}
       <div className="absolute inset-x-0 bottom-0 h-24 md:h-32 bg-gradient-to-t from-black to-transparent pointer-events-none z-10" />
 
-      {/* ── Layer 4: Content Layer (Right-Aligned, 40% width on Desktop, Above Overlays) ── */}
-      <div className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-8 lg:px-14 pt-28 sm:pt-32 pb-16 sm:pb-20 flex justify-center md:justify-end">
+      {/* ── Layer 4: Content Container (Two-Column Text Grid, Vertically Centered) ── */}
+      <div className="relative z-20 w-full min-h-screen max-w-7xl mx-auto px-5 sm:px-8 lg:px-14 pt-28 sm:pt-32 pb-16 sm:pb-20 flex items-center justify-center">
         <motion.div
-          initial={{ opacity: 0, x: 35 }}
-          animate={{ opacity: 1, x: 0 }}
+          initial={{ opacity: 0, y: 25 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-          className="w-full md:w-[42%] lg:w-[40%] flex flex-col items-start text-left mt-auto md:mt-0"
+          className="w-full grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 lg:gap-16 items-center my-auto"
         >
-          {/* Badge: UNTUK ORANG FAVORITKU */}
-          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#151515]/90 border border-[#C5A46D]/60 backdrop-blur-md mb-3 sm:mb-4 shadow-sm">
-            <Sparkles size={13} className="text-[#C5A46D]" />
-            <span className="text-[10px] sm:text-xs font-mono font-bold tracking-[0.22em] text-[#FFF5E8] uppercase">
-              UNTUK ORANG FAVORITKU
-            </span>
-          </div>
+          {/* ── KOLOM KIRI: Label, Angka 19, Judul Happy Birthday, Teks Kecil Hari yang Ditunggu-tunggu ── */}
+          <div className="flex flex-col items-start text-left">
+            {/* Label: UNTUK ORANG FAVORITKU */}
+            <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/60 border border-[#C5A46D]/60 backdrop-blur-md mb-3 sm:mb-4 shadow-sm">
+              <Sparkles size={13} className="text-[#C5A46D]" />
+              <span className="text-[10px] sm:text-xs font-mono font-bold tracking-[0.22em] text-[#FFF5E8] uppercase">
+                UNTUK ORANG FAVORITKU
+              </span>
+            </div>
 
-          {/* Meta Info: HARI YANG DITUNGGU TUNGGU */}
-          <p className="text-[11px] sm:text-xs md:text-sm font-mono tracking-[0.25em] text-[#C5A46D] uppercase mb-1.5 sm:mb-2 font-semibold">
-            HARI YANG DITUNGGU TUNGGU
-          </p>
+            {/* Teks kecil: HARI YANG DITUNGGU-TUNGGU */}
+            <p className="text-[11px] sm:text-xs md:text-sm font-mono tracking-[0.25em] text-[#C5A46D] uppercase mb-1.5 sm:mb-2 font-semibold">
+              HARI YANG DITUNGGU-TUNGGU
+            </p>
 
-          {/* Big Age Number: 19 */}
-          <h1
-            className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-[#FFF5E8] tracking-tight uppercase leading-[0.92] mb-2"
-            style={{
-              fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
-              textShadow: "0 4px 35px rgba(0, 0, 0, 0.95), 0 0 30px rgba(197, 164, 109, 0.15)",
-            }}
-          >
-            19
-          </h1>
-
-          {/* Title: HAPPY BIRTHDAY */}
-          <h2
-            className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold text-[#FFF5E8] tracking-wider uppercase mb-4 sm:mb-5"
-            style={{
-              fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
-              textShadow: "0 2px 20px rgba(0, 0, 0, 0.9)",
-            }}
-          >
-            HAPPY BIRTHDAY
-          </h2>
-
-          {/* Soft Cream Description */}
-          <p className="text-xs sm:text-base md:text-lg text-[#F2E6D5] font-normal leading-relaxed mb-6 sm:mb-8 max-w-lg">
-            Selamat ulang tahun sayang, Semoga panjang umur sehat selalu, selalu dalam lindungan Allah SWT, dan dimudahkan rezekinya, aminn
-          </p>
-
-          {/* ── Action Buttons ── */}
-          <div className="flex flex-wrap items-center gap-3 sm:gap-4 w-full">
-            {/* Primary Button: BUKA SURATNYA (Cream background, Black text) */}
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => scrollTo("letter")}
-              className="flex items-center justify-center gap-2 px-5 sm:px-7 py-3 sm:py-3.5 rounded-full font-bold text-xs sm:text-sm tracking-wider uppercase transition-all shadow-xl cursor-pointer bg-[#FFF5E8] hover:bg-[#F2E6D5] text-black"
+            {/* Angka 19 dengan ukuran besar */}
+            <h1
+              className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-[#FFF5E8] tracking-tight uppercase leading-[0.92] mb-2"
               style={{
-                boxShadow: "0 6px 25px rgba(255, 245, 232, 0.25)",
+                fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+                textShadow: "0 4px 35px rgba(0, 0, 0, 0.95), 0 0 25px rgba(197, 164, 109, 0.2)",
               }}
             >
-              <Play size={15} className="fill-black text-black" />
-              <span>BUKA SURATNYA</span>
-            </motion.button>
+              19
+            </h1>
 
-            {/* Secondary Button: GALLERY (Black transparent background, Antique Gold border, Warm Ivory text) */}
-            <motion.button
-              whileHover={{ scale: 1.05, backgroundColor: "rgba(0, 0, 0, 0.85)" }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => scrollTo("memories")}
-              className="flex items-center justify-center gap-2 px-4.5 sm:px-6 py-3 sm:py-3.5 rounded-full font-semibold text-xs sm:text-sm tracking-wider uppercase text-[#FFF5E8] transition-all backdrop-blur-md cursor-pointer bg-black/60 border border-[#C5A46D] shadow-lg hover:border-[#FFF5E8]"
+            {/* Judul: HAPPY BIRTHDAY */}
+            <h2
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#FFF5E8] tracking-wider uppercase"
+              style={{
+                fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+                textShadow: "0 2px 20px rgba(0, 0, 0, 0.95)",
+              }}
             >
-              <Info size={15} className="text-[#C5A46D]" />
-              <span>GALLERY</span>
-            </motion.button>
+              HAPPY BIRTHDAY
+            </h2>
+          </div>
 
-            {/* Surprise Gift Button */}
-            <motion.button
-              whileHover={{ scale: 1.1, rotate: 6 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={() => setShowSurpriseModal(true)}
-              className="w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all cursor-pointer backdrop-blur-md bg-black/60 border border-[#C5A46D] hover:border-[#FFF5E8] text-[#C5A46D] shadow-md hover:bg-black/80"
-              title="Surprise Box"
-              aria-label="Surprise Box"
-            >
-              <Gift size={18} className="animate-pulse text-[#C5A46D]" />
-            </motion.button>
+          {/* ── KOLOM KANAN: Ucapan Selamat Ulang Tahun & Tombol Aksi ── */}
+          <div className="flex flex-col items-start text-left md:pl-4 lg:pl-6">
+            {/* Ucapan selamat ulang tahun */}
+            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-[#F2E6D5] font-normal leading-relaxed mb-6 sm:mb-8 max-w-lg drop-shadow-[0_2px_10px_rgba(0,0,0,0.95)]">
+              Selamat ulang tahun sayang, Semoga panjang umur sehat selalu, selalu dalam lindungan Allah SWT, dan dimudahkan rezekinya, aminn
+            </p>
+
+            {/* Tombol: BUKA SURATNYA, GALLERY, dan Tombol Hadiah */}
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4 w-full">
+              {/* Primary Button: BUKA SURATNYA */}
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => scrollTo("letter")}
+                className="flex items-center justify-center gap-2 px-5 sm:px-7 py-3 sm:py-3.5 rounded-full font-bold text-xs sm:text-sm tracking-wider uppercase transition-all shadow-xl cursor-pointer bg-[#FFF5E8] hover:bg-[#F2E6D5] text-black"
+                style={{
+                  boxShadow: "0 6px 25px rgba(255, 245, 232, 0.25)",
+                }}
+              >
+                <Play size={15} className="fill-black text-black" />
+                <span>BUKA SURATNYA</span>
+              </motion.button>
+
+              {/* Secondary Button: GALLERY */}
+              <motion.button
+                whileHover={{ scale: 1.05, backgroundColor: "rgba(0, 0, 0, 0.85)" }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => scrollTo("memories")}
+                className="flex items-center justify-center gap-2 px-4.5 sm:px-6 py-3 sm:py-3.5 rounded-full font-semibold text-xs sm:text-sm tracking-wider uppercase text-[#FFF5E8] transition-all backdrop-blur-md cursor-pointer bg-black/60 border border-[#C5A46D] shadow-lg hover:border-[#FFF5E8]"
+              >
+                <Info size={15} className="text-[#C5A46D]" />
+                <span>GALLERY</span>
+              </motion.button>
+
+              {/* Surprise Gift Button */}
+              <motion.button
+                whileHover={{ scale: 1.1, rotate: 6 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => setShowSurpriseModal(true)}
+                className="w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all cursor-pointer backdrop-blur-md bg-black/60 border border-[#C5A46D] hover:border-[#FFF5E8] text-[#C5A46D] shadow-md hover:bg-black/80"
+                title="Surprise Box"
+                aria-label="Surprise Box"
+              >
+                <Gift size={18} className="animate-pulse text-[#C5A46D]" />
+              </motion.button>
+            </div>
           </div>
         </motion.div>
       </div>
