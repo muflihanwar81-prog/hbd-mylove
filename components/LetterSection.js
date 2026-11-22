@@ -45,8 +45,8 @@ function PolaroidFrame({ photo, alt = "Memory", className = "", style = {} }) {
 }
 
 export default function LetterSection() {
-  const photo1 = letterData.polaroidPhoto1 || letterData.polaroidPhoto || "/images/couple-main.jpg";
-  const photo2 = letterData.polaroidPhoto2 || "/images/couple-surface.jpg";
+  const photo1 = letterData.polaroidPhoto1 || letterData.polaroidPhoto || "/images/museum-5.jpg";
+  const photo2 = letterData.polaroidPhoto2 || "/images/museum-15.jpg";
 
   return (
     <section
