@@ -29,20 +29,20 @@ export default function OpeningSection() {
         }}
       />
 
-      {/* ── Background Photo Layer (Left ~45-50%, Object Contain so head, face, body are fully intact) ── */}
-      <div className="absolute top-0 bottom-0 left-0 w-full md:w-[48%] lg:w-[50%] flex items-center justify-center md:justify-start px-4 md:pl-10 lg:pl-16 z-0 pointer-events-none overflow-hidden">
+      {/* ── Background Photo Layer (Enlarged below header, Left ~52-54%, Contained so full body & face are clear) ── */}
+      <div className="absolute top-20 sm:top-24 bottom-0 left-0 w-full md:w-[52%] lg:w-[54%] flex items-end md:items-center justify-center md:justify-start px-2 sm:px-4 md:pl-8 lg:pl-14 pb-2 md:pb-0 z-0 pointer-events-none overflow-hidden">
         <motion.div
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.2, ease: "easeOut" }}
-          className="relative w-full h-[65vh] sm:h-[75vh] md:h-[84vh] max-h-[820px] flex items-center justify-center md:justify-start"
+          className="relative w-full h-[calc(100vh-95px)] max-h-[880px] flex items-center justify-center md:justify-start"
         >
           <img
             src={imageSrc}
             alt="Home Hero Photo"
-            className="w-auto h-full max-w-full object-contain filter drop-shadow-[0_20px_45px_rgba(0,0,0,0.9)]"
+            className="w-auto h-full max-w-full object-contain filter drop-shadow-[0_20px_45px_rgba(0,0,0,0.95)]"
             style={{
-              objectPosition: "center top",
+              objectPosition: "center bottom md:left bottom",
             }}
           />
         </motion.div>
@@ -72,15 +72,15 @@ export default function OpeningSection() {
 
       {/* ── Content Container (Split Hero: Left Photo space, Right 45-50% for Text) ── */}
       <div className="relative z-10 w-full min-h-screen max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 pt-28 sm:pt-32 pb-16 sm:pb-20 flex flex-col md:flex-row items-center justify-between">
-        {/* Left Column Spacer (45-50% width on desktop to let photo shine unobstructed) */}
-        <div className="hidden md:block md:w-[48%] lg:w-[48%] pointer-events-none" />
+        {/* Left Column Spacer (50-52% width on desktop to let enlarged photo shine unobstructed) */}
+        <div className="hidden md:block md:w-[50%] lg:w-[52%] pointer-events-none" />
 
-        {/* Right Column (50-52% width: Elegant Black Birthday Content Area) */}
+        {/* Right Column (48-50% width: Elegant Black Birthday Content Area) */}
         <motion.div
           initial={{ opacity: 0, x: 35 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 1, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-          className="w-full md:w-[52%] lg:w-[50%] flex flex-col items-start text-left mt-auto md:mt-0"
+          className="w-full md:w-[50%] lg:w-[48%] flex flex-col items-start text-left mt-auto md:mt-0"
         >
           {/* Badge: UNTUK ORANG FAVORITKU */}
           <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#151515]/90 border border-[#C5A46D]/60 backdrop-blur-md mb-3 sm:mb-4 shadow-sm">
