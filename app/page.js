@@ -8,8 +8,6 @@ import CountdownGateSection from "@/components/CountdownGateSection";
 import OpeningSection from "@/components/OpeningSection";
 import MemoriesSection from "@/components/MemoriesSection";
 import LetterSection from "@/components/LetterSection";
-import WishesSection from "@/components/WishesSection";
-import FinaleSection from "@/components/FinaleSection";
 import Navigation from "@/components/Navigation";
 import MusicPlayer from "@/components/MusicPlayer";
 import FloatingHearts from "@/components/FloatingHearts";
@@ -57,10 +55,6 @@ export default function Home() {
     }, 100);
   };
 
-  const handleRestart = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
   const isMainSiteActive = isUnlocked && (isBirthdayReached || previewUnlocked);
 
   return (
@@ -103,8 +97,6 @@ export default function Home() {
           <OpeningSection />
           <LetterSection />
           <MemoriesSection onPhotoClick={setSelectedPhoto} />
-          <WishesSection />
-          <FinaleSection onRestart={handleRestart} />
         </div>
       )}
 
