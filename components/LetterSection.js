@@ -51,7 +51,7 @@ export default function LetterSection() {
   return (
     <section
       id="letter"
-      className="relative min-h-screen w-full flex items-center justify-center px-4 py-20 sm:py-24 md:py-28 overflow-hidden select-none"
+      className="relative min-h-screen w-full flex items-center justify-center px-4 sm:px-6 py-12 sm:py-16 md:py-20 overflow-hidden select-none"
       style={{
         backgroundColor: "#4A0714", // Deep romantic maroon
         backgroundImage: "radial-gradient(circle at 50% 30%, #641526 0%, #4A0714 65%, #350710 100%)",
@@ -105,10 +105,10 @@ export default function LetterSection() {
       </motion.div>
 
       {/* ── Main Composition Container ── */}
-      <div className="relative z-20 w-full max-w-6xl mx-auto flex flex-col lg:flex-row items-center justify-center gap-12 lg:gap-8 px-2 sm:px-6">
+      <div className="relative z-20 w-full max-w-[1360px] mx-auto flex flex-col lg:flex-row items-center justify-center gap-10 lg:gap-8 px-2 sm:px-6">
 
         {/* ── LEFT COLUMN: Vinyl + Stacked Polaroid Frames + Wax Seal + Stars ── */}
-        <div className="relative shrink-0 flex flex-col items-center justify-center w-full max-w-xs sm:max-w-sm lg:w-[350px] lg:self-start lg:pt-8">
+        <div className="relative shrink-0 flex flex-col items-center justify-center w-full max-w-xs sm:max-w-sm lg:w-[320px] lg:self-start lg:pt-6">
 
           {/* ── 1. VINYL RECORD (Kiri Atas, Sedikit Miring) ── */}
           <motion.div
@@ -188,7 +188,7 @@ export default function LetterSection() {
         </div>
 
         {/* ── RIGHT COLUMN: Stacked Paper Letter Sheets + Accents ── */}
-        <div className="relative flex-1 w-full max-w-2xl lg:max-w-3xl">
+        <div className="relative flex-1 w-full max-w-3xl lg:max-w-4xl xl:max-w-5xl">
 
           {/* ── STIKER KIRI ATAS: Karakter Pixel Membawa Buket Bunga ── */}
           <motion.div
@@ -264,10 +264,10 @@ export default function LetterSection() {
           {/* ── Layer 1: Main Top Paper Sheet (Slide Up + Fade In) ── */}
           <motion.div
             initial={{ opacity: 0, y: 60, rotate: -3, scale: 0.96 }}
-            whileInView={{ opacity: 1, y: 0, rotate: -1.4, scale: 1 }}
+            whileInView={{ opacity: 1, y: 0, rotate: -1.2, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.9, delay: 0.3, ease: easeSoft }}
-            className="relative z-20 rounded-[2px] px-6 sm:px-12 md:px-16 py-10 sm:py-14 md:py-16 transition-shadow duration-300 border border-[#E9A0AA]/25"
+            className="relative z-20 rounded-[2px] px-6 sm:px-10 md:px-14 py-8 sm:py-10 md:py-12 transition-shadow duration-300 border border-[#E9A0AA]/25 w-full"
             style={{
               backgroundColor: "#FFF9F0", // Ivory Paper
               boxShadow:
@@ -280,7 +280,7 @@ export default function LetterSection() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.5, ease: easeSoft }}
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-center tracking-normal mb-2 sm:mb-3 font-normal"
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-center tracking-normal mb-1.5 sm:mb-2 font-normal"
               style={{
                 fontFamily: "'Alex Brush', 'Dancing Script', cursive",
                 color: "#521321", // Deep burgundy text
@@ -296,7 +296,7 @@ export default function LetterSection() {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.6, ease: easeSoft }}
-              className="text-center text-xs sm:text-sm md:text-base font-medium tracking-wide mb-6 sm:mb-8"
+              className="text-center text-xs sm:text-sm md:text-base font-medium tracking-wide mb-4 sm:mb-6"
               style={{
                 fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
                 color: "#E9A0AA", // Pink accent
@@ -305,26 +305,45 @@ export default function LetterSection() {
               happy birthday, love 🤍
             </motion.p>
 
-            {/* Isi Surat: Muncul Bertahap per Paragraf */}
+            {/* Isi Surat: Format Paragraf Melebar Tanpa Perlu Scroll */}
             <div
-              className="space-y-4 sm:space-y-6 text-center text-xs sm:text-sm md:text-[15px] lg:text-base leading-relaxed sm:leading-loose font-normal max-w-xl mx-auto"
+              className="space-y-3 sm:space-y-3.5 text-center text-xs sm:text-sm md:text-[15px] leading-relaxed font-normal w-full max-w-3xl lg:max-w-4xl mx-auto"
               style={{ color: "#521321" }}
             >
               <motion.p
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.75, delay: 0.7, ease: easeSoft }}
               >
-                Selamat ulang tahun sayang. Hari ini adalah hari spesial karena seseorang yang begitu berarti lahir ke dunia. Aku berharap di umurmu yang ke 19 ini kamu selalu diberikan kebahagiaan, kesehatan, dan segala hal baik yang selama ini kamu impikan segera terwujud satu persatu. 
-                
+                Selamat ulang tahun sayang. Hari ini adalah hari spesial karena seseorang yang begitu berarti lahir ke dunia. Aku berharap di umurmu yang ke 19 ini kamu selalu diberikan kebahagiaan, kesehatan, dan segala hal baik yang selama ini kamu impikan segera terwujud satu persatu.
+              </motion.p>
+
+              <motion.p
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.75, delay: 0.8, ease: easeSoft }}
+              >
                 Aku mungkin nggak selalu bisa memberikan hal-hal yang sempurna, tapi aku ingin kamu tahu kalau kehadiranmu adalah salah satu hal terindah yang pernah aku punya. Terima kasih sudah hadir, sudah menjadi dirimu sendiri, dan sudah memberikan banyak warna dalam hari-hariku.
+              </motion.p>
 
+              <motion.p
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.75, delay: 0.9, ease: easeSoft }}
+              >
                 Kalau suatu hari nanti kamu merasa lelah, merasa kurang, atau dunia terasa terlalu berat, ingatlah kalau kamu sangat berharga. Kamu pantas dicintai, dihargai, dan mendapatkan semua kebahagiaan yang ada di dunia ini.
+              </motion.p>
 
-                Aku berharap bisa terus melihat senyummu, mendengar cerita-ceritamu, menemani hari-harimu, dan merayakan lebih banyak ulang tahun bersamamu.
-                
-                Jangan pernah merasa sendirian, ya. Aku akan selalu berharap yang terbaik untukmu
+              <motion.p
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.75, delay: 1.0, ease: easeSoft }}
+              >
+                Aku berharap bisa terus melihat senyummu, mendengar cerita-ceritamu, menemani hari-harimu, dan merayakan lebih banyak ulang tahun bersamamu. Jangan pernah merasa sendirian, ya. Aku akan selalu berharap yang terbaik untukmu.
               </motion.p>
             </div>
 
