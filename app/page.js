@@ -14,6 +14,8 @@ import MusicPlayer from "@/components/MusicPlayer";
 import FloatingHearts from "@/components/FloatingHearts";
 import SparkleStars from "@/components/SparkleStars";
 import PhotoModal from "@/components/PhotoModal";
+import { coupleData } from "@/lib/data-konten";
+import { getCountdown } from "@/lib/format";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
@@ -23,7 +25,7 @@ export default function Home() {
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [musicTrigger, setMusicTrigger] = useState(false);
 
-  // Check URL params for direct inspection/testing
+  // Check URL params for direct inspection/testing and check birthday status
   useEffect(() => {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
@@ -31,6 +33,16 @@ export default function Home() {
         setIsLoading(false);
         setIsUnlocked(true);
       }
+      if (params.get("preview") === "true" || params.get("test") === "home") {
+        setIsLoading(false);
+        setIsUnlocked(true);
+        setPreviewUnlocked(true);
+      }
+    }
+
+    const cd = getCountdown(coupleData.birthday);
+    if (cd && cd.isPassed) {
+      setIsBirthdayReached(true);
     }
   }, []);
 
@@ -83,7 +95,6 @@ export default function Home() {
       {isUnlocked && !isMainSiteActive && (
         <CountdownGateSection
           onTimeReached={() => setIsBirthdayReached(true)}
-          onPreviewUnlock={() => setPreviewUnlocked(true)}
         />
       )}
 
